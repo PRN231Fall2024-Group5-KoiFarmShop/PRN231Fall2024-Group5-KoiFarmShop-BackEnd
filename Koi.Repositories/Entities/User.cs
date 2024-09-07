@@ -20,5 +20,10 @@ namespace Koi.Repositories.Entities
         public DateTime? DeletionDate { get; set; }
         public int? DeleteBy { get; set; }
         public bool? IsDeleted { get; set; } = false;
+
+        //navigation
+        public virtual ICollection<Order> Orders { get; set; }
+
+        public virtual ICollection<KoiFish> KoiFishsConsigned { get; set; }
     }
 }

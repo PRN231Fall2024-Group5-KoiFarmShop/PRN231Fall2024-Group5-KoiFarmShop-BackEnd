@@ -27,6 +27,9 @@ namespace Koi.Repositories.Entities
         [ForeignKey("ConsignedBy")]
         public virtual User Consigner { get; set; }
 
+        // Navigation property for many-to-many relationship with KoiBreed
+        public virtual ICollection<KoiFishKoiBreed> KoiFishKoiBreeds { get; set; }
+
         //foreign key
         public int ConsignedBy { get; set; }
     }
