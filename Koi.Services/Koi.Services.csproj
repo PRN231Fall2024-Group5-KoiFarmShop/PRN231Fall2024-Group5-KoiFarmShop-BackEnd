@@ -7,13 +7,12 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Koi.Repositories\Koi.Repositories.csproj" />
+    <Folder Include="DTO\" />
+    <Folder Include="Interface\" />
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Interfaces\" />
-    <Folder Include="DTO\" />
-    <Folder Include="Services\" />
+    <ProjectReference Include="..\Koi.Repositories\Koi.Repositories.csproj" />
   </ItemGroup>
 
 </Project>

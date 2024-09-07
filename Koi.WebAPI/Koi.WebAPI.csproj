@@ -15,6 +15,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Koi.Services\Koi.Services.csproj" />
     <ProjectReference Include="..\Service\Koi.Services.csproj" />
   </ItemGroup>
 

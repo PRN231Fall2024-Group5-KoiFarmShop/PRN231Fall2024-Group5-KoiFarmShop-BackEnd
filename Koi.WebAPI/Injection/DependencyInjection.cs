@@ -3,12 +3,12 @@ using Koi.Repositories.Commons;
 using Koi.Repositories.Entities;
 using Koi.Repositories.Interfaces;
 using Koi.Repositories;
-using Koi.Services.Mapper;
+using Koi.Services;
 using Koi.WebAPI.MiddleWares;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Logging;
 using System.Diagnostics;
+using Koi.Services.Mapper;
 
 namespace Koi.WebAPI.Injection
 {
