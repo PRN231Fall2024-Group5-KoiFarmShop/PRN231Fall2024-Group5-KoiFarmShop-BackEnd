@@ -18,6 +18,10 @@ namespace Koi.Repositories
         public DbSet<OrderDetail> OrderDetails { get; set; }
         public DbSet<KoiBreed> KoiBreeds { get; set; }
         public DbSet<KoiFishKoiBreed> KoiFishKoiBreeds { get; set; }
+        public DbSet<FAQ> FAQs { get; set; }
+        public DbSet<Blog> Blogs { get; set; }
+        public DbSet<OrderFeedback> OrderFeedbacks { get; set; }
+        public DbSet<Transaction> Transactions { get; set; }
 
         public KoiFarmShopDbContext(DbContextOptions options) : base(options)
         {
@@ -46,6 +50,13 @@ namespace Koi.Repositories
         .WithMany(o => o.OrderDetails)
         .HasForeignKey(od => od.OrderId)
         .OnDelete(DeleteBehavior.Restrict);
+
+            // Configure one-to-many relationship between Order and Transaction
+            modelBuilder.Entity<Transaction>()
+                .HasOne(t => t.Order)
+                .WithMany(o => o.Transactions)
+                .HasForeignKey(t => t.OrderId)
+                .OnDelete(DeleteBehavior.Restrict);
         }
     }
 }

@@ -21,9 +21,10 @@ namespace Koi.Repositories.Entities
         public int? DeleteBy { get; set; }
         public bool? IsDeleted { get; set; } = false;
 
-        //navigation
+        // Navigation property
         public virtual ICollection<Order> Orders { get; set; }
 
         public virtual ICollection<KoiFish> KoiFishsConsigned { get; set; }
+        public virtual ICollection<Blog> Blogs { get; set; }
     }
 }
