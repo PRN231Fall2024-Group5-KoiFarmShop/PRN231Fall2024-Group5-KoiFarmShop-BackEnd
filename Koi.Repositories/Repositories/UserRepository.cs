@@ -8,6 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 using System.Security.Claims;
@@ -75,7 +76,9 @@ namespace Koi.Repositories.Repositories
                     var roleExists = await _roleManager.RoleExistsAsync(role);
                     if (!roleExists)
                     {
-                        var newRole = new Role(role);
+                        var newRole = new Role();
+                        newRole.Name = role;
+
                         await _roleManager.CreateAsync(newRole);
                     }
 
@@ -283,7 +286,9 @@ namespace Koi.Repositories.Repositories
             if (!roleExists)
             {
                 // Nếu vai trò chưa tồn tại, tạo vai trò mới
-                var newRoleResult = await _roleManager.CreateAsync(new Role(newRole));
+                var role = new Role();
+                role.Name = newRole;
+                var newRoleResult = await _roleManager.CreateAsync(role);
                 if (!newRoleResult.Succeeded)
                 {
                     throw new Exception("Failed to create new role.");
