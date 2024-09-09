@@ -1,14 +1,14 @@
-﻿using System.Text.Json.Serialization;
-using System.Text.Json;
+﻿using Koi.Repositories;
+using Koi.Repositories.Entities;
 using Koi.WebAPI.Injection;
+using Koi.WebAPI.MiddleWares;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using System.Reflection;
-using Koi.Repositories.Entities;
-using Microsoft.IdentityModel.Tokens;
 using System.Text;
-using Koi.Repositories;
-using Koi.WebAPI.MiddleWares;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -120,6 +120,19 @@ if (app.Environment.IsDevelopment())
         config.ConfigObject.AdditionalItems.Add("persistAuthorization", "true");
     });
 }
+
+//Apply migrations
+var scope = app.Services.CreateScope();
+var logger = scope.ServiceProvider.GetRequiredService<ILogger<Program>>();
+try
+{
+    app.ApplyMigrations(logger);
+}
+catch (Exception e)
+{
+    logger.LogError(e, "An problem occurred during migration!");
+}
+
 // USE AUTHENTICATION, AUTHORIZATION
 app.UseAuthorization();
 app.UseAuthentication();
