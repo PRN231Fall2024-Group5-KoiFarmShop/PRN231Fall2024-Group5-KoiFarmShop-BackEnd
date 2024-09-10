@@ -1,9 +1,12 @@
 ﻿using Koi.Repositories;
 using Koi.Repositories.Entities;
+using Koi.Repositories.Models.TestDTO;
 using Koi.WebAPI.Injection;
 using Koi.WebAPI.MiddleWares;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.OData;
 using Microsoft.IdentityModel.Tokens;
+using Microsoft.OData.ModelBuilder;
 using Microsoft.OpenApi.Models;
 using System.Reflection;
 using System.Text;
@@ -102,10 +105,26 @@ builder.Services.AddAuthentication(options =>
 //ADD AUTHORIZATION
 builder.Services.AddAuthorization();
 //ADD CORS (IN PROGRESS)
-builder.Services.AddControllers();
+
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+
+
+
+// START - ADD ODATA
+var modelBuilder = new ODataConventionModelBuilder();
+modelBuilder.EntityType<OrderTestDTO>();
+modelBuilder.EntitySet<CustomerTestDTO>("Customers");
+var edmModel = modelBuilder.GetEdmModel();
+
+builder.Services.AddControllers()
+    .AddOData(
+    options => options.Select().Filter().OrderBy().Expand().Count().SetMaxTop(null)
+    .AddRouteComponents(
+        routePrefix: "odata",
+        model: edmModel));
+// END - ADD ODATA
 
 var app = builder.Build();
 
