@@ -30,4 +30,8 @@
     <Folder Include="Models\" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\Koi.BusinessObjects\Koi.BusinessObjects.csproj" />
+  </ItemGroup>
+
 </Project>
