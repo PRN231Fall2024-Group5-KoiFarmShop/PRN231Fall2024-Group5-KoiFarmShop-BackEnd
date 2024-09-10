@@ -19,5 +19,6 @@ namespace Koi.Repositories.Models.UserModels
         public string? Address { get; set; }
         public bool? IsActive { get; set; }
         public int? LoyaltyPoints { get; set; } = 0;
+        public bool? IsDeleted { get; set; }
     }
 }

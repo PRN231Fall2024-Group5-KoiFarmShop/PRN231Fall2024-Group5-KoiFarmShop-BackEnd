@@ -10,6 +10,7 @@ namespace Koi.Services.Interface
 {
     public interface IUserService
     {
+        Task<ApiResult<UserDetailsModel>> DeleteUser(int id);
         Task<List<UserDetailsModel>> GetAllUsers();
         Task<ApiResult<UserDetailsModel>> GetCurrentUserAsync();
         Task<UserDetailsModel> GetUserById(int id);

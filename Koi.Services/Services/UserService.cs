@@ -128,5 +128,32 @@ namespace Koi.Services.Services
             }
             return ApiResult<object>.Succeed(result, "Login successfully");
         }
+
+        public async Task<ApiResult<UserDetailsModel>> DeleteUser(int id)
+        {
+            var user = await _unitOfWork.UserRepository.GetAccountDetailsAsync(id);
+
+            if (user != null)
+            {
+                user = await _unitOfWork.UserRepository.SoftRemoveUserAsync(id);
+                //save changes
+                var result = await _unitOfWork.SaveChangeAsync();
+                if (result > 0)
+                {
+                    return new ApiResult<UserDetailsModel>()
+                    {
+                        IsSuccess = true,
+                        Message = "Package " + id + " Removed successfully",
+                        Data = _mapper.Map<UserDetailsModel>(user)
+                    };
+                }
+            }
+            return new ApiResult<UserDetailsModel>()
+            {
+                IsSuccess = false,
+                Message = "There are no existed user id: " + id,
+                Data = null
+            };
+        }
     }
 }
