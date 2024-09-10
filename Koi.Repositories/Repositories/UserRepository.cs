@@ -310,6 +310,17 @@ namespace Koi.Repositories.Repositories
             return true;
         }
 
+        public async Task<User> GetCurrentUserAsync()
+        {
+            var user = await _userManager.Users.FirstOrDefaultAsync(x => x.Id == _claimsService.GetCurrentUserId);
+            if (user != null)
+            {
+                return user;
+            }
+
+            return null;
+        }
+
         public async Task<List<Role>> GetAllRoleAsync()
         {
             try
@@ -334,6 +345,13 @@ namespace Koi.Repositories.Repositories
         public async Task<string> GenerateEmailConfirmationToken(User user)
         {
             return await _userManager.GenerateEmailConfirmationTokenAsync(user);
+        }
+
+        public async Task<List<User>> GetUsersAsync()
+        {
+            var users = await _context.Users.ToListAsync();
+
+            return users;
         }
     }
 }

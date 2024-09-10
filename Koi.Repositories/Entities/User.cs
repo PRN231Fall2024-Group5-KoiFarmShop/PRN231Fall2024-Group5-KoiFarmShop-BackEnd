@@ -28,5 +28,6 @@ namespace Koi.Repositories.Entities
 
         public virtual ICollection<KoiFish> KoiFishsConsigned { get; set; }
         public virtual ICollection<Blog> Blogs { get; set; }
+        public virtual ICollection<IdentityUserRole<int>> UserRoles { get; set; } // Navigation property to UserRoles
     }
 }
