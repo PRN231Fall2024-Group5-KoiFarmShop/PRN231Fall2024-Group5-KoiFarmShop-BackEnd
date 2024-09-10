@@ -11,6 +11,8 @@ namespace Koi.Repositories.Entities
     {
         public int CustomerId { get; set; }  // Foreign key to User
         public int KoiFishId { get; set; }   // Foreign key to KoiFish
+        public int PackageCareId { get; set; } // Foreign Key to PackageCare
+
         public DateTime ConsignmentDate { get; set; }  // Ngày ký gửi
         public DateTime StartDate { get; set; }  // Ngày bắt đầu chăm sóc
         public DateTime EndDate { get; set; }  // Ngày kết thúc chăm sóc
@@ -28,5 +30,8 @@ namespace Koi.Repositories.Entities
         public virtual User Staff { get; set; }  // Nhân viên phụ trách
 
         public virtual KoiFish KoiFish { get; set; }  // Thông tin KoiFish liên quan
+
+        [ForeignKey("PackageCareId")]
+        public virtual PackageCare PackageCare { get; set; }
     }
 }

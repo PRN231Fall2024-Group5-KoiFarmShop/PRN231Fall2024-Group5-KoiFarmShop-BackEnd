@@ -30,6 +30,8 @@ namespace Koi.Repositories.Entities
         // Navigation property for many-to-many relationship with KoiBreed
         public virtual ICollection<KoiFishKoiBreed> KoiFishKoiBreeds { get; set; }
 
+        public virtual ICollection<KoiCertificate>? KoiCertificates { get; set; }
+
         //foreign key
         public int ConsignedBy { get; set; }
     }
