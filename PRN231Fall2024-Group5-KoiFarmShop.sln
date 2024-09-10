@@ -7,9 +7,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Koi.Repositories", "Koi.Rep
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Koi.WebAPI", "Koi.WebAPI\Koi.WebAPI.csproj", "{36F11F00-4513-4FB4-B8D4-0578B9853D20}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Koi.Services", "Koi.Services\Koi.Services.csproj", "{E045A741-53AB-4300-A880-995F21728147}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Koi.Services", "Koi.Services\Koi.Services.csproj", "{E045A741-53AB-4300-A880-995F21728147}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Koi.BusinessObjects", "Koi.BusinessObjects\Koi.BusinessObjects.csproj", "{04A5088A-C24E-4027-93DD-B7D11CBA8279}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Koi.BusinessObjects", "Koi.BusinessObjects\Koi.BusinessObjects.csproj", "{04A5088A-C24E-4027-93DD-B7D11CBA8279}"
+EndProject
+Project("{E53339B2-1760-4266-BCC7-CA923CBCF16C}") = "docker-compose", "docker-compose.dcproj", "{1A817A79-AEEC-4D4C-84BD-08DBF8112062}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -33,6 +35,10 @@ Global
 		{04A5088A-C24E-4027-93DD-B7D11CBA8279}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{04A5088A-C24E-4027-93DD-B7D11CBA8279}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{04A5088A-C24E-4027-93DD-B7D11CBA8279}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1A817A79-AEEC-4D4C-84BD-08DBF8112062}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1A817A79-AEEC-4D4C-84BD-08DBF8112062}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1A817A79-AEEC-4D4C-84BD-08DBF8112062}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1A817A79-AEEC-4D4C-84BD-08DBF8112062}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
