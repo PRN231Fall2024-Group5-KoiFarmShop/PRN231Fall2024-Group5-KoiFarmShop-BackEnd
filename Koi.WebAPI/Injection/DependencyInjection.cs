@@ -9,6 +9,9 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using System.Diagnostics;
 using Koi.Services.Mapper;
+using Koi.Repositories.Repositories;
+using Koi.Services.Interface;
+using Koi.Services.Services;
 
 namespace Koi.WebAPI.Injection
 {
@@ -33,12 +36,14 @@ namespace Koi.WebAPI.Injection
             services.AddAutoMapper(typeof(MapperConfigProfile).Assembly);
             services.AddScoped<IClaimsService, ClaimsService>();
             // add repositories
-
+            services.AddScoped<IUserRepository, UserRepository>();
             // add generic repositories
+            services.AddScoped<IGenericRepository<KoiFish>, GenericRepository<KoiFish>>();
 
             // add signInManager
             services.AddScoped<SignInManager<User>>();
             // add services
+            services.AddScoped<IUserService, UserService>();
 
             // add unitOfWork
             services.AddScoped<IUnitOfWork, UnitOfWork>();

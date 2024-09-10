@@ -10,11 +10,15 @@ namespace Koi.Repositories
     public class UnitOfWork : IUnitOfWork
     {
         private readonly KoiFarmShopDbContext _context;
+        private readonly IUserRepository _userRepository;
 
-        public UnitOfWork(KoiFarmShopDbContext context)
+        public UnitOfWork(KoiFarmShopDbContext context, IUserRepository userRepository)
         {
             _context = context;
+            _userRepository = userRepository;
         }
+
+        public IUserRepository UserRepository => _userRepository;
 
         public Task<int> SaveChangeAsync()
         {
