@@ -24,6 +24,7 @@ builder.Services.AddControllers()
         options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles;
         options.JsonSerializerOptions.PropertyNamingPolicy = JsonNamingPolicy.KebabCaseLower;
     });
+
 //CONFIG FOR JWT AUTHENTICATION ON SWAGGER
 builder.Services.AddSwaggerGen(config =>
 {
@@ -69,7 +70,7 @@ builder.Services.AddSwaggerGen(config =>
 });
     // using System.Reflection;
     var xmlFilename = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
-    //config.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, xmlFilename));
+    config.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, xmlFilename));
 });
 
 //SETUP INJECTION SERVICE

@@ -349,9 +349,17 @@ namespace Koi.Repositories.Repositories
 
         public async Task<List<User>> GetUsersAsync()
         {
-            var users = await _context.Users.ToListAsync();
+            try
+            {
+                var users = await _context.Users.ToListAsync();
 
-            return users;
+                return users;
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
         }
     }
 }
