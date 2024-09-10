@@ -15,6 +15,9 @@ namespace Koi.Repositories
         public DbSet<Blog> Blogs { get; set; }
         public DbSet<OrderFeedback> OrderFeedbacks { get; set; }
         public DbSet<Transaction> Transactions { get; set; }
+        public DbSet<ConsignmentForSale> ConsignmentForSales { get; set; }
+        public DbSet<ConsignmentForNurture> ConsignmentForNurtures { get; set; }
+
         public DbSet<Notification> Notifications { get; set; }
         public KoiFarmShopDbContext(DbContextOptions options) : base(options)
         {
@@ -49,6 +52,33 @@ namespace Koi.Repositories
                 .HasOne(t => t.Order)
                 .WithMany(o => o.Transactions)
                 .HasForeignKey(t => t.OrderId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            // Configure one-to-many relationship between ConsignmentForNurture and Staff (User)
+            modelBuilder.Entity<ConsignmentForNurture>()
+                .HasOne(c => c.Staff)
+                .WithMany()
+                .HasForeignKey(c => c.StaffId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<ConsignmentForNurture>()
+          .HasOne(c => c.Customer)
+          .WithMany()
+          .HasForeignKey(c => c.CustomerId)
+          .OnDelete(DeleteBehavior.Restrict);
+
+            // Configure one-to-many relationship between ConsignmentForSale and Staff (User)
+            modelBuilder.Entity<ConsignmentForSale>()
+                .HasOne(c => c.Staff)
+                .WithMany()
+                .HasForeignKey(c => c.StaffId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            // Configure one-to-many relationship between ConsignmentForSale and KoiFish
+            modelBuilder.Entity<ConsignmentForSale>()
+                .HasOne(c => c.KoiFish)
+                .WithMany()
+                .HasForeignKey(c => c.KoiFishId)
                 .OnDelete(DeleteBehavior.Restrict);
         }
     }
