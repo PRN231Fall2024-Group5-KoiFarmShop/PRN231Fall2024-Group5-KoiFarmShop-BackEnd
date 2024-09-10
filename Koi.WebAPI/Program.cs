@@ -1,6 +1,7 @@
 ﻿using Koi.Repositories;
 using Koi.Repositories.Entities;
 using Koi.Repositories.Models.TestDTO;
+using Koi.Services.Hubs;
 using Koi.WebAPI.Injection;
 using Koi.WebAPI.MiddleWares;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -110,7 +111,8 @@ builder.Services.AddAuthorization();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-
+//Add SignalR
+builder.Services.AddSignalR();
 
 // START - ADD ODATA
 var modelBuilder = new ODataConventionModelBuilder();
@@ -168,5 +170,7 @@ app.MapControllers();
 app.UseMiddleware<GlobalExceptionMiddleware>();
 app.UseMiddleware<PerformanceTimeMiddleware>();
 app.UseMiddleware<UserStatusMiddleware>();
+
+app.MapHub<NotificationHub>("/notificationHub");
 
 app.Run();
