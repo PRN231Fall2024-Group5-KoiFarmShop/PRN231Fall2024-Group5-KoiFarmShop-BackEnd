@@ -219,5 +219,23 @@ namespace Koi.WebAPI.Controllers
                 return BadRequest(ex.Message);
             }
         }
+
+        /// <summary>
+        /// Get users by their specific id
+        /// </summary>
+        /// <response code="200">Returns an existing user</response>
+        [HttpGet("{id}")]
+        public async Task<IActionResult> GetEventByIdAsync(int id)
+        {
+            try
+            {
+                var user = await _userService.GetUserById(id);
+                return Ok(ApiResult<UserDetailsModel>.Succeed(user, "Get User Successfully!"));
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ApiResult<object>.Fail(ex));
+            }
+        }
     }
 }
