@@ -1,4 +1,4 @@
-﻿namespace Koi.BusinessObjects.DTO.KoiBreedDTOs
+﻿namespace Koi.DTOs.KoiBreedDTOs
 {
     public class KoiBreedResponseDTO
     {
