@@ -5,22 +5,19 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Koi.Repositories.Entities
+namespace Koi.BusinessObjects
 {
-    public class ConsignmentForNurture : BaseEntity
+    public class ConsignmentForSale : BaseEntity
     {
         public int CustomerId { get; set; }  // Foreign key to User
         public int KoiFishId { get; set; }   // Foreign key to KoiFish
-        public int PackageCareId { get; set; } // Foreign Key to PackageCare
-
+        public string? ConsignmentType { get; set; }  // Loại ký gửi
         public DateTime ConsignmentDate { get; set; }  // Ngày ký gửi
-        public DateTime StartDate { get; set; }  // Ngày bắt đầu chăm sóc
-        public DateTime EndDate { get; set; }  // Ngày kết thúc chăm sóc
-        public Int64 PriceByDayDeale { get; set; }  // Giá thỏa thuận cho mỗi ngày chăm sóc
-        public bool InspectionRequired { get; set; }  // Có cần kiểm tra không
+        public long PriceDealed { get; set; }  // Giá đã thỏa thuận
+        public bool InspectionRequired { get; set; }  // Yêu cầu kiểm tra không
         public DateTime? InspectionDate { get; set; }  // Ngày kiểm tra (có thể null)
-        public string ConsignmentStatus { get; set; }  // Trạng thái của ký gửi
-        public int StaffId { get; set; }  // Foreign key to User (nhân viên thực hiện)
+        public string? ConsignmentStatus { get; set; }  // Trạng thái ký gửi
+        public int StaffId { get; set; }  // Foreign key to User (người nhân viên thực hiện)
 
         // Navigation properties
         [ForeignKey("CustomerId")]
@@ -30,8 +27,5 @@ namespace Koi.Repositories.Entities
         public virtual User Staff { get; set; }  // Nhân viên phụ trách
 
         public virtual KoiFish KoiFish { get; set; }  // Thông tin KoiFish liên quan
-
-        [ForeignKey("PackageCareId")]
-        public virtual PackageCare PackageCare { get; set; }
     }
 }

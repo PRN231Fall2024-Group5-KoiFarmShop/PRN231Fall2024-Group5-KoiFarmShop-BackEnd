@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Koi.Repositories.Entities
+namespace Koi.BusinessObjects
 {
     public class KoiFish : BaseEntity
     {
@@ -19,7 +19,7 @@ namespace Koi.Repositories.Entities
         public int? DailyFeedAmount { get; set; }
         public DateTime? LastHealthCheck { get; set; }
         public bool? IsAvailableForSale { get; set; }
-        public Int64 Price { get; set; }
+        public long Price { get; set; }
         public bool? IsConsigned { get; set; }
         public bool? IsSold { get; set; }
 

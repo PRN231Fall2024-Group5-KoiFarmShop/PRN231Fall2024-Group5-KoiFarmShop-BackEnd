@@ -1,4 +1,4 @@
-﻿using Koi.Repositories.Entities;
+﻿using Koi.BusinessObjects;
 using Koi.Repositories.Helper;
 using Koi.Repositories.Interfaces;
 using Microsoft.EntityFrameworkCore;

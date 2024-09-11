@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
+using Koi.BusinessObjects;
 using Koi.DTOs.KoiBreedDTOs;
-using Koi.Repositories.Entities;
 using Koi.Repositories.Helper;
 using Koi.Repositories.Interfaces;
 using Koi.Services.Interface;

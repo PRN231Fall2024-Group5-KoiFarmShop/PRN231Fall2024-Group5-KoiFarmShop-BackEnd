@@ -4,14 +4,14 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Koi.Repositories.Entities
+namespace Koi.BusinessObjects
 {
     public class Transaction : BaseEntity
     {
         public int UserId { get; set; }      // Foreign key to User
         public int OrderId { get; set; }     // Foreign key to Order
         public string? PaymentMethod { get; set; }   // Phương thức thanh toán
-        public Int64 Amount { get; set; }    // Tổng số tiền giao dịch
+        public long Amount { get; set; }    // Tổng số tiền giao dịch
         public DateTime TransactionDate { get; set; }  // Ngày thực hiện giao dịch
         public string TransactionStatus { get; set; }  // Trạng thái giao dịch
 

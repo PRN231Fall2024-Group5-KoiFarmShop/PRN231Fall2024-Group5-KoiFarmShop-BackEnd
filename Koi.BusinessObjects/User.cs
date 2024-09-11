@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Identity;
 
-namespace Koi.Repositories.Entities
+namespace Koi.BusinessObjects
 {
     public class User : IdentityUser<int>
     {

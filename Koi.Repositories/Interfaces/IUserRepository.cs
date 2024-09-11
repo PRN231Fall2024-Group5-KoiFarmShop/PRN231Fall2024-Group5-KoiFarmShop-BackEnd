@@ -1,4 +1,4 @@
-﻿using Koi.Repositories.Entities;
+﻿using Koi.BusinessObjects;
 using Koi.Repositories.Models.AuthenticationModels;
 using Koi.Repositories.Models.UserModels;
 using System;

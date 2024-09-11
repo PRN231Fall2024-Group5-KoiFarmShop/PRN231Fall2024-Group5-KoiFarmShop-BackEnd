@@ -1,4 +1,4 @@
-﻿using Koi.Repositories.Entities;
+﻿using Koi.BusinessObjects;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;

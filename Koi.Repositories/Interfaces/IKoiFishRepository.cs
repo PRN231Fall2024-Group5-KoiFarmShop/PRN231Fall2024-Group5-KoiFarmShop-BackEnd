@@ -1,4 +1,4 @@
-﻿using Koi.Repositories.Entities;
+﻿using Koi.BusinessObjects;
 using Koi.Repositories.Helper;
 
 namespace Koi.Repositories.Interfaces

@@ -1,7 +1,7 @@
 ﻿using AutoMapper;
+using Koi.BusinessObjects;
 using Koi.DTOs.KoiBreedDTOs;
 using Koi.DTOs.KoiFishDTOs;
-using Koi.Repositories.Entities;
 
 using Koi.Repositories.Models.UserModels;
 

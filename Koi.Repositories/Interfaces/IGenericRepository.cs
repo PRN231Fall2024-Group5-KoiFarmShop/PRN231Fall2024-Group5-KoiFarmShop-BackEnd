@@ -1,4 +1,4 @@
-﻿using Koi.Repositories.Entities;
+﻿using Koi.BusinessObjects;
 using System.Linq.Expressions;
 
 namespace Koi.Repositories.Interfaces

@@ -1,4 +1,4 @@
-﻿namespace Koi.Repositories.Entities
+﻿namespace Koi.BusinessObjects
 {
     public class BaseEntity
     {

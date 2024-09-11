@@ -30,15 +30,15 @@ namespace Koi.WebAPI.Controllers
         /// Sample request:
         ///
         ///     POST /api/v1/users/register
-        ///     {
-        ///         "Email": "example@gmail.com",
-        ///         "Password": "StrongPassword123",
-        ///         "FullName": "John Doe",
-        ///         "Dob": "2000-01-01",
-        ///         "Gender": "Male",
-        ///         "Image": "base64_encoded_image_data",
-        ///         "University": "Example University"
-        ///     }
+        //{
+        //  "email": "admin@gmail.com",
+        //  "password": "123456",
+        //  "full-name": "Hoang Tien",
+        //  "dob": "2024-09-11T01:12:17.955Z",
+        //  "phone-number": "0925136908",
+        //  "profile-picture-url": "string",
+        //  "address": "string"
+        //}
         /// </remarks>
         /// <response code="200">Returns a success message with user data if registration is successful.</response>
         /// <response code="400">Returns an error message if registration fails (e.g., email already exists, invalid data).</response>

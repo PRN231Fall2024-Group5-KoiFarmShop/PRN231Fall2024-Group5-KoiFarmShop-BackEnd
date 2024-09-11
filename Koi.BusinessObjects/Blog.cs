@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Koi.Repositories.Entities
+namespace Koi.BusinessObjects
 {
     public class Blog : BaseEntity
     {

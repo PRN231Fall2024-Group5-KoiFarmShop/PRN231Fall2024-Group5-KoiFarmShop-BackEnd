@@ -1,5 +1,5 @@
-﻿using Koi.Repositories;
-using Koi.Repositories.Entities;
+﻿using Koi.BusinessObjects;
+using Koi.Repositories;
 using Koi.Repositories.Models.TestDTO;
 using Koi.Services.Hubs;
 using Koi.WebAPI.Injection;
