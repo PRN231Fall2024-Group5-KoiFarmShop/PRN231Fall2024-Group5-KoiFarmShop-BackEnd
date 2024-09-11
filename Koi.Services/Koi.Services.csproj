@@ -7,6 +7,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Koi.BusinessObjects\Koi.BusinessObjects.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\Koi.Repositories\Koi.Repositories.csproj" />
   </ItemGroup>
 

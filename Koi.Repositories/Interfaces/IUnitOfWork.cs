@@ -1,15 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Koi.Repositories.Interfaces
+﻿namespace Koi.Repositories.Interfaces
 {
     public interface IUnitOfWork
     {
         IUserRepository UserRepository { get; }
 
+        public IKoiFishRepository KoiFishRepository { get; }
+        public IKoiBreedRepository KoiBreedRepository { get; }
         Task<int> SaveChangeAsync();
     }
 }

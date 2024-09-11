@@ -1,9 +1,4 @@
 ﻿using Koi.Repositories.Interfaces;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Koi.Repositories
 {
@@ -13,12 +8,23 @@ namespace Koi.Repositories
         private readonly IUserRepository _userRepository;
 
         public UnitOfWork(KoiFarmShopDbContext context, IUserRepository userRepository)
+        private readonly IKoiFishRepository _koiFishRepository;
+        private readonly IKoiBreedRepository _koiBreedRepository;
+        public UnitOfWork(KoiFarmShopDbContext context,
+            IKoiBreedRepository koiBreedRepository,
+            IKoiFishRepository koiFishRepository
+        )
         {
+            _koiFishRepository = koiFishRepository;
+            _koiBreedRepository = koiBreedRepository;
             _context = context;
             _userRepository = userRepository;
         }
 
         public IUserRepository UserRepository => _userRepository;
+
+        public IKoiFishRepository KoiFishRepository => _koiFishRepository;
+        public IKoiBreedRepository KoiBreedRepository => _koiBreedRepository;
 
         public Task<int> SaveChangeAsync()
         {
