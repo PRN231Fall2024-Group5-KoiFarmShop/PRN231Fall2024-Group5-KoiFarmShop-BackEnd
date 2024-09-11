@@ -4,11 +4,13 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Koi.Repositories.Enums
+namespace Koi.DTOs.Enums
 {
-    public enum SortDirectionEnums
+    public enum RoleEnums
     {
-        ASC,
-        DESC
+        MANAGER,
+        STAFF,
+        CUSTOMER,
+        GUEST
     }
 }
