@@ -1,4 +1,4 @@
-﻿using Koi.BusinessObjects.DTO.KoiBreedDTOs;
+﻿using Koi.DTOs.KoiBreedDTOs;
 using Koi.Repositories.Helper;
 
 namespace Koi.Services.Interface

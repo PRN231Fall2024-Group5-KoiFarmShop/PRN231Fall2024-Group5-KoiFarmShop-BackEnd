@@ -6,9 +6,4 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\Koi.DTOs\Koi.DTOs.csproj" />
-    <ProjectReference Include="..\Koi.Repositories\Koi.Repositories.csproj" />
-  </ItemGroup>
-
 </Project>

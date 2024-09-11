@@ -13,6 +13,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Koi.BusinessObjects", "Koi.
 EndProject
 Project("{E53339B2-1760-4266-BCC7-CA923CBCF16C}") = "docker-compose", "docker-compose.dcproj", "{1A817A79-AEEC-4D4C-84BD-08DBF8112062}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Koi.DTOs", "Koi.DTOs\Koi.DTOs.csproj", "{FE7FEB31-5A81-4A42-841F-AF9A3B6CAD5B}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -39,6 +41,10 @@ Global
 		{1A817A79-AEEC-4D4C-84BD-08DBF8112062}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1A817A79-AEEC-4D4C-84BD-08DBF8112062}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{1A817A79-AEEC-4D4C-84BD-08DBF8112062}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FE7FEB31-5A81-4A42-841F-AF9A3B6CAD5B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FE7FEB31-5A81-4A42-841F-AF9A3B6CAD5B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FE7FEB31-5A81-4A42-841F-AF9A3B6CAD5B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FE7FEB31-5A81-4A42-841F-AF9A3B6CAD5B}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
