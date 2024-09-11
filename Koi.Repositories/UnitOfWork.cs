@@ -7,12 +7,14 @@ namespace Koi.Repositories
         private readonly KoiFarmShopDbContext _context;
         private readonly IUserRepository _userRepository;
 
-        public UnitOfWork(KoiFarmShopDbContext context, IUserRepository userRepository)
         private readonly IKoiFishRepository _koiFishRepository;
+
         private readonly IKoiBreedRepository _koiBreedRepository;
+
         public UnitOfWork(KoiFarmShopDbContext context,
             IKoiBreedRepository koiBreedRepository,
-            IKoiFishRepository koiFishRepository
+            IKoiFishRepository koiFishRepository,
+            IUserRepository userRepository
         )
         {
             _koiFishRepository = koiFishRepository;

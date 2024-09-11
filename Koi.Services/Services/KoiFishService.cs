@@ -11,8 +11,10 @@ namespace Koi.Services.Services
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
+
         //private readonly INotificationService _notificationService;
         private readonly IClaimsService _claimsService;
+
         //private readonly IRedisService _redisService;
 
         public KoiFishService(

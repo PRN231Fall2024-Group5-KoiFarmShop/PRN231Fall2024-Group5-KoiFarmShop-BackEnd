@@ -8,6 +8,7 @@ namespace Koi.WebAPI.Controllers.UyTestController
     public class CustomersController : ODataController
     {
         private static Random random = new Random();
+
         private static List<CustomerTestDTO> customers = new List<CustomerTestDTO>(
             Enumerable.Range(1, 3).Select(idx => new CustomerTestDTO
             {

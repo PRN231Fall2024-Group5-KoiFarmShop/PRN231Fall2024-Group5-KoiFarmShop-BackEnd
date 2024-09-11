@@ -24,6 +24,7 @@ namespace Koi.WebAPI.Controllers
             _koiBreedService = koiBreedService;
             _mapper = mapper;
         }
+
         // GET: api/<KoiBreedController>
         /// <summary>
         /// Get list koi breeds
@@ -83,7 +84,6 @@ namespace Koi.WebAPI.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-
         public async Task<IActionResult> Get(int id)
         {
             try
@@ -98,7 +98,6 @@ namespace Koi.WebAPI.Controllers
                 if (ex.Message.Contains("404"))
                     return NotFound(ApiResult<object>.Fail(ex));
                 return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
-
             }
         }
 
@@ -160,7 +159,6 @@ namespace Koi.WebAPI.Controllers
             {
                 var result = await _koiBreedService.DeleteKoiBreed(id);
                 return Ok(ApiResult<object>.Succeed(null, "Delete Koi Breed Successfully!"));
-
             }
             catch (Exception ex)
             {

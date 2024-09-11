@@ -6,13 +6,13 @@ using System.Threading.Tasks;
 
 namespace Koi.Repositories.Entities
 {
-    public class OrderFeedback : BaseEntity
+    public class OrderDetailFeedback : BaseEntity
     {
-        public int OrderId { get; set; }
+        public int OrderDetailId { get; set; }
         public int Rating { get; set; }
         public string Feedback { get; set; }
 
         // Navigation property
-        public virtual Order Order { get; set; }
+        public virtual OrderDetail Order { get; set; }
     }
 }

@@ -44,13 +44,11 @@ namespace Koi.WebAPI.Controllers
             }
         }
 
-
         [HttpGet("{id}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-
         public async Task<IActionResult> Get(int id)
         {
             try
@@ -66,7 +64,6 @@ namespace Koi.WebAPI.Controllers
                     return NotFound(ApiResult<object>.Fail(ex));
 
                 return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
-
             }
         }
 
@@ -107,8 +104,6 @@ namespace Koi.WebAPI.Controllers
         {
             try
             {
-
-
                 var result = await _koiFishService.UpdateKoiFish(id, data);
                 return Ok(ApiResult<KoiFishResponseDTO>.Succeed(result, "Update Koi Fish Successfully!"));
             }

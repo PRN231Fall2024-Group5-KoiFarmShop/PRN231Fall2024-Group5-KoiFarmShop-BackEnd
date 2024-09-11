@@ -20,10 +20,14 @@ namespace Koi.Repositories
         public DbSet<KoiFishKoiBreed> KoiFishKoiBreeds { get; set; }
         public DbSet<FAQ> FAQs { get; set; }
         public DbSet<Blog> Blogs { get; set; }
-        public DbSet<OrderFeedback> OrderFeedbacks { get; set; }
+        public DbSet<OrderDetailFeedback> OrderDetailFeedbacks { get; set; }
         public DbSet<Transaction> Transactions { get; set; }
         public DbSet<ConsignmentForSale> ConsignmentForSales { get; set; }
         public DbSet<ConsignmentForNurture> ConsignmentForNurtures { get; set; }
+        public DbSet<Notification> Notifications { get; set; }
+        public DbSet<KoiCertificate> KoiCertificates { get; set; }
+        public DbSet<PackageCare> PackageCares { get; set; } // Add DbSet for PackageCare
+        public DbSet<WalletTransaction> WalletTransactions { get; set; }  // Add DbSet for WalletTransaction
 
         public KoiFarmShopDbContext(DbContextOptions options) : base(options)
         {

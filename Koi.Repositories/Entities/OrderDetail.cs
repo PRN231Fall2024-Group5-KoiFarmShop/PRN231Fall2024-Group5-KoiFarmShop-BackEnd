@@ -15,5 +15,6 @@ namespace Koi.Repositories.Entities
         public virtual Order Order { get; set; }
 
         public virtual KoiFish KoiFish { get; set; }
+        public virtual ICollection<OrderDetailFeedback> OrderDetailFeedbacks { get; set; }
     }
 }

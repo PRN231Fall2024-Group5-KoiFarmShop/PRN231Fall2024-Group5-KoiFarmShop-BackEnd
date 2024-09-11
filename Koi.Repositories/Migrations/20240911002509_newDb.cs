@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace Koi.Repositories.Migrations
 {
     /// <inheritdoc />
-    public partial class INITIALDB : Migration
+    public partial class newDb : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -36,8 +36,10 @@ namespace Koi.Repositories.Migrations
                     UnsignFullName = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Dob = table.Column<DateTime>(type: "datetime2", nullable: true),
                     PhoneNumber = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Gender = table.Column<bool>(type: "bit", nullable: true),
-                    Image = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    ProfilePictureUrl = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Address = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    IsActive = table.Column<bool>(type: "bit", nullable: true),
+                    LoyaltyPoints = table.Column<int>(type: "int", nullable: true),
                     RefreshToken = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     RefreshTokenExpiryTime = table.Column<DateTime>(type: "datetime2", nullable: true),
                     CreatedDate = table.Column<DateTime>(type: "datetime2", nullable: false),
@@ -111,6 +113,57 @@ namespace Koi.Repositories.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Notifications",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Title = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Body = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Url = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    ReceiverId = table.Column<int>(type: "int", nullable: true),
+                    Type = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    IsRead = table.Column<bool>(type: "bit", nullable: false),
+                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    CreatedBy = table.Column<int>(type: "int", nullable: true),
+                    ModifiedAt = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    ModifiedBy = table.Column<int>(type: "int", nullable: true),
+                    DeletedAt = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    DeletedBy = table.Column<int>(type: "int", nullable: true),
+                    IsDeleted = table.Column<bool>(type: "bit", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Notifications", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "PackageCares",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    MinSize = table.Column<int>(type: "int", nullable: false),
+                    MaxSize = table.Column<int>(type: "int", nullable: false),
+                    FoodCost = table.Column<long>(type: "bigint", nullable: true),
+                    LaborCost = table.Column<long>(type: "bigint", nullable: true),
+                    TotalCost = table.Column<long>(type: "bigint", nullable: true),
+                    Description = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    CreatedBy = table.Column<int>(type: "int", nullable: true),
+                    ModifiedAt = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    ModifiedBy = table.Column<int>(type: "int", nullable: true),
+                    DeletedAt = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    DeletedBy = table.Column<int>(type: "int", nullable: true),
+                    IsDeleted = table.Column<bool>(type: "bit", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_PackageCares", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "AspNetRoleClaims",
                 columns: table => new
                 {
@@ -177,7 +230,8 @@ namespace Koi.Repositories.Migrations
                 columns: table => new
                 {
                     UserId = table.Column<int>(type: "int", nullable: false),
-                    RoleId = table.Column<int>(type: "int", nullable: false)
+                    RoleId = table.Column<int>(type: "int", nullable: false),
+                    UserId1 = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -194,6 +248,11 @@ namespace Koi.Repositories.Migrations
                         principalTable: "AspNetUsers",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_AspNetUserRoles_AspNetUsers_UserId1",
+                        column: x => x.UserId1,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateTable(
@@ -319,6 +378,134 @@ namespace Koi.Repositories.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "ConsignmentForNurtures",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    CustomerId = table.Column<int>(type: "int", nullable: false),
+                    KoiFishId = table.Column<int>(type: "int", nullable: false),
+                    PackageCareId = table.Column<int>(type: "int", nullable: false),
+                    ConsignmentDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    StartDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    EndDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    PriceByDayDeale = table.Column<long>(type: "bigint", nullable: false),
+                    InspectionRequired = table.Column<bool>(type: "bit", nullable: false),
+                    InspectionDate = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    ConsignmentStatus = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    StaffId = table.Column<int>(type: "int", nullable: false),
+                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    CreatedBy = table.Column<int>(type: "int", nullable: true),
+                    ModifiedAt = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    ModifiedBy = table.Column<int>(type: "int", nullable: true),
+                    DeletedAt = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    DeletedBy = table.Column<int>(type: "int", nullable: true),
+                    IsDeleted = table.Column<bool>(type: "bit", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_ConsignmentForNurtures", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_ConsignmentForNurtures_AspNetUsers_CustomerId",
+                        column: x => x.CustomerId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_ConsignmentForNurtures_AspNetUsers_StaffId",
+                        column: x => x.StaffId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_ConsignmentForNurtures_KoiFishs_KoiFishId",
+                        column: x => x.KoiFishId,
+                        principalTable: "KoiFishs",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_ConsignmentForNurtures_PackageCares_PackageCareId",
+                        column: x => x.PackageCareId,
+                        principalTable: "PackageCares",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "ConsignmentForSales",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    CustomerId = table.Column<int>(type: "int", nullable: false),
+                    KoiFishId = table.Column<int>(type: "int", nullable: false),
+                    ConsignmentType = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    ConsignmentDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    PriceDealed = table.Column<long>(type: "bigint", nullable: false),
+                    InspectionRequired = table.Column<bool>(type: "bit", nullable: false),
+                    InspectionDate = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    ConsignmentStatus = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    StaffId = table.Column<int>(type: "int", nullable: false),
+                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    CreatedBy = table.Column<int>(type: "int", nullable: true),
+                    ModifiedAt = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    ModifiedBy = table.Column<int>(type: "int", nullable: true),
+                    DeletedAt = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    DeletedBy = table.Column<int>(type: "int", nullable: true),
+                    IsDeleted = table.Column<bool>(type: "bit", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_ConsignmentForSales", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_ConsignmentForSales_AspNetUsers_CustomerId",
+                        column: x => x.CustomerId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_ConsignmentForSales_AspNetUsers_StaffId",
+                        column: x => x.StaffId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_ConsignmentForSales_KoiFishs_KoiFishId",
+                        column: x => x.KoiFishId,
+                        principalTable: "KoiFishs",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "KoiCertificates",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    KoiFishId = table.Column<int>(type: "int", nullable: false),
+                    CertificateType = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    CertificateUrl = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    CreatedBy = table.Column<int>(type: "int", nullable: true),
+                    ModifiedAt = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    ModifiedBy = table.Column<int>(type: "int", nullable: true),
+                    DeletedAt = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    DeletedBy = table.Column<int>(type: "int", nullable: true),
+                    IsDeleted = table.Column<bool>(type: "bit", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_KoiCertificates", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_KoiCertificates_KoiFishs_KoiFishId",
+                        column: x => x.KoiFishId,
+                        principalTable: "KoiFishs",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "KoiFishKoiBreeds",
                 columns: table => new
                 {
@@ -378,34 +565,6 @@ namespace Koi.Repositories.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "OrderFeedbacks",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    OrderId = table.Column<int>(type: "int", nullable: false),
-                    Rating = table.Column<int>(type: "int", nullable: false),
-                    Feedback = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    CreatedBy = table.Column<int>(type: "int", nullable: true),
-                    ModifiedAt = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    ModifiedBy = table.Column<int>(type: "int", nullable: true),
-                    DeletedAt = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    DeletedBy = table.Column<int>(type: "int", nullable: true),
-                    IsDeleted = table.Column<bool>(type: "bit", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_OrderFeedbacks", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_OrderFeedbacks_Orders_OrderId",
-                        column: x => x.OrderId,
-                        principalTable: "Orders",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "Transactions",
                 columns: table => new
                 {
@@ -442,6 +601,74 @@ namespace Koi.Repositories.Migrations
                         onDelete: ReferentialAction.Restrict);
                 });
 
+            migrationBuilder.CreateTable(
+                name: "WalletTransactions",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    UserId = table.Column<int>(type: "int", nullable: false),
+                    OrderId = table.Column<int>(type: "int", nullable: true),
+                    TransactionType = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    PaymentMethod = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Amount = table.Column<long>(type: "bigint", nullable: false),
+                    BalanceBefore = table.Column<long>(type: "bigint", nullable: false),
+                    BalanceAfter = table.Column<long>(type: "bigint", nullable: false),
+                    TransactionDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    TransactionStatus = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Note = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    CreatedBy = table.Column<int>(type: "int", nullable: true),
+                    ModifiedAt = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    ModifiedBy = table.Column<int>(type: "int", nullable: true),
+                    DeletedAt = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    DeletedBy = table.Column<int>(type: "int", nullable: true),
+                    IsDeleted = table.Column<bool>(type: "bit", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_WalletTransactions", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_WalletTransactions_AspNetUsers_UserId",
+                        column: x => x.UserId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_WalletTransactions_Orders_OrderId",
+                        column: x => x.OrderId,
+                        principalTable: "Orders",
+                        principalColumn: "Id");
+                });
+
+            migrationBuilder.CreateTable(
+                name: "OrderDetailFeedbacks",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    OrderDetailId = table.Column<int>(type: "int", nullable: false),
+                    Rating = table.Column<int>(type: "int", nullable: false),
+                    Feedback = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    CreatedBy = table.Column<int>(type: "int", nullable: true),
+                    ModifiedAt = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    ModifiedBy = table.Column<int>(type: "int", nullable: true),
+                    DeletedAt = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    DeletedBy = table.Column<int>(type: "int", nullable: true),
+                    IsDeleted = table.Column<bool>(type: "bit", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_OrderDetailFeedbacks", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_OrderDetailFeedbacks_OrderDetails_OrderDetailId",
+                        column: x => x.OrderDetailId,
+                        principalTable: "OrderDetails",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
             migrationBuilder.CreateIndex(
                 name: "IX_AspNetRoleClaims_RoleId",
                 table: "AspNetRoleClaims",
@@ -470,6 +697,11 @@ namespace Koi.Repositories.Migrations
                 column: "RoleId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_AspNetUserRoles_UserId1",
+                table: "AspNetUserRoles",
+                column: "UserId1");
+
+            migrationBuilder.CreateIndex(
                 name: "EmailIndex",
                 table: "AspNetUsers",
                 column: "NormalizedEmail");
@@ -487,6 +719,46 @@ namespace Koi.Repositories.Migrations
                 column: "AuthorId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_ConsignmentForNurtures_CustomerId",
+                table: "ConsignmentForNurtures",
+                column: "CustomerId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_ConsignmentForNurtures_KoiFishId",
+                table: "ConsignmentForNurtures",
+                column: "KoiFishId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_ConsignmentForNurtures_PackageCareId",
+                table: "ConsignmentForNurtures",
+                column: "PackageCareId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_ConsignmentForNurtures_StaffId",
+                table: "ConsignmentForNurtures",
+                column: "StaffId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_ConsignmentForSales_CustomerId",
+                table: "ConsignmentForSales",
+                column: "CustomerId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_ConsignmentForSales_KoiFishId",
+                table: "ConsignmentForSales",
+                column: "KoiFishId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_ConsignmentForSales_StaffId",
+                table: "ConsignmentForSales",
+                column: "StaffId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_KoiCertificates_KoiFishId",
+                table: "KoiCertificates",
+                column: "KoiFishId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_KoiFishKoiBreeds_KoiBreedId",
                 table: "KoiFishKoiBreeds",
                 column: "KoiBreedId");
@@ -497,6 +769,11 @@ namespace Koi.Repositories.Migrations
                 column: "ConsignedBy");
 
             migrationBuilder.CreateIndex(
+                name: "IX_OrderDetailFeedbacks_OrderDetailId",
+                table: "OrderDetailFeedbacks",
+                column: "OrderDetailId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_OrderDetails_KoiFishId",
                 table: "OrderDetails",
                 column: "KoiFishId");
@@ -504,11 +781,6 @@ namespace Koi.Repositories.Migrations
             migrationBuilder.CreateIndex(
                 name: "IX_OrderDetails_OrderId",
                 table: "OrderDetails",
-                column: "OrderId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_OrderFeedbacks_OrderId",
-                table: "OrderFeedbacks",
                 column: "OrderId");
 
             migrationBuilder.CreateIndex(
@@ -524,6 +796,16 @@ namespace Koi.Repositories.Migrations
             migrationBuilder.CreateIndex(
                 name: "IX_Transactions_UserId",
                 table: "Transactions",
+                column: "UserId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_WalletTransactions_OrderId",
+                table: "WalletTransactions",
+                column: "OrderId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_WalletTransactions_UserId",
+                table: "WalletTransactions",
                 column: "UserId");
         }
 
@@ -549,25 +831,43 @@ namespace Koi.Repositories.Migrations
                 name: "Blogs");
 
             migrationBuilder.DropTable(
+                name: "ConsignmentForNurtures");
+
+            migrationBuilder.DropTable(
+                name: "ConsignmentForSales");
+
+            migrationBuilder.DropTable(
                 name: "FAQs");
+
+            migrationBuilder.DropTable(
+                name: "KoiCertificates");
 
             migrationBuilder.DropTable(
                 name: "KoiFishKoiBreeds");
 
             migrationBuilder.DropTable(
-                name: "OrderDetails");
+                name: "Notifications");
 
             migrationBuilder.DropTable(
-                name: "OrderFeedbacks");
+                name: "OrderDetailFeedbacks");
 
             migrationBuilder.DropTable(
                 name: "Transactions");
 
             migrationBuilder.DropTable(
+                name: "WalletTransactions");
+
+            migrationBuilder.DropTable(
                 name: "AspNetRoles");
 
             migrationBuilder.DropTable(
+                name: "PackageCares");
+
+            migrationBuilder.DropTable(
                 name: "KoiBreeds");
+
+            migrationBuilder.DropTable(
+                name: "OrderDetails");
 
             migrationBuilder.DropTable(
                 name: "KoiFishs");
