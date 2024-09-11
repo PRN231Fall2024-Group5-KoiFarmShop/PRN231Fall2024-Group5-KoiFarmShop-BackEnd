@@ -1,10 +1,10 @@
-﻿namespace Koi.Repositories.Entities
+﻿namespace Koi.BusinessObjects
 {
     public class Order : BaseEntity
     {
         public int UserId { get; set; }
         public DateTime OrderDate { get; set; } = DateTime.UtcNow.AddHours(7); //PRODUCT OR TICKET
-        public Int64 TotalAmount { get; set; }
+        public long TotalAmount { get; set; }
         public string? OrderStatus { get; set; }
         public string? ShippingAddress { get; set; }
         public string? PaymentMethod { get; set; }

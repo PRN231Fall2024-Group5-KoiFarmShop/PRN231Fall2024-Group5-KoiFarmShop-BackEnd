@@ -1,5 +1,5 @@
-﻿using Koi.Repositories;
-using Koi.Repositories.Entities;
+﻿using Koi.BusinessObjects;
+using Koi.Repositories;
 using Koi.Repositories.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using System.Linq.Expressions;

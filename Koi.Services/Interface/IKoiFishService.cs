@@ -1,5 +1,5 @@
-﻿using Koi.DTOs.KoiFishDTOs;
-using Koi.Repositories.Entities;
+﻿using Koi.BusinessObjects;
+using Koi.DTOs.KoiFishDTOs;
 using Koi.Repositories.Helper;
 
 namespace Koi.Services.Interface

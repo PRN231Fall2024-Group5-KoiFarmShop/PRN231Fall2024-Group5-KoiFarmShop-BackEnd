@@ -1,7 +1,7 @@
 ﻿using AutoMapper;
+using Koi.BusinessObjects;
 using Koi.Repositories;
 using Koi.Repositories.Commons;
-using Koi.Repositories.Entities;
 using Koi.Repositories.Interfaces;
 using Koi.Repositories.Repositories;
 using Koi.Services.Interface;

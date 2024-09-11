@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
 
-namespace Koi.Repositories.Entities
+namespace Koi.BusinessObjects
 {
     public class OrderDetail : BaseEntity
     {
@@ -8,7 +8,7 @@ namespace Koi.Repositories.Entities
         public int KoiFishId { get; set; }
 
         public int SubTotal { get; set; }
-        public Int64 Price { get; set; }
+        public long Price { get; set; }
 
         //navigation
         [ForeignKey("OrderId")]
