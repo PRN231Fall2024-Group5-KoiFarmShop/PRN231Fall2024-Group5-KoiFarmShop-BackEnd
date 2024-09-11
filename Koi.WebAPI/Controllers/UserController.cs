@@ -70,7 +70,6 @@ namespace Koi.WebAPI.Controllers
         /// </summary>
         /// <param name="id">The ID of the user to update.</param>
         /// <param name="userUpdatemodel">The updated user data.</param>
-        /// <param name="role">Optional new role for the user (if applicable).</param>
         /// <returns>A result object indicating success or failure.</returns>
         /// <remarks>
         /// Sample request body:
