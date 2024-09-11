@@ -1,5 +1,5 @@
 ﻿using Koi.Repositories.Commons;
-using Koi.Repositories.Enums;
+
 using Koi.Repositories.Models.UserModels;
 using Koi.Services.Interface;
 using Microsoft.AspNetCore.Http;
