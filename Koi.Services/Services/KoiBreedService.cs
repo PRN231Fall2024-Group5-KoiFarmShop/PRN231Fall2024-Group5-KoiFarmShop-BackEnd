@@ -11,8 +11,10 @@ namespace Koi.Services.Services
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
+
         //private readonly INotificationService _notificationService;
         private readonly IClaimsService _claimsService;
+
         //private readonly IRedisService _redisService;
 
         public KoiBreedService(
@@ -29,6 +31,7 @@ namespace Koi.Services.Services
             _claimsService = claimsService;
             //_redisService = redisService;
         }
+
         public async Task<List<KoiBreedResponseDTO>> GetKoiBreeds(KoiBreedParams koiBreedParams)
         {
             List<KoiBreedResponseDTO> result;
@@ -86,7 +89,7 @@ namespace Koi.Services.Services
 
             //// Cache the result
             //var serializedResult = Newtonsoft.Json.JsonConvert.SerializeObject(result);
-            //await _redisService.SetStringAsync(CacheKeys.EventCategory(id), serializedResult, TimeSpan.FromMinutes(30)); 
+            //await _redisService.SetStringAsync(CacheKeys.EventCategory(id), serializedResult, TimeSpan.FromMinutes(30));
             //// Cache for 30 minutes
 
             return result;
