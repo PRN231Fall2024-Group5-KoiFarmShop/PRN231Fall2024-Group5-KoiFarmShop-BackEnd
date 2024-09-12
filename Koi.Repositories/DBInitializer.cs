@@ -156,9 +156,9 @@ namespace Koi.Repositories
                 };
 
                 // Sử dụng AddRange để thêm danh sách khách hàng
-                foreach (var customer in customers)
+                foreach (var customerr in customers)
                 {
-                    await context.Users.AddAsync(customer);
+                    await context.Users.AddAsync(customerr);
                 }
                 await context.SaveChangesAsync();
             }
