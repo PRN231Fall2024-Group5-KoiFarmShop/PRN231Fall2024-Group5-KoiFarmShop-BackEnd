@@ -1,4 +1,5 @@
 ﻿using Koi.BusinessObjects;
+using Koi.Repositories.Utils;
 using Microsoft.AspNetCore.Identity;
 
 namespace Koi.Repositories
@@ -18,10 +19,7 @@ namespace Koi.Repositories
                     new Role { Name = "GUEST", NormalizedName = "GUEST" }
                 };
 
-                foreach (var role in roles)
-                {
-                    await context.Roles.AddAsync(role);
-                }
+                await context.AddRangeAsync(roles);
 
                 await context.SaveChangesAsync();
             }
@@ -88,6 +86,77 @@ namespace Koi.Repositories
                     CreatedDate = DateTime.UtcNow
                 };
                 await CreateUserAsync(userManager, guest, "Guest@123", "GUEST");
+
+                var customers = new List<User>
+                {
+                    new User
+                    {
+                        UserName = "uydev",
+                        Email = "lequocuy@gmail.com",
+                        FullName = "Lê Quốc Uy",
+                        UnsignFullName = "Le Quoc Uy",
+                        Dob = new DateTime(2003, 7, 11),
+                        PhoneNumber = "0123456789",
+                        ProfilePictureUrl = "https://scontent.fsgn15-1.fna.fbcdn.net/v/t39.30808-1/430878538_2206677789683723_4464660377243750146_n.jpg",
+                        Address = "HCM",
+                        IsActive = true,
+                        CreatedDate = DateTime.UtcNow
+                    },
+                    new User
+                    {
+                        UserName = "namthhse172294",
+                        Email = "namthhse172294@fpt.edu.vn",
+                        FullName = "Trương Hà Hào Nam",
+                        UnsignFullName = StringTools.ConvertToUnSign("Trương Hà Hào Nam"),
+                        Dob = new DateTime(2003, 1, 1),
+                        PhoneNumber = "0123456789",
+                        ProfilePictureUrl = "https://avatar.iran.liara.run/public/boy?username=namthhse172294",
+                        Address = "HCM",
+                        IsActive = true,
+                        CreatedDate = DateTime.UtcNow
+                    },
+                    new User
+                    {
+                        UserName = "vunse172437",
+                        Email = "vunse172437@fpt.edu.vn",
+                        FullName = "Nguyễn Vũ",
+                        Dob = new DateTime(2003, 2, 15),
+                        PhoneNumber = "0123456789",
+                        ProfilePictureUrl = "https://avatar.iran.liara.run/public/boy?username=vunse172437",
+                        Address = "HCM",
+                        IsActive = true,
+                        CreatedDate = DateTime.UtcNow
+                    },
+                    new User
+                    {
+                        UserName = "huanngse171018",
+                        Email = "huanngse171018@fpt.edu.vn",
+                        FullName = "Ngô Gia Huấn",
+                        UnsignFullName = StringTools.ConvertToUnSign("Ngô Gia Huấn"),
+                        Dob = new DateTime(2003, 3, 20),
+                        PhoneNumber = "0123456789",
+                        ProfilePictureUrl = "https://avatar.iran.liara.run/public/boy?username=huanngse171018",
+                        Address = "HCM",
+                        IsActive = true,
+                        CreatedDate = DateTime.UtcNow
+                    },
+                    new User
+                    {
+                        UserName = "tienhmse172436",
+                        Email = "tienhmse172436@fpt.edu.vn",
+                        FullName = "Hoàng Minh Tiến Lmao",
+                        UnsignFullName = StringTools.ConvertToUnSign("Hoàng Minh Tiến"),
+                        Dob = new DateTime(2003, 4, 5),
+                        PhoneNumber = "0123456789",
+                        ProfilePictureUrl = "https://avatar.iran.liara.run/public/boy?username=tienhmse172436",
+                        Address = "HCM",
+                        IsActive = true,
+                        CreatedDate = DateTime.UtcNow
+                    }
+                };
+
+                // Sử dụng AddRange để thêm danh sách khách hàng
+                await context.Users.AddRangeAsync(customers);
 
                 await context.SaveChangesAsync();
             }
