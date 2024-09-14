@@ -1065,14 +1065,9 @@ namespace Koi.Repositories.Migrations
                     b.Property<int>("RoleId")
                         .HasColumnType("int");
 
-                    b.Property<int?>("UserId1")
-                        .HasColumnType("int");
-
                     b.HasKey("UserId", "RoleId");
 
                     b.HasIndex("RoleId");
-
-                    b.HasIndex("UserId1");
 
                     b.ToTable("AspNetUserRoles", (string)null);
                 });
@@ -1327,10 +1322,6 @@ namespace Koi.Repositories.Migrations
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-
-                    b.HasOne("Koi.BusinessObjects.User", null)
-                        .WithMany("UserRoles")
-                        .HasForeignKey("UserId1");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<int>", b =>
@@ -1380,8 +1371,6 @@ namespace Koi.Repositories.Migrations
                     b.Navigation("KoiFishsConsigned");
 
                     b.Navigation("Orders");
-
-                    b.Navigation("UserRoles");
 
                     b.Navigation("WalletTransactions");
                 });

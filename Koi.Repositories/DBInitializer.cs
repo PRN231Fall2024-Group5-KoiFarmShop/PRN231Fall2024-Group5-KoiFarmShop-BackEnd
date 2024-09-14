@@ -16,7 +16,7 @@ namespace Koi.Repositories
                     new Role { Name = "MANAGER", NormalizedName = "MANAGER" },
                     new Role { Name = "STAFF", NormalizedName = "STAFF" },
                     new Role { Name = "CUSTOMER", NormalizedName = "CUSTOMER" },
-                    new Role { Name = "GUEST", NormalizedName = "GUEST" }
+                    new Role { Name = "ADMIN", NormalizedName = "ADMIN" },
                 };
 
                 await context.AddRangeAsync(roles);
@@ -27,6 +27,21 @@ namespace Koi.Repositories
             // Seed Users
             if (!context.Users.Any())
             {
+                var admin = new User
+                {
+                    UserName = "admin",
+                    Email = "admin@gmail.com",
+                    FullName = "Admin",
+                    UnsignFullName = "Admin User",
+                    Dob = new DateTime(1980, 1, 1),
+                    PhoneNumber = "0123456789",
+                    ProfilePictureUrl = "https://example.com/manager.png",
+                    Address = "Manager Street, City",
+                    IsActive = true,
+                    CreatedDate = DateTime.UtcNow.AddHours(7)
+                };
+                await CreateUserAsync(userManager, admin, "123456", "ADMIN");
+
                 var manager = new User
                 {
                     UserName = "manager",
@@ -38,9 +53,9 @@ namespace Koi.Repositories
                     ProfilePictureUrl = "https://example.com/manager.png",
                     Address = "Manager Street, City",
                     IsActive = true,
-                    CreatedDate = DateTime.UtcNow
+                    CreatedDate = DateTime.UtcNow.AddHours(7)
                 };
-                await CreateUserAsync(userManager, manager, "Manager@123", "MANAGER");
+                await CreateUserAsync(userManager, manager, "123456", "MANAGER");
 
                 var staff = new User
                 {
@@ -53,9 +68,9 @@ namespace Koi.Repositories
                     ProfilePictureUrl = "https://example.com/staff.png",
                     Address = "Staff Street, City",
                     IsActive = true,
-                    CreatedDate = DateTime.UtcNow
+                    CreatedDate = DateTime.UtcNow.AddHours(7)
                 };
-                await CreateUserAsync(userManager, staff, "Staff@123", "STAFF");
+                await CreateUserAsync(userManager, staff, "123456", "STAFF");
 
                 var customer = new User
                 {
@@ -68,24 +83,9 @@ namespace Koi.Repositories
                     ProfilePictureUrl = "https://example.com/customer.png",
                     Address = "Customer Street, City",
                     IsActive = true,
-                    CreatedDate = DateTime.UtcNow
+                    CreatedDate = DateTime.UtcNow.AddHours(7)
                 };
-                await CreateUserAsync(userManager, customer, "Customer@123", "CUSTOMER");
-
-                var guest = new User
-                {
-                    UserName = "guest",
-                    Email = "guest@koifarm.com",
-                    FullName = "Guest User",
-                    UnsignFullName = "Guest User",
-                    Dob = new DateTime(2002, 8, 25),
-                    PhoneNumber = "0123456789",
-                    ProfilePictureUrl = "https://example.com/guest.png",
-                    Address = "Guest Street, City",
-                    IsActive = true,
-                    CreatedDate = DateTime.UtcNow
-                };
-                await CreateUserAsync(userManager, guest, "Guest@123", "GUEST");
+                await CreateUserAsync(userManager, customer, "123456", "CUSTOMER");
 
                 var customers = new List<User>
                 {
@@ -100,7 +100,7 @@ namespace Koi.Repositories
                         ProfilePictureUrl = "https://scontent.fsgn15-1.fna.fbcdn.net/v/t39.30808-1/430878538_2206677789683723_4464660377243750146_n.jpg",
                         Address = "HCM",
                         IsActive = true,
-                        CreatedDate = DateTime.UtcNow
+                        CreatedDate = DateTime.UtcNow.AddHours(7)
                     },
                     new User
                     {
@@ -113,7 +113,7 @@ namespace Koi.Repositories
                         ProfilePictureUrl = "https://avatar.iran.liara.run/public/boy?username=namthhse172294",
                         Address = "HCM",
                         IsActive = true,
-                        CreatedDate = DateTime.UtcNow
+                        CreatedDate = DateTime.UtcNow.AddHours(7)
                     },
                     new User
                     {
@@ -125,7 +125,7 @@ namespace Koi.Repositories
                         ProfilePictureUrl = "https://avatar.iran.liara.run/public/boy?username=vunse172437",
                         Address = "HCM",
                         IsActive = true,
-                        CreatedDate = DateTime.UtcNow
+                        CreatedDate = DateTime.UtcNow.AddHours(7)
                     },
                     new User
                     {
@@ -138,7 +138,7 @@ namespace Koi.Repositories
                         ProfilePictureUrl = "https://avatar.iran.liara.run/public/boy?username=huanngse171018",
                         Address = "HCM",
                         IsActive = true,
-                        CreatedDate = DateTime.UtcNow
+                        CreatedDate = DateTime.UtcNow.AddHours(7)
                     },
                     new User
                     {
@@ -151,7 +151,7 @@ namespace Koi.Repositories
                         ProfilePictureUrl = "https://avatar.iran.liara.run/public/boy?username=tienhmse172436",
                         Address = "HCM",
                         IsActive = true,
-                        CreatedDate = DateTime.UtcNow
+                        CreatedDate = DateTime.UtcNow.AddHours(7)
                     }
                 };
 
