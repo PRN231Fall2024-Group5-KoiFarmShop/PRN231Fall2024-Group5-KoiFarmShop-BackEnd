@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Koi.Repositories.Migrations
 {
     [DbContext(typeof(KoiFarmShopDbContext))]
-    [Migration("20240911002509_newDb")]
-    partial class newDb
+    [Migration("20240914001830_INITIAL_DB")]
+    partial class INITIAL_DB
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -25,7 +25,7 @@ namespace Koi.Repositories.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
-            modelBuilder.Entity("Koi.Repositories.Entities.Blog", b =>
+            modelBuilder.Entity("Koi.BusinessObjects.Blog", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -81,7 +81,7 @@ namespace Koi.Repositories.Migrations
                     b.ToTable("Blogs");
                 });
 
-            modelBuilder.Entity("Koi.Repositories.Entities.ConsignmentForNurture", b =>
+            modelBuilder.Entity("Koi.BusinessObjects.ConsignmentForNurture", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -157,7 +157,7 @@ namespace Koi.Repositories.Migrations
                     b.ToTable("ConsignmentForNurtures");
                 });
 
-            modelBuilder.Entity("Koi.Repositories.Entities.ConsignmentForSale", b =>
+            modelBuilder.Entity("Koi.BusinessObjects.ConsignmentForSale", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -224,7 +224,7 @@ namespace Koi.Repositories.Migrations
                     b.ToTable("ConsignmentForSales");
                 });
 
-            modelBuilder.Entity("Koi.Repositories.Entities.FAQ", b =>
+            modelBuilder.Entity("Koi.BusinessObjects.FAQ", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -272,7 +272,7 @@ namespace Koi.Repositories.Migrations
                     b.ToTable("FAQs");
                 });
 
-            modelBuilder.Entity("Koi.Repositories.Entities.KoiBreed", b =>
+            modelBuilder.Entity("Koi.BusinessObjects.KoiBreed", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -314,7 +314,7 @@ namespace Koi.Repositories.Migrations
                     b.ToTable("KoiBreeds");
                 });
 
-            modelBuilder.Entity("Koi.Repositories.Entities.KoiCertificate", b =>
+            modelBuilder.Entity("Koi.BusinessObjects.KoiCertificate", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -359,7 +359,7 @@ namespace Koi.Repositories.Migrations
                     b.ToTable("KoiCertificates");
                 });
 
-            modelBuilder.Entity("Koi.Repositories.Entities.KoiFish", b =>
+            modelBuilder.Entity("Koi.BusinessObjects.KoiFish", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -438,7 +438,7 @@ namespace Koi.Repositories.Migrations
                     b.ToTable("KoiFishs");
                 });
 
-            modelBuilder.Entity("Koi.Repositories.Entities.KoiFishKoiBreed", b =>
+            modelBuilder.Entity("Koi.BusinessObjects.KoiFishKoiBreed", b =>
                 {
                     b.Property<int>("KoiFishId")
                         .HasColumnType("int");
@@ -453,7 +453,7 @@ namespace Koi.Repositories.Migrations
                     b.ToTable("KoiFishKoiBreeds");
                 });
 
-            modelBuilder.Entity("Koi.Repositories.Entities.Notification", b =>
+            modelBuilder.Entity("Koi.BusinessObjects.Notification", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -507,7 +507,7 @@ namespace Koi.Repositories.Migrations
                     b.ToTable("Notifications");
                 });
 
-            modelBuilder.Entity("Koi.Repositories.Entities.Order", b =>
+            modelBuilder.Entity("Koi.BusinessObjects.Order", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -564,7 +564,7 @@ namespace Koi.Repositories.Migrations
                     b.ToTable("Orders");
                 });
 
-            modelBuilder.Entity("Koi.Repositories.Entities.OrderDetail", b =>
+            modelBuilder.Entity("Koi.BusinessObjects.OrderDetail", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -614,7 +614,7 @@ namespace Koi.Repositories.Migrations
                     b.ToTable("OrderDetails");
                 });
 
-            modelBuilder.Entity("Koi.Repositories.Entities.OrderDetailFeedback", b =>
+            modelBuilder.Entity("Koi.BusinessObjects.OrderDetailFeedback", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -660,7 +660,7 @@ namespace Koi.Repositories.Migrations
                     b.ToTable("OrderDetailFeedbacks");
                 });
 
-            modelBuilder.Entity("Koi.Repositories.Entities.PackageCare", b =>
+            modelBuilder.Entity("Koi.BusinessObjects.PackageCare", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -717,7 +717,7 @@ namespace Koi.Repositories.Migrations
                     b.ToTable("PackageCares");
                 });
 
-            modelBuilder.Entity("Koi.Repositories.Entities.Role", b =>
+            modelBuilder.Entity("Koi.BusinessObjects.Role", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -747,7 +747,7 @@ namespace Koi.Repositories.Migrations
                     b.ToTable("AspNetRoles", (string)null);
                 });
 
-            modelBuilder.Entity("Koi.Repositories.Entities.Transaction", b =>
+            modelBuilder.Entity("Koi.BusinessObjects.Transaction", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -804,7 +804,7 @@ namespace Koi.Repositories.Migrations
                     b.ToTable("Transactions");
                 });
 
-            modelBuilder.Entity("Koi.Repositories.Entities.User", b =>
+            modelBuilder.Entity("Koi.BusinessObjects.User", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -920,7 +920,7 @@ namespace Koi.Repositories.Migrations
                     b.ToTable("AspNetUsers", (string)null);
                 });
 
-            modelBuilder.Entity("Koi.Repositories.Entities.WalletTransaction", b =>
+            modelBuilder.Entity("Koi.BusinessObjects.WalletTransaction", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -1099,9 +1099,9 @@ namespace Koi.Repositories.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
-            modelBuilder.Entity("Koi.Repositories.Entities.Blog", b =>
+            modelBuilder.Entity("Koi.BusinessObjects.Blog", b =>
                 {
-                    b.HasOne("Koi.Repositories.Entities.User", "Author")
+                    b.HasOne("Koi.BusinessObjects.User", "Author")
                         .WithMany("Blogs")
                         .HasForeignKey("AuthorId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -1110,27 +1110,27 @@ namespace Koi.Repositories.Migrations
                     b.Navigation("Author");
                 });
 
-            modelBuilder.Entity("Koi.Repositories.Entities.ConsignmentForNurture", b =>
+            modelBuilder.Entity("Koi.BusinessObjects.ConsignmentForNurture", b =>
                 {
-                    b.HasOne("Koi.Repositories.Entities.User", "Customer")
+                    b.HasOne("Koi.BusinessObjects.User", "Customer")
                         .WithMany()
                         .HasForeignKey("CustomerId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.HasOne("Koi.Repositories.Entities.KoiFish", "KoiFish")
+                    b.HasOne("Koi.BusinessObjects.KoiFish", "KoiFish")
                         .WithMany()
                         .HasForeignKey("KoiFishId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Koi.Repositories.Entities.PackageCare", "PackageCare")
+                    b.HasOne("Koi.BusinessObjects.PackageCare", "PackageCare")
                         .WithMany("ConsignmentForNurtures")
                         .HasForeignKey("PackageCareId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Koi.Repositories.Entities.User", "Staff")
+                    b.HasOne("Koi.BusinessObjects.User", "Staff")
                         .WithMany()
                         .HasForeignKey("StaffId")
                         .OnDelete(DeleteBehavior.Restrict)
@@ -1145,21 +1145,21 @@ namespace Koi.Repositories.Migrations
                     b.Navigation("Staff");
                 });
 
-            modelBuilder.Entity("Koi.Repositories.Entities.ConsignmentForSale", b =>
+            modelBuilder.Entity("Koi.BusinessObjects.ConsignmentForSale", b =>
                 {
-                    b.HasOne("Koi.Repositories.Entities.User", "Customer")
+                    b.HasOne("Koi.BusinessObjects.User", "Customer")
                         .WithMany()
                         .HasForeignKey("CustomerId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Koi.Repositories.Entities.KoiFish", "KoiFish")
+                    b.HasOne("Koi.BusinessObjects.KoiFish", "KoiFish")
                         .WithMany()
                         .HasForeignKey("KoiFishId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.HasOne("Koi.Repositories.Entities.User", "Staff")
+                    b.HasOne("Koi.BusinessObjects.User", "Staff")
                         .WithMany()
                         .HasForeignKey("StaffId")
                         .OnDelete(DeleteBehavior.Restrict)
@@ -1172,9 +1172,9 @@ namespace Koi.Repositories.Migrations
                     b.Navigation("Staff");
                 });
 
-            modelBuilder.Entity("Koi.Repositories.Entities.KoiCertificate", b =>
+            modelBuilder.Entity("Koi.BusinessObjects.KoiCertificate", b =>
                 {
-                    b.HasOne("Koi.Repositories.Entities.KoiFish", "KoiFish")
+                    b.HasOne("Koi.BusinessObjects.KoiFish", "KoiFish")
                         .WithMany("KoiCertificates")
                         .HasForeignKey("KoiFishId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -1183,9 +1183,9 @@ namespace Koi.Repositories.Migrations
                     b.Navigation("KoiFish");
                 });
 
-            modelBuilder.Entity("Koi.Repositories.Entities.KoiFish", b =>
+            modelBuilder.Entity("Koi.BusinessObjects.KoiFish", b =>
                 {
-                    b.HasOne("Koi.Repositories.Entities.User", "Consigner")
+                    b.HasOne("Koi.BusinessObjects.User", "Consigner")
                         .WithMany("KoiFishsConsigned")
                         .HasForeignKey("ConsignedBy")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -1194,15 +1194,15 @@ namespace Koi.Repositories.Migrations
                     b.Navigation("Consigner");
                 });
 
-            modelBuilder.Entity("Koi.Repositories.Entities.KoiFishKoiBreed", b =>
+            modelBuilder.Entity("Koi.BusinessObjects.KoiFishKoiBreed", b =>
                 {
-                    b.HasOne("Koi.Repositories.Entities.KoiBreed", "KoiBreed")
+                    b.HasOne("Koi.BusinessObjects.KoiBreed", "KoiBreed")
                         .WithMany("KoiFishKoiBreeds")
                         .HasForeignKey("KoiBreedId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Koi.Repositories.Entities.KoiFish", "KoiFish")
+                    b.HasOne("Koi.BusinessObjects.KoiFish", "KoiFish")
                         .WithMany("KoiFishKoiBreeds")
                         .HasForeignKey("KoiFishId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -1213,9 +1213,9 @@ namespace Koi.Repositories.Migrations
                     b.Navigation("KoiFish");
                 });
 
-            modelBuilder.Entity("Koi.Repositories.Entities.Order", b =>
+            modelBuilder.Entity("Koi.BusinessObjects.Order", b =>
                 {
-                    b.HasOne("Koi.Repositories.Entities.User", "User")
+                    b.HasOne("Koi.BusinessObjects.User", "User")
                         .WithMany("Orders")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -1224,15 +1224,15 @@ namespace Koi.Repositories.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("Koi.Repositories.Entities.OrderDetail", b =>
+            modelBuilder.Entity("Koi.BusinessObjects.OrderDetail", b =>
                 {
-                    b.HasOne("Koi.Repositories.Entities.KoiFish", "KoiFish")
+                    b.HasOne("Koi.BusinessObjects.KoiFish", "KoiFish")
                         .WithMany()
                         .HasForeignKey("KoiFishId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Koi.Repositories.Entities.Order", "Order")
+                    b.HasOne("Koi.BusinessObjects.Order", "Order")
                         .WithMany("OrderDetails")
                         .HasForeignKey("OrderId")
                         .OnDelete(DeleteBehavior.Restrict)
@@ -1243,9 +1243,9 @@ namespace Koi.Repositories.Migrations
                     b.Navigation("Order");
                 });
 
-            modelBuilder.Entity("Koi.Repositories.Entities.OrderDetailFeedback", b =>
+            modelBuilder.Entity("Koi.BusinessObjects.OrderDetailFeedback", b =>
                 {
-                    b.HasOne("Koi.Repositories.Entities.OrderDetail", "Order")
+                    b.HasOne("Koi.BusinessObjects.OrderDetail", "Order")
                         .WithMany("OrderDetailFeedbacks")
                         .HasForeignKey("OrderDetailId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -1254,15 +1254,15 @@ namespace Koi.Repositories.Migrations
                     b.Navigation("Order");
                 });
 
-            modelBuilder.Entity("Koi.Repositories.Entities.Transaction", b =>
+            modelBuilder.Entity("Koi.BusinessObjects.Transaction", b =>
                 {
-                    b.HasOne("Koi.Repositories.Entities.Order", "Order")
+                    b.HasOne("Koi.BusinessObjects.Order", "Order")
                         .WithMany("Transactions")
                         .HasForeignKey("OrderId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.HasOne("Koi.Repositories.Entities.User", "User")
+                    b.HasOne("Koi.BusinessObjects.User", "User")
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -1273,13 +1273,13 @@ namespace Koi.Repositories.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("Koi.Repositories.Entities.WalletTransaction", b =>
+            modelBuilder.Entity("Koi.BusinessObjects.WalletTransaction", b =>
                 {
-                    b.HasOne("Koi.Repositories.Entities.Order", "Order")
+                    b.HasOne("Koi.BusinessObjects.Order", "Order")
                         .WithMany("WalletTransactions")
                         .HasForeignKey("OrderId");
 
-                    b.HasOne("Koi.Repositories.Entities.User", "User")
+                    b.HasOne("Koi.BusinessObjects.User", "User")
                         .WithMany("WalletTransactions")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -1292,7 +1292,7 @@ namespace Koi.Repositories.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<int>", b =>
                 {
-                    b.HasOne("Koi.Repositories.Entities.Role", null)
+                    b.HasOne("Koi.BusinessObjects.Role", null)
                         .WithMany()
                         .HasForeignKey("RoleId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -1301,7 +1301,7 @@ namespace Koi.Repositories.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<int>", b =>
                 {
-                    b.HasOne("Koi.Repositories.Entities.User", null)
+                    b.HasOne("Koi.BusinessObjects.User", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -1310,7 +1310,7 @@ namespace Koi.Repositories.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<int>", b =>
                 {
-                    b.HasOne("Koi.Repositories.Entities.User", null)
+                    b.HasOne("Koi.BusinessObjects.User", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -1319,45 +1319,45 @@ namespace Koi.Repositories.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserRole<int>", b =>
                 {
-                    b.HasOne("Koi.Repositories.Entities.Role", null)
+                    b.HasOne("Koi.BusinessObjects.Role", null)
                         .WithMany()
                         .HasForeignKey("RoleId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Koi.Repositories.Entities.User", null)
+                    b.HasOne("Koi.BusinessObjects.User", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Koi.Repositories.Entities.User", null)
+                    b.HasOne("Koi.BusinessObjects.User", null)
                         .WithMany("UserRoles")
                         .HasForeignKey("UserId1");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<int>", b =>
                 {
-                    b.HasOne("Koi.Repositories.Entities.User", null)
+                    b.HasOne("Koi.BusinessObjects.User", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("Koi.Repositories.Entities.KoiBreed", b =>
+            modelBuilder.Entity("Koi.BusinessObjects.KoiBreed", b =>
                 {
                     b.Navigation("KoiFishKoiBreeds");
                 });
 
-            modelBuilder.Entity("Koi.Repositories.Entities.KoiFish", b =>
+            modelBuilder.Entity("Koi.BusinessObjects.KoiFish", b =>
                 {
                     b.Navigation("KoiCertificates");
 
                     b.Navigation("KoiFishKoiBreeds");
                 });
 
-            modelBuilder.Entity("Koi.Repositories.Entities.Order", b =>
+            modelBuilder.Entity("Koi.BusinessObjects.Order", b =>
                 {
                     b.Navigation("OrderDetails");
 
@@ -1366,17 +1366,17 @@ namespace Koi.Repositories.Migrations
                     b.Navigation("WalletTransactions");
                 });
 
-            modelBuilder.Entity("Koi.Repositories.Entities.OrderDetail", b =>
+            modelBuilder.Entity("Koi.BusinessObjects.OrderDetail", b =>
                 {
                     b.Navigation("OrderDetailFeedbacks");
                 });
 
-            modelBuilder.Entity("Koi.Repositories.Entities.PackageCare", b =>
+            modelBuilder.Entity("Koi.BusinessObjects.PackageCare", b =>
                 {
                     b.Navigation("ConsignmentForNurtures");
                 });
 
-            modelBuilder.Entity("Koi.Repositories.Entities.User", b =>
+            modelBuilder.Entity("Koi.BusinessObjects.User", b =>
                 {
                     b.Navigation("Blogs");
 
