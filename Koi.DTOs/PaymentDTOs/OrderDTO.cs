@@ -8,6 +8,7 @@ namespace Koi.DTOs.PaymentDTOs
 {
     public class OrderDTO
     {
+        public int Id { get; set; }
         public int UserId { get; set; }
         public DateTime OrderDate { get; set; } = DateTime.UtcNow.AddHours(7); //PRODUCT OR TICKET
         public long TotalAmount { get; set; }
