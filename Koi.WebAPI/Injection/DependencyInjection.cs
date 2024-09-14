@@ -21,7 +21,7 @@ namespace Koi.WebAPI.Injection
             // CONNECT TO DATABASE
             services.AddDbContext<KoiFarmShopDbContext>(options =>
             {
-                options.UseSqlServer(configuration.GetConnectionString("LocalDB"));
+                options.UseSqlServer(configuration.GetConnectionString("DefaultConnection"));
             });
 
             //sign up for middleware

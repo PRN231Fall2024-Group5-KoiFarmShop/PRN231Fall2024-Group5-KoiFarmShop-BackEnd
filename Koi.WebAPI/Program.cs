@@ -5,6 +5,7 @@ using Koi.Services.Hubs;
 using Koi.WebAPI.Injection;
 using Koi.WebAPI.MiddleWares;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.OData;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OData.ModelBuilder;
@@ -131,6 +132,30 @@ builder.Services.AddControllers()
 
 var app = builder.Build();
 
+// SCOPE FOR MIGRATION
+// explain: The CreateScope method creates a new scope. The scope is a way to manage the lifetime of objects in the container.var scope = app.Services.CreateScope();
+var scope = app.Services.CreateScope();
+var context = scope.ServiceProvider.GetRequiredService<KoiFarmShopDbContext>();
+var userManager = scope.ServiceProvider.GetRequiredService<UserManager<User>>();
+var logger = scope.ServiceProvider.GetRequiredService<ILogger<Program>>();
+
+try
+{
+    await app.ApplyMigrations(logger);
+}
+catch (Exception e)
+{
+    logger.LogError(e, "An problem occurred during migration!");
+}
+
+try
+{
+    await DBInitializer.Initialize(context, userManager);
+}
+catch (Exception e)
+{
+    logger.LogError(e, "An problem occurred seed data!");
+}
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
@@ -140,19 +165,8 @@ if (app.Environment.IsDevelopment())
         // Always keep token after reload or refresh browser
         config.SwaggerEndpoint("/swagger/v1/swagger.json", "KOI FARM SHOP API v.01");
         config.ConfigObject.AdditionalItems.Add("persistAuthorization", "true");
+        config.InjectJavascript("/custom-swagger.js");
     });
-}
-
-//Apply migrations
-var scope = app.Services.CreateScope();
-var logger = scope.ServiceProvider.GetRequiredService<ILogger<Program>>();
-try
-{
-    app.ApplyMigrations(logger);
-}
-catch (Exception e)
-{
-    logger.LogError(e, "An problem occurred during migration!");
 }
 
 // USE AUTHENTICATION, AUTHORIZATION
