@@ -40,7 +40,7 @@ namespace Koi.WebAPI.Controllers
             }
             catch (Exception ex)
             {
-                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+                return StatusCode(StatusCodes.Status500InternalServerError, ApiResult<object>.Fail(ex));
             }
         }
 
@@ -63,7 +63,7 @@ namespace Koi.WebAPI.Controllers
                 if (ex.Message.Contains("404"))
                     return NotFound(ApiResult<object>.Fail(ex));
 
-                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+                return StatusCode(StatusCodes.Status500InternalServerError, ApiResult<object>.Fail(ex));
             }
         }
 
@@ -73,13 +73,12 @@ namespace Koi.WebAPI.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        [ProducesResponseType(StatusCodes.Status501NotImplemented)]
         public async Task<IActionResult> Post([FromBody] CreateKoiFishDTO fish)
         {
             try
             {
                 var koiFishModel = await _koiFishService.CreateKoiFish(fish);
-                return Created();
+                return StatusCode(StatusCodes.Status201Created, ApiResult<object>.Succeed(koiFishModel, "Created!"));
             }
             catch (Exception ex)
             {
@@ -87,9 +86,7 @@ namespace Koi.WebAPI.Controllers
                     return BadRequest(ApiResult<object>.Fail(ex));
                 if (ex.Message.Contains("404"))
                     return NotFound(ApiResult<object>.Fail(ex));
-                if (ex.Message.Contains("501"))
-                    return StatusCode(StatusCodes.Status501NotImplemented, ex.Message);
-                return StatusCode(StatusCodes.Status500InternalServerError);
+                return StatusCode(StatusCodes.Status500InternalServerError, ApiResult<object>.Fail(ex));
             }
         }
 
@@ -99,8 +96,7 @@ namespace Koi.WebAPI.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        [ProducesResponseType(StatusCodes.Status501NotImplemented)]
-        public async Task<IActionResult> Put(int id, [FromBody] CreateKoiFishDTO data)
+        public async Task<IActionResult> Put(int id, [FromBody] UpdateKoiFishDTO data)
         {
             try
             {
@@ -113,9 +109,7 @@ namespace Koi.WebAPI.Controllers
                     return BadRequest(ApiResult<object>.Fail(ex));
                 if (ex.Message.Contains("404"))
                     return NotFound(ApiResult<object>.Fail(ex));
-                if (ex.Message.Contains("501"))
-                    return StatusCode(StatusCodes.Status501NotImplemented, ex.Message);
-                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+                return StatusCode(StatusCodes.Status500InternalServerError, ApiResult<object>.Fail(ex));
             }
         }
 
@@ -138,7 +132,7 @@ namespace Koi.WebAPI.Controllers
                     return BadRequest(ApiResult<object>.Fail(ex));
                 if (ex.Message.Contains("404"))
                     return NotFound(ApiResult<object>.Fail(ex));
-                return StatusCode(StatusCodes.Status500InternalServerError);
+                return StatusCode(StatusCodes.Status500InternalServerError, ApiResult<object>.Fail(ex));
             }
         }
     }
