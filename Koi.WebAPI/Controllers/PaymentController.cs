@@ -13,10 +13,10 @@ namespace Koi.WebAPI.Controllers
     [ApiController]
     public class PaymentController : ControllerBase
     {
-        private readonly IPaymentService _paymentService;
+        private readonly IOrderService _paymentService;
         private readonly IVnPayService _vnPayService;
 
-        public PaymentController(IPaymentService paymentService, IVnPayService vnPayService)
+        public PaymentController(IOrderService paymentService, IVnPayService vnPayService)
         {
             _paymentService = paymentService;
             _vnPayService = vnPayService;
@@ -42,12 +42,12 @@ namespace Koi.WebAPI.Controllers
             }
         }
 
-        [HttpPost("orders/check-out)")]
+        [HttpPost("orders/check-out")]
         public async Task<IActionResult> CheckOutAsync(VnpayOrderInfo orderInfo)
         {
             try
             {
-                var result = await _paymentService.NewPurchaseAsync(orderInfo);
+                var result = await _paymentService.NewOrderAsync(orderInfo);
                 if (result != null)
                 {
                     return Ok(ApiResult<OrderDTO>.Succeed(result, "purchase successfully"));

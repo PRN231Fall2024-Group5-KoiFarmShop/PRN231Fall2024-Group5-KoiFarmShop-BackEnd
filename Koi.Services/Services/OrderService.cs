@@ -12,26 +12,24 @@ using System.Threading.Tasks;
 
 namespace Koi.Services.Services
 {
-    public class PaymentService : IPaymentService
+    public class OrderService : IOrderService
     {
         private readonly IConfiguration _configuration;
         private readonly IMapper _mapper;
         private readonly IClaimsService _claimsService;
         private readonly IUnitOfWork _unitOfWork;
         private readonly ICurrentTime _currentTime;
-        private readonly IVnPayService _vpnPayService;
 
-        public PaymentService(IConfiguration configuration, IMapper mapper, IClaimsService claimsService, IUnitOfWork unitOfWork, ICurrentTime currentTime, IVnPayService vpnPayService)
+        public OrderService(IConfiguration configuration, IMapper mapper, IClaimsService claimsService, IUnitOfWork unitOfWork, ICurrentTime currentTime)
         {
             _configuration = configuration;
             _mapper = mapper;
             _claimsService = claimsService;
             _unitOfWork = unitOfWork;
             _currentTime = currentTime;
-            _vpnPayService = vpnPayService;
         }
 
-        public async Task<OrderDTO> NewPurchaseAsync(VnpayOrderInfo orderInfo)
+        public async Task<OrderDTO> NewOrderAsync(VnpayOrderInfo orderInfo)
         {
             //var user = await _unitOfWork.UserRepository.GetCurrentUserAsync();
             //if (user == null)
@@ -53,9 +51,8 @@ namespace Koi.Services.Services
             var check = await _unitOfWork.SaveChangeAsync();
             if (check > 0)
             {
-                var url = _vpnPayService.CreateLink(orderInfo);
+                orderInfo.OrderId = newOrder.Id;
                 var result = _mapper.Map<OrderDTO>(newOrder);
-                result.Note = url;
                 return result;
             }
             else
