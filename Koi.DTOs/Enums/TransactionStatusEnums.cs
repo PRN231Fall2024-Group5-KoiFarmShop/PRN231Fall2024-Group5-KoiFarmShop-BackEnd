@@ -6,10 +6,10 @@ using System.Threading.Tasks;
 
 namespace Koi.DTOs.Enums
 {
-    public enum RoleEnums
+    public enum TransactionStatusEnums
     {
-        MANAGER,
-        STAFF,
-        CUSTOMER
+        SUCCESS,
+        PENDING,
+        FAILED
     }
 }

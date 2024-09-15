@@ -164,6 +164,9 @@ catch (Exception e)
 {
     logger.LogError(e, "An problem occurred seed data!");
 }
+//CLAIM SERVICE
+builder.Services.AddHttpContextAccessor();
+
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
