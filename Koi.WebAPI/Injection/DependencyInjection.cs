@@ -10,6 +10,7 @@ using Koi.Services.Services;
 using Koi.WebAPI.MiddleWares;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using ServiceLayer.Services.VnPayConfig;
 using System.Diagnostics;
 
 namespace Koi.WebAPI.Injection
@@ -35,6 +36,7 @@ namespace Koi.WebAPI.Injection
             services.AddHttpContextAccessor();
             services.AddAutoMapper(typeof(MapperConfigProfile).Assembly);
             services.AddScoped<IClaimsService, ClaimsService>();
+            services.AddScoped<IVnPayService, VnPayService>();
 
             // add repositories
             services.AddScoped<IUserRepository, UserRepository>();
@@ -54,6 +56,7 @@ namespace Koi.WebAPI.Injection
             services.AddScoped<IUserService, UserService>();
             services.AddScoped<IKoiBreedService, KoiBreedService>();
             services.AddScoped<IKoiFishService, KoiFishService>();
+            services.AddScoped<IPaymentService, PaymentService>();
 
             // add unitOfWork
             services.AddScoped<IUnitOfWork, UnitOfWork>();
