@@ -44,12 +44,14 @@ namespace Koi.WebAPI.Injection
             services.AddScoped<IKoiBreedRepository, KoiBreedRepository>();
             services.AddScoped<IOrderRepository, OrderRepository>();
             services.AddScoped<IWalletRepository, WalletRepository>();
+            services.AddScoped<ITransactionRepository, TransactionRepository>();
 
             // add generic repositories
             services.AddScoped<IGenericRepository<KoiFish>, GenericRepository<KoiFish>>();
             services.AddScoped<IGenericRepository<KoiFish>, GenericRepository<KoiFish>>();
             services.AddScoped<IGenericRepository<KoiBreed>, GenericRepository<KoiBreed>>();
             services.AddScoped<IGenericRepository<Order>, GenericRepository<Order>>();
+            services.AddScoped<IGenericRepository<Transaction>, GenericRepository<Transaction>>();
 
             // add signInManager
             services.AddScoped<SignInManager<User>>();

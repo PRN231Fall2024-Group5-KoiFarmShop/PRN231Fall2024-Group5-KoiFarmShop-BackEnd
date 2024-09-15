@@ -41,6 +41,7 @@ namespace Koi.Services.Mapper
             //ORDER & WALLET
             CreateMap<OrderDTO, Order>().ReverseMap();
             CreateMap<WalletDTO, Wallet>().ReverseMap();
+            CreateMap<TransactionDTO, Transaction>().ReverseMap();
         }
     }
 }

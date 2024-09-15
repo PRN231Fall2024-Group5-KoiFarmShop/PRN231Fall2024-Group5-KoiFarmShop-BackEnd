@@ -10,7 +10,7 @@ namespace Koi.Services.Interface
     public interface IOrderService
     {
         Task<List<OrderDTO>> GetOrdersAsync();
-
+        Task<List<OrderDTO>> GetOrdersByUserIdAsync(int userId);
         Task<OrderDTO> NewOrderAsync(VnpayOrderInfo orderInfo);
     }
 }

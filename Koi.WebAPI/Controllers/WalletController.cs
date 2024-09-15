@@ -20,7 +20,7 @@ namespace Koi.WebAPI.Controllers
             _vnPayService = vnPayService;
         }
 
-        [HttpPost("wallets/deposit)")]
+        [HttpPost("wallets/deposit")]
         public async Task<IActionResult> DepositAsync(long amount)
         {
             try
@@ -48,6 +48,80 @@ namespace Koi.WebAPI.Controllers
 
                 return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
             }
+        }
+
+        /// <summary>
+        /// [DONT'T TOUCH] VnPay IPN Receiver [FromQuery] VnpayResponseModel vnpayResponseModel
+        /// </summary>
+        [HttpGet("payment/vnpay-ipn-receive")]
+        public async Task<IActionResult> PaymentReturn()
+        {
+            try
+            {
+                var result = await _walletService.UpdateBalanceWallet(Request.Query);
+
+                return Ok(ApiResult<TransactionDTO>.Succeed(result, "Deposit paid successfully"));
+            }
+            catch (Exception ex)
+            {
+                if (ex.Message.Contains("400"))
+                    return BadRequest(ApiResult<object>.Fail(ex));
+                if (ex.Message.Contains("404"))
+                    return NotFound(ApiResult<object>.Fail(ex));
+                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+            }
+        }
+
+        // Lấy transaction theo Id
+        [HttpGet("wallets/transaction/{transactionId}")]
+        public async Task<IActionResult> GetTransactionById(int transactionId)
+        {
+            try
+            {
+                var result = await _walletService.GetTransactionById(transactionId);
+                if (result != null)
+                {
+                    return Ok(ApiResult<TransactionDTO>.Succeed(result, "Get transaction successfully"));
+                }
+                else
+                {
+                    return NotFound(ApiResult<object>.Error(null, "Not found"));
+                }
+            }
+            catch (Exception ex)
+            {
+                return HandleError(ex);
+            }
+        }
+
+        // Lấy danh sách transaction theo OrderId
+        [HttpGet("wallets/transactions/order/{orderId}")]
+        public async Task<IActionResult> GetTransactionsByOrderId(int orderId)
+        {
+            try
+            {
+                var result = await _walletService.GetTransactionsByOrderId(orderId);
+                return Ok(ApiResult<List<TransactionDTO>>.Succeed(result, "Get list successfully"));
+            }
+            catch (Exception ex)
+            {
+                return HandleError(ex);
+            }
+        }
+
+        // Hàm xử lý lỗi chung
+        private IActionResult HandleError(Exception ex)
+        {
+            if (ex.Message.Contains("400"))
+                return BadRequest(ApiResult<object>.Fail(ex));
+            if (ex.Message.Contains("404"))
+                return NotFound(ApiResult<object>.Fail(ex));
+            if (ex.Message.Contains("401"))
+                return Unauthorized(ApiResult<object>.Fail(ex));
+            if (ex.Message.Contains("403"))
+                return StatusCode(StatusCodes.Status403Forbidden, ApiResult<object>.Fail(ex));
+
+            return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
         }
     }
 }

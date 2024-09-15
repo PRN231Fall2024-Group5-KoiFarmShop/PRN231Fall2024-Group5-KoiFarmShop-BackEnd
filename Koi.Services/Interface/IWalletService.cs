@@ -1,4 +1,6 @@
-﻿using Koi.DTOs.WalletDTOs;
+﻿using Koi.DTOs.PaymentDTOs;
+using Koi.DTOs.WalletDTOs;
+using Microsoft.AspNetCore.Http;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,5 +12,8 @@ namespace Koi.Services.Interface
     public interface IWalletService
     {
         Task<DepositResponseDTO> Deposit(long amount);
+        Task<TransactionDTO> GetTransactionById(int transactionId);
+        Task<List<TransactionDTO>> GetTransactionsByOrderId(int orderId);
+        Task<TransactionDTO> UpdateBalanceWallet(IQueryCollection query);
     }
 }

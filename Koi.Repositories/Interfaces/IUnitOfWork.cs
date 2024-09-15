@@ -8,6 +8,7 @@
         public IKoiBreedRepository KoiBreedRepository { get; }
         public IOrderRepository OrderRepository { get; }
         IWalletRepository WalletRepository { get; }
+        ITransactionRepository TransactionRepository { get; }
 
         Task<int> SaveChangeAsync();
     }

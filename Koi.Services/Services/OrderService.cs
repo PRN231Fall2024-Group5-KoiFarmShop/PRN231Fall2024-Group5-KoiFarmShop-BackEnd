@@ -65,5 +65,10 @@ namespace Koi.Services.Services
         {
             return _mapper.Map<List<OrderDTO>>(await _unitOfWork.OrderRepository.GetAllAsync());
         }
+
+        public async Task<List<OrderDTO>> GetOrdersByUserIdAsync(int userId)
+        {
+            return _mapper.Map<List<OrderDTO>>(await _unitOfWork.OrderRepository.GetOrdersByUserId(userId)); ;
+        }
     }
 }
