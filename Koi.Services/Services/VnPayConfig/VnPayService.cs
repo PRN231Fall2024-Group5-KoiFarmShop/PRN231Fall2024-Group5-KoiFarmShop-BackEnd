@@ -108,7 +108,7 @@ namespace ServiceLayer.Services.VnPayConfig
                 Success = transactionStatus == "00" ? true : false,
                 PaymentMethod = "VnPay",
                 OrderDescription = orderInfo,
-                PaymentId = orderId.ToString(),
+                OrderId = orderId.ToString(),
                 TransactionNo = vnPayTranId.ToString(),
                 TransactionToken = vnpSecureHash,
                 Token = vnpSecureHash,
