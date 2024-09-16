@@ -13,11 +13,13 @@ namespace Koi.Repositories
         private readonly IOrderRepository _orderRepository;
         private readonly IWalletRepository _walletRepository;
         private readonly ITransactionRepository _transactionRepository;
+        private readonly IKoiCertificateRepository _koiCertificateRepository;
 
         public UnitOfWork(KoiFarmShopDbContext context,
             IKoiBreedRepository koiBreedRepository,
             IKoiFishRepository koiFishRepository,
             IUserRepository userRepository,
+            IKoiCertificateRepository koiCertificateRepository,
             IOrderRepository orderRepository,
             IWalletRepository walletRepository,
             ITransactionRepository transactionRepository
@@ -28,6 +30,7 @@ namespace Koi.Repositories
             _koiBreedRepository = koiBreedRepository;
             _context = context;
             _userRepository = userRepository;
+            _koiCertificateRepository = koiCertificateRepository;
             _orderRepository = orderRepository;
             _walletRepository = walletRepository;
             _transactionRepository = transactionRepository;
@@ -37,6 +40,7 @@ namespace Koi.Repositories
 
         public IKoiFishRepository KoiFishRepository => _koiFishRepository;
         public IKoiBreedRepository KoiBreedRepository => _koiBreedRepository;
+        public IKoiCertificateRepository KoiCertificateRepository => _koiCertificateRepository;
 
         public IOrderRepository OrderRepository => _orderRepository;
         public IWalletRepository WalletRepository => _walletRepository;
