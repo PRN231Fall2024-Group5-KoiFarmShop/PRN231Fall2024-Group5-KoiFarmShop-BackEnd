@@ -249,7 +249,7 @@ namespace Koi.Repositories
                         Price = 500000,
                         IsConsigned = false,
                         IsSold = false,
-                        ConsignedBy = null,
+                        Consigner = null,
                         KoiBreeds = new List<KoiBreed>
                         {
                             koiBreeds.FirstOrDefault(b => b.Name == "Kohaku"),
@@ -271,7 +271,7 @@ namespace Koi.Repositories
                         Price = 800000,
                         IsConsigned = true,
                         IsSold = false,
-                        ConsignedBy = null,
+                        Consigner = null,
                         KoiBreeds = new List<KoiBreed>
                         {
                             koiBreeds.FirstOrDefault(b => b.Name == "Showa"),
@@ -293,7 +293,7 @@ namespace Koi.Repositories
                         Price = 600000,
                         IsConsigned = false,
                         IsSold = false,
-                        ConsignedBy = null,
+                        Consigner = null,
                         KoiBreeds = new List<KoiBreed>
                         {
                             koiBreeds.FirstOrDefault(b => b.Name == "Utsurimono")
@@ -314,7 +314,7 @@ namespace Koi.Repositories
                         Price = 700000,
                         IsConsigned = true,
                         IsSold = false,
-                        ConsignedBy = null,
+                        Consigner = null,
                         KoiBreeds = new List<KoiBreed>
                         {
                             koiBreeds.FirstOrDefault(b => b.Name == "Tancho")
@@ -335,7 +335,7 @@ namespace Koi.Repositories
                         Price = 400000,
                         IsConsigned = false,
                         IsSold = true,
-                        ConsignedBy = null,
+                        Consigner = null,
                         KoiBreeds = new List<KoiBreed>
                         {
                             koiBreeds.FirstOrDefault(b => b.Name == "Goshiki")
@@ -356,7 +356,7 @@ namespace Koi.Repositories
                         Price = 650000,
                         IsConsigned = false,
                         IsSold = false,
-                        ConsignedBy = null,
+                        Consigner = null,
                         KoiBreeds = new List<KoiBreed>
                         {
                             koiBreeds.FirstOrDefault(b => b.Name == "Bekko")
@@ -377,7 +377,7 @@ namespace Koi.Repositories
                         Price = 750000,
                         IsConsigned = false,
                         IsSold = false,
-                        ConsignedBy = null,
+                        Consigner = null,
                         KoiBreeds = new List<KoiBreed>
                         {
                             koiBreeds.FirstOrDefault(b => b.Name == "Yamabuki")
@@ -398,7 +398,7 @@ namespace Koi.Repositories
                         Price = 550000,
                         IsConsigned = true,
                         IsSold = false,
-                        ConsignedBy = null,
+                        Consigner = null,
                         KoiBreeds = new List<KoiBreed>
                         {
                             koiBreeds.FirstOrDefault(b => b.Name == "Doitsu")
@@ -419,7 +419,7 @@ namespace Koi.Repositories
                         Price = 620000,
                         IsConsigned = false,
                         IsSold = false,
-                        ConsignedBy = null,
+                        Consigner = null,
                         KoiBreeds = new List<KoiBreed>
                         {
                             koiBreeds.FirstOrDefault(b => b.Name == "Kohaku"),
@@ -441,7 +441,7 @@ namespace Koi.Repositories
                         Price = 680000,
                         IsConsigned = true,
                         IsSold = false,
-                        ConsignedBy = null,
+                        Consigner = null,
                         KoiBreeds = new List<KoiBreed>
                         {
                             koiBreeds.FirstOrDefault(b => b.Name == "Goshiki"),
@@ -463,7 +463,7 @@ namespace Koi.Repositories
                         Price = 720000,
                         IsConsigned = false,
                         IsSold = false,
-                        ConsignedBy = null,
+                        Consigner = null,
                         KoiBreeds = new List<KoiBreed>
                         {
                             koiBreeds.FirstOrDefault(b => b.Name == "Utsurimono"),
@@ -486,7 +486,7 @@ namespace Koi.Repositories
                         Price = 560000,
                         IsConsigned = false,
                         IsSold = false,
-                        ConsignedBy = null,
+                        Consigner = null,
                         KoiBreeds = new List<KoiBreed>
                         {
                             koiBreeds.FirstOrDefault(b => b.Name == "Kohaku")
@@ -507,7 +507,7 @@ namespace Koi.Repositories
                         Price = 620000,
                         IsConsigned = true,
                         IsSold = false,
-                        ConsignedBy = null,
+                        Consigner = null,
                         KoiBreeds = new List<KoiBreed>
                         {
                             koiBreeds.FirstOrDefault(b => b.Name == "Sanke")
@@ -528,7 +528,7 @@ namespace Koi.Repositories
                         Price = 700000,
                         IsConsigned = false,
                         IsSold = true,
-                        ConsignedBy = null,
+                        Consigner = null,
                         KoiBreeds = new List<KoiBreed>
                         {
                             koiBreeds.FirstOrDefault(b => b.Name == "Showa")
@@ -549,7 +549,7 @@ namespace Koi.Repositories
                         Price = 650000,
                         IsConsigned = true,
                         IsSold = false,
-                        ConsignedBy = null,
+                        Consigner = null,
                         KoiBreeds = new List<KoiBreed>
                         {
                             koiBreeds.FirstOrDefault(b => b.Name == "Asagi")
@@ -570,7 +570,7 @@ namespace Koi.Repositories
                         Price = 700000,
                         IsConsigned = false,
                         IsSold = false,
-                        ConsignedBy = null,
+                        Consigner = null,
                         KoiBreeds = new List<KoiBreed>
                         {
                             koiBreeds.FirstOrDefault(b => b.Name == "Tancho"),
@@ -592,7 +592,7 @@ namespace Koi.Repositories
                         Price = 550000,
                         IsConsigned = false,
                         IsSold = false,
-                        ConsignedBy = 17,
+                        Consigner = null,
                         KoiBreeds = new List<KoiBreed>
                         {
                             koiBreeds.FirstOrDefault(b => b.Name == "Goshiki")
@@ -613,7 +613,7 @@ namespace Koi.Repositories
                         Price = 680000,
                         IsConsigned = true,
                         IsSold = false,
-                        ConsignedBy = null,
+                        Consigner = null,
                         KoiBreeds = new List<KoiBreed>
                         {
                             koiBreeds.FirstOrDefault(b => b.Name == "Doitsu")
@@ -634,7 +634,7 @@ namespace Koi.Repositories
                         Price = 750000,
                         IsConsigned = false,
                         IsSold = false,
-                        ConsignedBy = null,
+                        Consigner = null,
                         KoiBreeds = new List<KoiBreed>
                         {
                             koiBreeds.FirstOrDefault(b => b.Name == "Kohaku"),
@@ -656,7 +656,7 @@ namespace Koi.Repositories
                         Price = 690000,
                         IsConsigned = true,
                         IsSold = false,
-                        ConsignedBy = null,
+                        Consigner = null,
                         KoiBreeds = new List<KoiBreed>
                         {
                             koiBreeds.FirstOrDefault(b => b.Name == "Bekko"),
@@ -678,7 +678,7 @@ namespace Koi.Repositories
                         Price = 640000,
                         IsConsigned = false,
                         IsSold = false,
-                        ConsignedBy = null,
+                        Consigner = null,
                         KoiBreeds = new List<KoiBreed>
                         {
                             koiBreeds.FirstOrDefault(b => b.Name == "Yamabuki")
@@ -699,7 +699,6 @@ namespace Koi.Repositories
                         Price = 530000,
                         IsConsigned = true,
                         IsSold = false,
-                        ConsignedBy = null,
                         KoiBreeds = new List<KoiBreed>
                         {
                             koiBreeds.FirstOrDefault(b => b.Name == "Doitsu"),
@@ -721,7 +720,7 @@ namespace Koi.Repositories
                         Price = 720000,
                         IsConsigned = false,
                         IsSold = false,
-                        ConsignedBy = null,
+                        Consigner = null,
                         KoiBreeds = new List<KoiBreed>
                         {
                             koiBreeds.FirstOrDefault(b => b.Name == "Tancho"),
@@ -743,7 +742,7 @@ namespace Koi.Repositories
                         Price = 670000,
                         IsConsigned = true,
                         IsSold = false,
-                        ConsignedBy = null,
+                        Consigner = null,
                         KoiBreeds = new List<KoiBreed>
                         {
                             koiBreeds.FirstOrDefault(b => b.Name == "Kohaku"),
@@ -765,7 +764,7 @@ namespace Koi.Repositories
                         Price = 610000,
                         IsConsigned = false,
                         IsSold = false,
-                        ConsignedBy = null,
+                        Consigner = null,
                         KoiBreeds = new List<KoiBreed>
                         {
                             koiBreeds.FirstOrDefault(b => b.Name == "Sanke"),
@@ -787,7 +786,7 @@ namespace Koi.Repositories
                         Price = 690000,
                         IsConsigned = true,
                         IsSold = false,
-                        ConsignedBy = null,
+                        Consigner = null,
                         KoiBreeds = new List<KoiBreed>
                         {
                             koiBreeds.FirstOrDefault(b => b.Name == "Doitsu"),
@@ -809,7 +808,7 @@ namespace Koi.Repositories
                         Price = 710000,
                         IsConsigned = false,
                         IsSold = false,
-                        ConsignedBy = null,
+                        Consigner = null,
                         KoiBreeds = new List<KoiBreed>
                         {
                             koiBreeds.FirstOrDefault(b => b.Name == "Kohaku"),
@@ -831,7 +830,7 @@ namespace Koi.Repositories
                         Price = 560000,
                         IsConsigned = true,
                         IsSold = false,
-                        ConsignedBy = null,
+                        Consigner = null,
                         KoiBreeds = new List<KoiBreed>
                         {
                             koiBreeds.FirstOrDefault(b => b.Name == "Asagi")
@@ -852,7 +851,7 @@ namespace Koi.Repositories
                         Price = 550000,
                         IsConsigned = false,
                         IsSold = false,
-                        ConsignedBy = null,
+                        Consigner = null,
                         KoiBreeds = new List<KoiBreed>
                         {
                             koiBreeds.FirstOrDefault(b => b.Name == "Showa")
@@ -873,7 +872,7 @@ namespace Koi.Repositories
                         Price = 670000,
                         IsConsigned = true,
                         IsSold = false,
-                        ConsignedBy = null,
+                        Consigner = null,
                         KoiBreeds = new List<KoiBreed>
                         {
                             koiBreeds.FirstOrDefault(b => b.Name == "Yamabuki")
@@ -894,7 +893,6 @@ namespace Koi.Repositories
                         Price = 740000,
                         IsConsigned = false,
                         IsSold = false,
-                        ConsignedBy = null,
                         Consigner = null,
                         KoiBreeds = new List<KoiBreed>
                         {
