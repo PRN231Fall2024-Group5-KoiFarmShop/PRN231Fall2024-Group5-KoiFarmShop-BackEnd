@@ -6,7 +6,9 @@
 
         public IKoiFishRepository KoiFishRepository { get; }
         public IKoiBreedRepository KoiBreedRepository { get; }
-        IOrderRepository OrderRepository { get; }
+        public IOrderRepository OrderRepository { get; }
+        IWalletRepository WalletRepository { get; }
+        ITransactionRepository TransactionRepository { get; }
 
         Task<int> SaveChangeAsync();
     }

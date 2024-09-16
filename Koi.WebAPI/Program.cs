@@ -23,7 +23,7 @@ builder.Services.AddControllers()
     {
         options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
         options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles;
-        options.JsonSerializerOptions.PropertyNamingPolicy = JsonNamingPolicy.KebabCaseLower;
+        options.JsonSerializerOptions.PropertyNamingPolicy = JsonNamingPolicy.CamelCase;
     });
 
 //CONFIG FOR JWT AUTHENTICATION ON SWAGGER
@@ -139,6 +139,14 @@ var context = scope.ServiceProvider.GetRequiredService<KoiFarmShopDbContext>();
 var userManager = scope.ServiceProvider.GetRequiredService<UserManager<User>>();
 var logger = scope.ServiceProvider.GetRequiredService<ILogger<Program>>();
 
+// CONFIG CORS
+app.UseCors(options =>
+{
+    options.AllowAnyOrigin();
+    options.AllowAnyMethod();
+    options.AllowAnyHeader();
+});
+
 try
 {
     await app.ApplyMigrations(logger);
@@ -176,6 +184,7 @@ if (app.Environment.IsDevelopment())
 app.UseAuthorization();
 app.UseAuthentication();
 // USE CORS
+app.UseCors();
 
 //OTHERS
 app.UseHttpsRedirection();
@@ -183,6 +192,8 @@ app.UseHttpsRedirection();
 app.UseRouting();
 
 app.MapControllers();
+
+app.UseStaticFiles();
 
 // USE MIDDLEWARE
 app.UseMiddleware<GlobalExceptionMiddleware>();
