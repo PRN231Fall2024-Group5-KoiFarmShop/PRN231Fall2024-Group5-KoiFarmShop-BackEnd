@@ -73,7 +73,7 @@ namespace Koi.WebAPI.Controllers
         }
 
         // Lấy transaction theo Id
-        [HttpGet("wallets/transaction/{transactionId}")]
+        [HttpGet("wallets/orders/transaction/{transactionId}")]
         public async Task<IActionResult> GetTransactionById(int transactionId)
         {
             try
@@ -95,7 +95,7 @@ namespace Koi.WebAPI.Controllers
         }
 
         // Lấy danh sách transaction theo OrderId
-        [HttpGet("wallets/transactions/order/{orderId}")]
+        [HttpGet("wallets/orders/{orderId}/transactions")]
         public async Task<IActionResult> GetTransactionsByOrderId(int orderId)
         {
             try
