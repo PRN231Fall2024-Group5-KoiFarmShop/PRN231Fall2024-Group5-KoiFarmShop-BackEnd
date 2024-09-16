@@ -1,14 +1,17 @@
 ﻿using Koi.BusinessObjects;
 using Koi.Repositories.Utils;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 
 namespace Koi.Repositories
 {
     public static class DBInitializer
     {
-        public static async Task Initialize(KoiFarmShopDbContext context, UserManager<User> userManager)
+        public static async Task Initialize(
+            KoiFarmShopDbContext context,
+            UserManager<User> userManager)
         {
-            // Seed Roles (sử dụng UserManager cho AddToRoleAsync mà không cần RoleManager)
+            #region Seed Roles (sử dụng UserManager cho AddToRoleAsync mà không cần RoleManager)
             if (!context.Roles.Any())
             {
                 var roles = new List<Role>
@@ -20,11 +23,11 @@ namespace Koi.Repositories
                 };
 
                 await context.AddRangeAsync(roles);
-
                 await context.SaveChangesAsync();
             }
+            #endregion
 
-            // Seed Users
+            #region Seed Users
             if (!context.Users.Any())
             {
                 var admin = new User
@@ -162,6 +165,750 @@ namespace Koi.Repositories
                 }
                 await context.SaveChangesAsync();
             }
+            #endregion
+
+            context.Database.ExecuteSqlRaw("TRUNCATE TABLE [KoiBreeds]");
+            context.Database.ExecuteSqlRaw("TRUNCATE TABLE [KoiBreed]");
+            #region Seed KoiBreeds
+            if (!context.KoiBreeds.Any())
+            {
+                List<KoiBreed> breeds = new(){
+                    new KoiBreed
+                    {
+                        Name = "Kohaku",
+                        Content = "One of the oldest and most iconic koi breeds, Kohaku originated in Japan centuries ago. The name \"Kohaku\" translates to \"red and white\". Red and white often symbolize good fortune and prosperity in Japanese culture. Red is associated with passion, energy, and joy, while white represents purity and peace. Kohaku are prized for their bold and striking color contrast. The arrangement of the red markings, often in a triangular pattern, is a key factor in determining the quality of a Kohaku."
+                    },
+                    new KoiBreed
+                    {
+                        Name = "Sanke",
+                        Content = "Sanke is a relatively new breed, developed in the early 20th century. It's a combination of Kohaku and Showa. The addition of black markings to the Kohaku pattern adds a layer of complexity and sophistication. Black is often associated with strength, mystery, and wisdom. Sanke are known for their elegant and balanced appearance. The interplay between the red, white, and black markings creates a visually appealing and harmonious design."
+                    },
+                    new KoiBreed
+                    {
+                        Name = "Showa",
+                        Content = "Showa was developed in the early 20th century and is named after the Showa era in Japan. The black base represents strength and stability, while the red and white markings add dynamism and energy. Showa are characterized by their bold and contrasting colors. The arrangement of the markings, often in a scattered or irregular pattern, is a key factor in determining their quality."
+                    },
+                    new KoiBreed
+                    {
+                        Name = "Utsurimono",
+                        Content = "Utsurimono is a broad category of koi with a black base and various patterns. The different patterns (Shiro Utsuri, Hi Utsuri, Ki Utsuri) represent different levels of intensity and complexity. Utsurimono are known for their versatility and adaptability. The various patterns and color combinations offer a wide range of aesthetic options."
+                    },
+                    new KoiBreed
+                    {
+                        Name = "Asagi",
+                        Content = "Asagi is believed to have originated from a natural mutation. The blue color is often associated with tranquility, harmony, and loyalty. Asagi are prized for their delicate and elegant appearance. The \"sashimono\" pattern, consisting of small, dark markings on the blue base, is a distinctive feature of this breed."
+                    },
+                    new KoiBreed
+                    {
+                        Name = "Tancho",
+                        Content = "Tancho is a distinctive koi variety characterized by a prominent red or black \"spot\" on its head, often resembling a cherry blossom. This unique marking is believed to symbolize good fortune and prosperity in Japanese culture. The red or black spot can vary in size and shape, and its appearance can significantly impact the value of a Tancho koi. The contrast between the spot and the surrounding white or silver base creates a striking and visually appealing fish."
+                    },
+                    new KoiBreed
+                    {
+                        Name = "Goshiki",
+                        Content = "Goshiki is a captivating koi breed that combines the characteristics of Asagi and Kohaku. It features a blue base with red and white markings, often arranged in a harmonious and balanced pattern. The interplay between the three colors creates a stunning and visually complex fish. Goshiki are highly prized by koi enthusiasts for their beauty and rarity. The quality of a Goshiki is determined by the intensity of the colors, the arrangement of the markings, and the overall balance of the fish."
+                    },
+                    new KoiBreed
+                    {
+                        Name = "Bekko",
+                        Content = "Bekko is a classic koi breed known for its bold and contrasting colors. It features a black base with white or yellow markings, often arranged in a scattered or irregular pattern. The combination of dark and light colors creates a visually striking and dynamic fish. Bekko koi are available in various patterns, including Shiro Bekko (white markings on a black base), Ki Bekko (yellow markings on a black base), and Gin Bekko (silver markings on a black base). The quality of a Bekko is determined by the intensity of the colors, the arrangement of the markings, and the overall balance of the fish."
+                    },
+                    new KoiBreed
+                    {
+                        Name = "Yamabuki",
+                        Content = "Yamabuki is a stunning koi breed characterized by its vibrant yellow color. The absence of any markings on the yellow base creates a pure and striking appearance. Yamabuki koi are highly sought after for their unique and eye-catching color. The quality of a Yamabuki is determined by the intensity and evenness of the yellow color, as well as the overall health and condition of the fish."
+                    },
+                    new KoiBreed
+                    {
+                        Name = "Doitsu",
+                        Content = "Doitsu is a unique koi breed characterized by its distinctive mirror-like scale pattern. Unlike traditional koi, Doitsu have a single row of scales along their lateral line, while the rest of their body is covered in a smooth, scaleless skin. This unusual appearance creates a sleek and modern look. Doitsu koi are available in various colors and patterns, including black, white, red, and blue. The quality of a Doitsu is determined by the clarity and symmetry of the scale pattern, as well as the overall health and condition of the fish."
+                    }
+                };
+                await context.KoiBreeds.AddRangeAsync(breeds);
+                await context.SaveChangesAsync();
+            }
+            #endregion
+
+            #region Seed KoiFish
+            if (!context.KoiFishs.Any())
+            {
+                // Ensure KoiBreeds are loaded
+                var koiBreeds = context.KoiBreeds.ToList();
+
+                List<KoiFish> fishList = new()
+                {
+                    new KoiFish
+                    {
+                        Name = "Hikari",
+                        Origin = "Japan",
+                        Gender = true,
+                        Age = 3,
+                        Length = 25,
+                        Weight = 1500,
+                        PersonalityTraits = "Playful, curious",
+                        DailyFeedAmount = 100,
+                        LastHealthCheck = DateTime.Now.AddDays(-30),
+                        IsAvailableForSale = true,
+                        Price = 500000,
+                        IsConsigned = false,
+                        IsSold = false,
+                        ConsignedBy = null,
+                        KoiBreeds = new List<KoiBreed>
+                        {
+                            koiBreeds.FirstOrDefault(b => b.Name == "Kohaku"),
+                            koiBreeds.FirstOrDefault(b => b.Name == "Sanke")
+                        }
+                    },
+                    new KoiFish
+                    {
+                        Name = "Sakura",
+                        Origin = "Japan",
+                        Gender = false,
+                        Age = 4,
+                        Length = 30,
+                        Weight = 2000,
+                        PersonalityTraits = "Gentle, shy",
+                        DailyFeedAmount = 120,
+                        LastHealthCheck = DateTime.Now.AddDays(-20),
+                        IsAvailableForSale = false,
+                        Price = 800000,
+                        IsConsigned = true,
+                        IsSold = false,
+                        ConsignedBy = null,
+                        KoiBreeds = new List<KoiBreed>
+                        {
+                            koiBreeds.FirstOrDefault(b => b.Name == "Showa"),
+                            koiBreeds.FirstOrDefault(b => b.Name == "Asagi")
+                        }
+                    },
+                    new KoiFish
+                    {
+                        Name = "Ryu",
+                        Origin = "China",
+                        Gender = true,
+                        Age = 2,
+                        Length = 22,
+                        Weight = 1200,
+                        PersonalityTraits = "Aggressive, active",
+                        DailyFeedAmount = 90,
+                        LastHealthCheck = DateTime.Now.AddDays(-45),
+                        IsAvailableForSale = true,
+                        Price = 600000,
+                        IsConsigned = false,
+                        IsSold = false,
+                        ConsignedBy = null,
+                        KoiBreeds = new List<KoiBreed>
+                        {
+                            koiBreeds.FirstOrDefault(b => b.Name == "Utsurimono")
+                        }
+                    },
+                    new KoiFish
+                    {
+                        Name = "Kumo",
+                        Origin = "Japan",
+                        Gender = false,
+                        Age = 5,
+                        Length = 35,
+                        Weight = 2500,
+                        PersonalityTraits = "Calm, friendly",
+                        DailyFeedAmount = 150,
+                        LastHealthCheck = DateTime.Now.AddDays(-10),
+                        IsAvailableForSale = true,
+                        Price = 700000,
+                        IsConsigned = true,
+                        IsSold = false,
+                        ConsignedBy = null,
+                        KoiBreeds = new List<KoiBreed>
+                        {
+                            koiBreeds.FirstOrDefault(b => b.Name == "Tancho")
+                        }
+                    },
+                    new KoiFish
+                    {
+                        Name = "Aoi",
+                        Origin = "Japan",
+                        Gender = true,
+                        Age = 1,
+                        Length = 20,
+                        Weight = 800,
+                        PersonalityTraits = "Energetic, playful",
+                        DailyFeedAmount = 80,
+                        LastHealthCheck = DateTime.Now.AddDays(-60),
+                        IsAvailableForSale = false,
+                        Price = 400000,
+                        IsConsigned = false,
+                        IsSold = true,
+                        ConsignedBy = null,
+                        KoiBreeds = new List<KoiBreed>
+                        {
+                            koiBreeds.FirstOrDefault(b => b.Name == "Goshiki")
+                        }
+                    },
+                    new KoiFish
+                    {
+                        Name = "Mizu",
+                        Origin = "China",
+                        Gender = false,
+                        Age = 6,
+                        Length = 28,
+                        Weight = 1800,
+                        PersonalityTraits = "Gentle, curious",
+                        DailyFeedAmount = 110,
+                        LastHealthCheck = DateTime.Now.AddDays(-15),
+                        IsAvailableForSale = true,
+                        Price = 650000,
+                        IsConsigned = false,
+                        IsSold = false,
+                        ConsignedBy = null,
+                        KoiBreeds = new List<KoiBreed>
+                        {
+                            koiBreeds.FirstOrDefault(b => b.Name == "Bekko")
+                        }
+                    },
+                    new KoiFish
+                    {
+                        Name = "Taro",
+                        Origin = "Japan",
+                        Gender = true,
+                        Age = 7,
+                        Length = 32,
+                        Weight = 2200,
+                        PersonalityTraits = "Strong, dominant",
+                        DailyFeedAmount = 130,
+                        LastHealthCheck = DateTime.Now.AddDays(-40),
+                        IsAvailableForSale = true,
+                        Price = 750000,
+                        IsConsigned = false,
+                        IsSold = false,
+                        ConsignedBy = null,
+                        KoiBreeds = new List<KoiBreed>
+                        {
+                            koiBreeds.FirstOrDefault(b => b.Name == "Yamabuki")
+                        }
+                    },
+                    new KoiFish
+                    {
+                        Name = "Kira",
+                        Origin = "Japan",
+                        Gender = false,
+                        Age = 2,
+                        Length = 24,
+                        Weight = 1400,
+                        PersonalityTraits = "Active, friendly",
+                        DailyFeedAmount = 100,
+                        LastHealthCheck = DateTime.Now.AddDays(-25),
+                        IsAvailableForSale = true,
+                        Price = 550000,
+                        IsConsigned = true,
+                        IsSold = false,
+                        ConsignedBy = null,
+                        KoiBreeds = new List<KoiBreed>
+                        {
+                            koiBreeds.FirstOrDefault(b => b.Name == "Doitsu")
+                        }
+                    },
+                    new KoiFish
+                    {
+                        Name = "Haruka",
+                        Origin = "China",
+                        Gender = true,
+                        Age = 4,
+                        Length = 27,
+                        Weight = 1600,
+                        PersonalityTraits = "Playful, shy",
+                        DailyFeedAmount = 110,
+                        LastHealthCheck = DateTime.Now.AddDays(-35),
+                        IsAvailableForSale = true,
+                        Price = 620000,
+                        IsConsigned = false,
+                        IsSold = false,
+                        ConsignedBy = null,
+                        KoiBreeds = new List<KoiBreed>
+                        {
+                            koiBreeds.FirstOrDefault(b => b.Name == "Kohaku"),
+                            koiBreeds.FirstOrDefault(b => b.Name == "Showa")
+                        }
+                    },
+                    new KoiFish
+                    {
+                        Name = "Nami",
+                        Origin = "Japan",
+                        Gender = false,
+                        Age = 3,
+                        Length = 29,
+                        Weight = 1700,
+                        PersonalityTraits = "Calm, intelligent",
+                        DailyFeedAmount = 120,
+                        LastHealthCheck = DateTime.Now.AddDays(-50),
+                        IsAvailableForSale = false,
+                        Price = 680000,
+                        IsConsigned = true,
+                        IsSold = false,
+                        ConsignedBy = null,
+                        KoiBreeds = new List<KoiBreed>
+                        {
+                            koiBreeds.FirstOrDefault(b => b.Name == "Goshiki"),
+                            koiBreeds.FirstOrDefault(b => b.Name == "Tancho")
+                        }
+                    },
+                    new KoiFish
+                    {
+                        Name = "Yuki",
+                        Origin = "Japan",
+                        Gender = true,
+                        Age = 5,
+                        Length = 31,
+                        Weight = 1900,
+                        PersonalityTraits = "Energetic, friendly",
+                        DailyFeedAmount = 140,
+                        LastHealthCheck = DateTime.Now.AddDays(-5),
+                        IsAvailableForSale = true,
+                        Price = 720000,
+                        IsConsigned = false,
+                        IsSold = false,
+                        ConsignedBy = null,
+                        KoiBreeds = new List<KoiBreed>
+                        {
+                            koiBreeds.FirstOrDefault(b => b.Name == "Utsurimono"),
+                            koiBreeds.FirstOrDefault(b => b.Name == "Doitsu")
+                        }
+                    },
+                    // Additional KoiFish Entries
+                    new KoiFish
+                    {
+                        Name = "Sora",
+                        Origin = "Japan",
+                        Gender = false,
+                        Age = 4,
+                        Length = 26,
+                        Weight = 1550,
+                        PersonalityTraits = "Playful, curious",
+                        DailyFeedAmount = 105,
+                        LastHealthCheck = DateTime.Now.AddDays(-12),
+                        IsAvailableForSale = true,
+                        Price = 560000,
+                        IsConsigned = false,
+                        IsSold = false,
+                        ConsignedBy = null,
+                        KoiBreeds = new List<KoiBreed>
+                        {
+                            koiBreeds.FirstOrDefault(b => b.Name == "Kohaku")
+                        }
+                    },
+                    new KoiFish
+                    {
+                        Name = "Akira",
+                        Origin = "China",
+                        Gender = true,
+                        Age = 2,
+                        Length = 23,
+                        Weight = 1300,
+                        PersonalityTraits = "Aggressive, strong",
+                        DailyFeedAmount = 95,
+                        LastHealthCheck = DateTime.Now.AddDays(-55),
+                        IsAvailableForSale = true,
+                        Price = 620000,
+                        IsConsigned = true,
+                        IsSold = false,
+                        ConsignedBy = null,
+                        KoiBreeds = new List<KoiBreed>
+                        {
+                            koiBreeds.FirstOrDefault(b => b.Name == "Sanke")
+                        }
+                    },
+                    new KoiFish
+                    {
+                        Name = "Momo",
+                        Origin = "Japan",
+                        Gender = false,
+                        Age = 6,
+                        Length = 29,
+                        Weight = 1800,
+                        PersonalityTraits = "Gentle, intelligent",
+                        DailyFeedAmount = 115,
+                        LastHealthCheck = DateTime.Now.AddDays(-28),
+                        IsAvailableForSale = false,
+                        Price = 700000,
+                        IsConsigned = false,
+                        IsSold = true,
+                        ConsignedBy = null,
+                        KoiBreeds = new List<KoiBreed>
+                        {
+                            koiBreeds.FirstOrDefault(b => b.Name == "Showa")
+                        }
+                    },
+                    new KoiFish
+                    {
+                        Name = "Hana",
+                        Origin = "China",
+                        Gender = true,
+                        Age = 3,
+                        Length = 24,
+                        Weight = 1450,
+                        PersonalityTraits = "Energetic, playful",
+                        DailyFeedAmount = 105,
+                        LastHealthCheck = DateTime.Now.AddDays(-22),
+                        IsAvailableForSale = true,
+                        Price = 650000,
+                        IsConsigned = true,
+                        IsSold = false,
+                        ConsignedBy = null,
+                        KoiBreeds = new List<KoiBreed>
+                        {
+                            koiBreeds.FirstOrDefault(b => b.Name == "Asagi")
+                        }
+                    },
+                    new KoiFish
+                    {
+                        Name = "Kaze",
+                        Origin = "Japan",
+                        Gender = false,
+                        Age = 5,
+                        Length = 30,
+                        Weight = 2000,
+                        PersonalityTraits = "Calm, friendly",
+                        DailyFeedAmount = 120,
+                        LastHealthCheck = DateTime.Now.AddDays(-10),
+                        IsAvailableForSale = true,
+                        Price = 700000,
+                        IsConsigned = false,
+                        IsSold = false,
+                        ConsignedBy = null,
+                        KoiBreeds = new List<KoiBreed>
+                        {
+                            koiBreeds.FirstOrDefault(b => b.Name == "Tancho"),
+                            koiBreeds.FirstOrDefault(b => b.Name == "Bekko")
+                        }
+                    },
+                    new KoiFish
+                    {
+                        Name = "Riko",
+                        Origin = "China",
+                        Gender = true,
+                        Age = 2,
+                        Length = 21,
+                        Weight = 1200,
+                        PersonalityTraits = "Playful, active",
+                        DailyFeedAmount = 85,
+                        LastHealthCheck = DateTime.Now.AddDays(-32),
+                        IsAvailableForSale = true,
+                        Price = 550000,
+                        IsConsigned = false,
+                        IsSold = false,
+                        ConsignedBy = 17,
+                        KoiBreeds = new List<KoiBreed>
+                        {
+                            koiBreeds.FirstOrDefault(b => b.Name == "Goshiki")
+                        }
+                    },
+                    new KoiFish
+                    {
+                        Name = "Miki",
+                        Origin = "Japan",
+                        Gender = false,
+                        Age = 4,
+                        Length = 28,
+                        Weight = 1600,
+                        PersonalityTraits = "Calm, gentle",
+                        DailyFeedAmount = 110,
+                        LastHealthCheck = DateTime.Now.AddDays(-15),
+                        IsAvailableForSale = true,
+                        Price = 680000,
+                        IsConsigned = true,
+                        IsSold = false,
+                        ConsignedBy = null,
+                        KoiBreeds = new List<KoiBreed>
+                        {
+                            koiBreeds.FirstOrDefault(b => b.Name == "Doitsu")
+                        }
+                    },
+                    new KoiFish
+                    {
+                        Name = "Tsubasa",
+                        Origin = "China",
+                        Gender = true,
+                        Age = 6,
+                        Length = 33,
+                        Weight = 2200,
+                        PersonalityTraits = "Strong, dominant",
+                        DailyFeedAmount = 135,
+                        LastHealthCheck = DateTime.Now.AddDays(-40),
+                        IsAvailableForSale = true,
+                        Price = 750000,
+                        IsConsigned = false,
+                        IsSold = false,
+                        ConsignedBy = null,
+                        KoiBreeds = new List<KoiBreed>
+                        {
+                            koiBreeds.FirstOrDefault(b => b.Name == "Kohaku"),
+                            koiBreeds.FirstOrDefault(b => b.Name == "Showa")
+                        }
+                    },
+                    new KoiFish
+                    {
+                        Name = "Niko",
+                        Origin = "Japan",
+                        Gender = false,
+                        Age = 5,
+                        Length = 26,
+                        Weight = 1700,
+                        PersonalityTraits = "Energetic, curious",
+                        DailyFeedAmount = 125,
+                        LastHealthCheck = DateTime.Now.AddDays(-22),
+                        IsAvailableForSale = true,
+                        Price = 690000,
+                        IsConsigned = true,
+                        IsSold = false,
+                        ConsignedBy = null,
+                        KoiBreeds = new List<KoiBreed>
+                        {
+                            koiBreeds.FirstOrDefault(b => b.Name == "Bekko"),
+                            koiBreeds.FirstOrDefault(b => b.Name == "Utsurimono")
+                        }
+                    },
+                    new KoiFish
+                    {
+                        Name = "Sumi",
+                        Origin = "China",
+                        Gender = true,
+                        Age = 3,
+                        Length = 23,
+                        Weight = 1400,
+                        PersonalityTraits = "Playful, shy",
+                        DailyFeedAmount = 100,
+                        LastHealthCheck = DateTime.Now.AddDays(-10),
+                        IsAvailableForSale = true,
+                        Price = 640000,
+                        IsConsigned = false,
+                        IsSold = false,
+                        ConsignedBy = null,
+                        KoiBreeds = new List<KoiBreed>
+                        {
+                            koiBreeds.FirstOrDefault(b => b.Name == "Yamabuki")
+                        }
+                    },
+                    new KoiFish
+                    {
+                        Name = "Aika",
+                        Origin = "Japan",
+                        Gender = false,
+                        Age = 2,
+                        Length = 20,
+                        Weight = 1150,
+                        PersonalityTraits = "Gentle, playful",
+                        DailyFeedAmount = 90,
+                        LastHealthCheck = DateTime.Now.AddDays(-60),
+                        IsAvailableForSale = true,
+                        Price = 530000,
+                        IsConsigned = true,
+                        IsSold = false,
+                        ConsignedBy = null,
+                        KoiBreeds = new List<KoiBreed>
+                        {
+                            koiBreeds.FirstOrDefault(b => b.Name == "Doitsu"),
+                            koiBreeds.FirstOrDefault(b => b.Name == "Goshiki")
+                        }
+                    },
+                    new KoiFish
+                    {
+                        Name = "Kaito",
+                        Origin = "China",
+                        Gender = true,
+                        Age = 5,
+                        Length = 30,
+                        Weight = 2000,
+                        PersonalityTraits = "Strong, dominant",
+                        DailyFeedAmount = 125,
+                        LastHealthCheck = DateTime.Now.AddDays(-20),
+                        IsAvailableForSale = true,
+                        Price = 720000,
+                        IsConsigned = false,
+                        IsSold = false,
+                        ConsignedBy = null,
+                        KoiBreeds = new List<KoiBreed>
+                        {
+                            koiBreeds.FirstOrDefault(b => b.Name == "Tancho"),
+                            koiBreeds.FirstOrDefault(b => b.Name == "Showa")
+                        }
+                    },
+                    new KoiFish
+                    {
+                        Name = "Kokoro",
+                        Origin = "Japan",
+                        Gender = false,
+                        Age = 4,
+                        Length = 27,
+                        Weight = 1550,
+                        PersonalityTraits = "Calm, friendly",
+                        DailyFeedAmount = 105,
+                        LastHealthCheck = DateTime.Now.AddDays(-25),
+                        IsAvailableForSale = false,
+                        Price = 670000,
+                        IsConsigned = true,
+                        IsSold = false,
+                        ConsignedBy = null,
+                        KoiBreeds = new List<KoiBreed>
+                        {
+                            koiBreeds.FirstOrDefault(b => b.Name == "Kohaku"),
+                            koiBreeds.FirstOrDefault(b => b.Name == "Bekko")
+                        }
+                    },
+                    new KoiFish
+                    {
+                        Name = "Hoshi",
+                        Origin = "China",
+                        Gender = true,
+                        Age = 3,
+                        Length = 25,
+                        Weight = 1450,
+                        PersonalityTraits = "Playful, energetic",
+                        DailyFeedAmount = 100,
+                        LastHealthCheck = DateTime.Now.AddDays(-40),
+                        IsAvailableForSale = true,
+                        Price = 610000,
+                        IsConsigned = false,
+                        IsSold = false,
+                        ConsignedBy = null,
+                        KoiBreeds = new List<KoiBreed>
+                        {
+                            koiBreeds.FirstOrDefault(b => b.Name == "Sanke"),
+                            koiBreeds.FirstOrDefault(b => b.Name == "Utsurimono")
+                        }
+                    },
+                    new KoiFish
+                    {
+                        Name = "Mika",
+                        Origin = "Japan",
+                        Gender = false,
+                        Age = 6,
+                        Length = 31,
+                        Weight = 1750,
+                        PersonalityTraits = "Gentle, shy",
+                        DailyFeedAmount = 115,
+                        LastHealthCheck = DateTime.Now.AddDays(-15),
+                        IsAvailableForSale = true,
+                        Price = 690000,
+                        IsConsigned = true,
+                        IsSold = false,
+                        ConsignedBy = null,
+                        KoiBreeds = new List<KoiBreed>
+                        {
+                            koiBreeds.FirstOrDefault(b => b.Name == "Doitsu"),
+                            koiBreeds.FirstOrDefault(b => b.Name == "Goshiki")
+                        }
+                    },
+                    new KoiFish
+                    {
+                        Name = "Tomo",
+                        Origin = "China",
+                        Gender = true,
+                        Age = 4,
+                        Length = 29,
+                        Weight = 1900,
+                        PersonalityTraits = "Strong, dominant",
+                        DailyFeedAmount = 130,
+                        LastHealthCheck = DateTime.Now.AddDays(-30),
+                        IsAvailableForSale = true,
+                        Price = 710000,
+                        IsConsigned = false,
+                        IsSold = false,
+                        ConsignedBy = null,
+                        KoiBreeds = new List<KoiBreed>
+                        {
+                            koiBreeds.FirstOrDefault(b => b.Name == "Kohaku"),
+                            koiBreeds.FirstOrDefault(b => b.Name == "Tancho")
+                        }
+                    },
+                    new KoiFish
+                    {
+                        Name = "Luna",
+                        Origin = "Japan",
+                        Gender = false,
+                        Age = 3,
+                        Length = 22,
+                        Weight = 1200,
+                        PersonalityTraits = "Curious, playful",
+                        DailyFeedAmount = 95,
+                        LastHealthCheck = DateTime.Now.AddDays(-35),
+                        IsAvailableForSale = true,
+                        Price = 560000,
+                        IsConsigned = true,
+                        IsSold = false,
+                        ConsignedBy = null,
+                        KoiBreeds = new List<KoiBreed>
+                        {
+                            koiBreeds.FirstOrDefault(b => b.Name == "Asagi")
+                        }
+                    },
+                    new KoiFish
+                    {
+                        Name = "Harumi",
+                        Origin = "China",
+                        Gender = true,
+                        Age = 2,
+                        Length = 21,
+                        Weight = 1100,
+                        PersonalityTraits = "Energetic, active",
+                        DailyFeedAmount = 85,
+                        LastHealthCheck = DateTime.Now.AddDays(-20),
+                        IsAvailableForSale = true,
+                        Price = 550000,
+                        IsConsigned = false,
+                        IsSold = false,
+                        ConsignedBy = null,
+                        KoiBreeds = new List<KoiBreed>
+                        {
+                            koiBreeds.FirstOrDefault(b => b.Name == "Showa")
+                        }
+                    },
+                    new KoiFish
+                    {
+                        Name = "Rin",
+                        Origin = "Japan",
+                        Gender = false,
+                        Age = 5,
+                        Length = 28,
+                        Weight = 1600,
+                        PersonalityTraits = "Calm, gentle",
+                        DailyFeedAmount = 110,
+                        LastHealthCheck = DateTime.Now.AddDays(-25),
+                        IsAvailableForSale = true,
+                        Price = 670000,
+                        IsConsigned = true,
+                        IsSold = false,
+                        ConsignedBy = null,
+                        KoiBreeds = new List<KoiBreed>
+                        {
+                            koiBreeds.FirstOrDefault(b => b.Name == "Yamabuki")
+                        }
+                    },
+                    new KoiFish
+                    {
+                        Name = "Ryo",
+                        Origin = "China",
+                        Gender = true,
+                        Age = 6,
+                        Length = 32,
+                        Weight = 2100,
+                        PersonalityTraits = "Strong, dominant",
+                        DailyFeedAmount = 135,
+                        LastHealthCheck = DateTime.Now.AddDays(-15),
+                        IsAvailableForSale = true,
+                        Price = 740000,
+                        IsConsigned = false,
+                        IsSold = false,
+                        ConsignedBy = null,
+                        KoiBreeds = new List<KoiBreed>
+                        {
+                            koiBreeds.FirstOrDefault(b => b.Name == "Goshiki"),
+                            koiBreeds.FirstOrDefault(b => b.Name == "Tancho")
+                        }
+                    }
+                };
+                await context.KoiFishs.AddRangeAsync(fishList);
+                await context.SaveChangesAsync();
+            }
+            #endregion
         }
 
         private static async Task CreateUserAsync(UserManager<User> userManager, User user, string password, string role)
