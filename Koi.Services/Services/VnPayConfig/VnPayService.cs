@@ -1,319 +1,334 @@
-﻿//using EventZone.Domain.DTOs.WalletDTOs;
-//using EventZone.Domain.Entities;
-//using EventZone.Domain.Enums;
-//using EventZone.Repositories.Interfaces;
-//using EventZone.Repositories.Utils;
-//using EventZone.Services.Interface;
-//using Microsoft.Extensions.Configuration;
-//using System.Collections.Specialized;
-//using System.Net;
-//using System.Text;
+﻿using Microsoft.Extensions.Configuration;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using System.Net;
+using System.Collections.Specialized;
+using Microsoft.AspNetCore.Http;
+using System.Globalization;
+using Koi.DTOs.PaymentDTOs;
+using Koi.Repositories.Interfaces;
+using Koi.Repositories.Utils;
+using Koi.Services.Interface;
+using Koi.Services.Services.VnPayConfig;
+using Koi.DTOs.Enums;
 
-//namespace Koi.Services.Services.VnPayConfig
-//{
-//    public class VnPayService : IVnPayService
-//    {
-//        private readonly IConfiguration _configuration;
-//        private readonly IClaimsService _claimsService;
-//        private readonly ICurrentTime _currentTime;
-//        private readonly IUnitOfWork _unitOfWork;
-//        private readonly IWalletService _walletService;
-//        private readonly INotificationService _notificationService;
+namespace ServiceLayer.Services.VnPayConfig
+{
+    public class VnPayService : IVnPayService
+    {
+        private readonly IConfiguration _configuration;
+        private readonly IClaimsService _claimsService;
+        private readonly ICurrentTime _currentTime;
 
-//        public VnPayService(IConfiguration configuration, IClaimsService claimsService, ICurrentTime currentTime, IUnitOfWork unitOfWork, IWalletService walletService, INotificationService notificationService)
-//        {
-//            _configuration = configuration;
-//            _claimsService = claimsService;
-//            _currentTime = currentTime;
-//            _unitOfWork = unitOfWork;
-//            _walletService = walletService;
-//            _notificationService = notificationService;
-//        }
+        public VnPayService(IConfiguration configuration, IClaimsService claimsService, ICurrentTime currentTime)
+        {
+            _configuration = configuration;
+            _claimsService = claimsService;
+            _currentTime = currentTime;
+        }
 
-//        public SortedList<string, string> requestData
-//           = new SortedList<string, string>(new VnPayCompare());
+        public SortedList<string, string> requestData
+        = new SortedList<string, string>(new VnPayCompare());
 
-//        public SortedList<string, string> responseData
-//            = new SortedList<string, string>(new VnPayCompare());
+        public SortedList<string, string> responseData
+            = new SortedList<string, string>(new VnPayCompare());
 
-//        public string CreateLink(VnpayOrderInfo orderInfo)
-//        {
-//            var vnp_ReturnUrl = _configuration["Vnpay:ReturnUrl"];
-//            var vnp_PaymentUrl = _configuration["Vnpay:PaymentUrl"];
-//            var vnp_TmnCode = _configuration["Vnpay:TmnCode"];
-//            var vnp_HashSecret = _configuration["Vnpay:HashSecret"];
-//            var vnp_Version = _configuration["Vnpay:Version"];
+        public string CreateLink(VnpayOrderInfo orderInfo)
+        {
+            var vnp_ReturnUrl = _configuration["Vnpay:ReturnUrl"];
+            var vnp_PaymentUrl = _configuration["Vnpay:PaymentUrl"];
+            var vnp_TmnCode = _configuration["Vnpay:TmnCode"];
+            var vnp_HashSecret = _configuration["Vnpay:HashSecret"];
+            var vnp_Version = _configuration["Vnpay:Version"];
 
-//            this.vnp_Version = vnp_Version;
-//            vnp_Amount = $"{(int)orderInfo.Amount * 100}";
-//            vnp_Command = "pay";
-//            vnp_CreateDate = _currentTime.GetCurrentTime().ToString("yyyyMMddHHmmss");
-//            vnp_CurrCode = "VND";
-//            vnp_IpAddr = _claimsService.IpAddress; // LẤY RA IP ADDRESS TRONG CLAIMS
-//            vnp_Locale = "vn";
-//            vnp_OrderInfo = "Deposit " + orderInfo.Amount + " into wallet with transaction id: " + orderInfo.TransactionId;
-//            vnp_OrderType = "other";
-//            this.vnp_ReturnUrl = vnp_ReturnUrl;
-//            this.vnp_TmnCode = vnp_TmnCode;
-//            vnp_TxnRef = orderInfo.TransactionId.ToString();
-//            vnp_ExpireDate = _currentTime.GetCurrentTime().AddMinutes(15).ToString("yyyyMMddHHmmss");
-//            vnp_BankCode = "NCB";
+            this.vnp_Version = vnp_Version;
+            vnp_Amount = $"{(int)orderInfo.Amount * 100}";
+            vnp_Command = "pay";
+            vnp_CreateDate = _currentTime.GetCurrentTime().ToString("yyyyMMddHHmmss");
+            vnp_CurrCode = "VND";
+            vnp_IpAddr = _claimsService.IpAddress; // LẤY RA IP ADDRESS TRONG CLAIMS
+            vnp_Locale = "en";
+            vnp_OrderInfo = "Pay " + orderInfo.Amount; //+ " for appointment number: " + orderInfo.AppointmentId + ", payment: " + orderInfo.PaymentId;
+            vnp_OrderType = "email:" + _claimsService.GetCurrentUserId;
+            this.vnp_ReturnUrl = vnp_ReturnUrl;
+            this.vnp_TmnCode = vnp_TmnCode;
+            vnp_TxnRef = orderInfo.OrderId.ToString();
+            vnp_ExpireDate = _currentTime.GetCurrentTime().AddMinutes(15).ToString("yyyyMMddHHmmss");
+            vnp_BankCode = "VNBANK"; // sai
 
-//            // Add request data to SortedList
-//            BindRequestData();
+            // Add request data to SortedList
+            BindRequestData();
 
-//            return GetLink(vnp_PaymentUrl, vnp_HashSecret);
-//        }
+            return GetLink(vnp_PaymentUrl, vnp_HashSecret);
+        }
 
-//        private string GetLink(string baseUrl, string secretKey)
-//        {
-//            StringBuilder data = new StringBuilder();
-//            foreach (KeyValuePair<string, string> kv in requestData)
-//            {
-//                if (!string.IsNullOrEmpty(kv.Value))
-//                {
-//                    data.Append(WebUtility.UrlEncode(kv.Key) + "=" + WebUtility.UrlEncode(kv.Value) + "&");
-//                }
-//            }
+        public PaymentResponseModel GetFullResponseData(IQueryCollection collection)
+        {
+            var hashSecret = _configuration["Vnpay:HashSecret"];
 
-//            string result = baseUrl + "?" + data.ToString();
-//            var secureHash = HashHelper.HmacSHA512(secretKey, data.ToString().Remove(data.Length - 1, 1));
-//            return result += "vnp_SecureHash=" + secureHash;
-//        }
+            var vnPay = new VnPayLibrary();
 
-//        public async Task<IPNReponse> IPNReceiver(string vnpTmnCode, string vnpSecureHash, string vnpTxnRef,
-//            string vnpTransactionStatus, string vnpResponseCode, string vnpTransactionNo, string vnpBankCode,
-//            string vnpAmount, string vnpPayDate, string vnpBankTranNo, string vnpCardType,
-//            NameValueCollection requestNameValue)
-//        {
-//            foreach (string s in requestNameValue)
-//            {
-//                //get all querystring data
-//                if (!string.IsNullOrEmpty(s) && s.StartsWith("vnp_"))
-//                {
-//                    responseData.Add(s, requestNameValue[s]);
-//                }
-//            }
+            foreach (var (key, value) in collection)
+            {
+                if (!string.IsNullOrEmpty(key) && key.StartsWith("vnp_"))
+                {
+                    vnPay.AddResponseData(key, value);
+                }
+            }
 
-//            IPNReponse iPNReponse = new IPNReponse
-//            {
-//                price = vnpAmount,
-//                message = "Transaction Invalid",
-//                status = TransactionStatusEnums.FAILED,
-//                transactionId = Guid.Empty,
-//            };
+            var orderId = Convert.ToInt64(vnPay.GetResponseData("vnp_TxnRef")); //mã tham chiếu được gửi về VNPay lúc tạo url
+            var amount = Convert.ToDecimal(vnPay.GetResponseData("vnp_Amount"));
+            var orderInfo = vnPay.GetResponseData("vnp_OrderInfo"); // nơi để appointment ID
 
-//            // Get HashSecret from env
-//            var vnp_HashSecret = _configuration["Vnpay:HashSecret"];
+            var vnPayTranId = Convert.ToInt64(vnPay.GetResponseData("vnp_TransactionNo"));
+            var banKTranNo = vnPay.GetResponseData("vnp_BankTranNo");
 
-//            var checkSignature = ValidateSignature(vnpSecureHash, vnp_HashSecret);
-//            if (checkSignature)
-//            {
-//                try
-//                {
-//                    var txnId = Guid.Parse(vnpTxnRef);
-//                    iPNReponse.transactionId = txnId;
-//                }
-//                catch (Exception ex)
-//                {
-//                    return iPNReponse;
-//                }
-//                var transaction = await _unitOfWork.TransactionRepository.GetByIdAsync(iPNReponse.transactionId);
-//                if (transaction == null)
-//                {
-//                    //payment not found
-//                    return iPNReponse;
-//                }
-//                if (transaction.Status == TransactionStatusEnums.SUCCESS.ToString())
-//                {
-//                    //payment paid
-//                    iPNReponse.status = TransactionStatusEnums.SUCCESS;
-//                    iPNReponse.message = "This transaction has been paid!";
-//                    return iPNReponse;
-//                }
-//                if (transaction.Status == TransactionStatusEnums.FAILED.ToString())
-//                {
-//                    //payment failed
-//                    iPNReponse.status = TransactionStatusEnums.FAILED;
-//                    iPNReponse.message = "This transaction has been cancelled! Please create new order!";
-//                    return iPNReponse;
-//                }
+            string vnPayDateString = vnPay.GetResponseData("vnp_PayDate");
+            DateTime vnPayDate = DateTime.ParseExact(vnPayDateString, "yyyyMMddHHmmss", CultureInfo.InvariantCulture);
 
-//                switch (vnpTransactionStatus)
-//                {
-//                    case "01": //Giao dich chưa hoàn tất
-//                        iPNReponse.status = TransactionStatusEnums.FAILED;
-//                        if (vnpResponseCode == "24")
-//                        {
-//                            iPNReponse.message = "Khách hàng hủy giao dịch";
-//                            await UpdateErrorTransaction(transaction, "Khách hàng hủy giao dịch");
-//                        }
-//                        else
-//                        {
-//                            iPNReponse.message = "Error 99: Giao dịch bị lỗi khác";
-//                            await UpdateErrorTransaction(transaction, "Error 99: Giao dịch bị lỗi khác");
-//                        }
-//                        break;
+            var vnpResponseCode = vnPay.GetResponseData("vnp_ResponseCode");
+            var transactionStatus = vnPay.GetResponseData("vnp_TransactionStatus");
 
-//                    case "02": //Giao dịch bị lỗi
-//                        iPNReponse.status = TransactionStatusEnums.FAILED;
-//                        if (vnpResponseCode == "10")
-//                        {
-//                            iPNReponse.message = "Khách hàng xác thực thông tin thẻ/tài khoản không đúng quá 3 lần";
-//                            await UpdateErrorTransaction(transaction, "Khách hàng xác thực thông tin thẻ/tài khoản không đúng quá 3 lần");
-//                        }
-//                        else if (vnpResponseCode == "24")
-//                        {
-//                            iPNReponse.message = "Khách hàng hủy giao dịch";
-//                            await UpdateErrorTransaction(transaction, "Khách hàng hủy giao dịch");
-//                        }
-//                        else if (vnpResponseCode == "51")
-//                        {
-//                            iPNReponse.message = "Tài khoản của quý khách không đủ số dư để thực hiện giao dịch.";
-//                            await UpdateErrorTransaction(transaction, "Tài khoản của quý khách không đủ số dư để thực hiện giao dịch.");
-//                        }
-//                        else
-//                        {
-//                            iPNReponse.message = "Error 99: Giao dịch bị lỗi khác";
-//                            await UpdateErrorTransaction(transaction, "Error 99: Giao dịch bị lỗi khác");
-//                        }
-//                        break;
+            var vnpSecureHash =
+               collection.FirstOrDefault(k => k.Key == "vnp_SecureHash").Value; //hash của dữ liệu trả về
+            var checkSignature =
+                vnPay.ValidateSignature(vnpSecureHash, hashSecret); //check Signature
 
-//                    case "00": //giao dịch thành công
-//                        await UpdateStatusTransaction(transaction);
-//                        iPNReponse.status = TransactionStatusEnums.SUCCESS;
-//                        iPNReponse.message = "Transaction has been paid successfully!";
-//                        break;
+            if (!checkSignature)
+                return new PaymentResponseModel()
+                {
+                    Success = false
+                };
 
-//                    default:
-//                        iPNReponse.status = TransactionStatusEnums.FAILED;
-//                        iPNReponse.message = "Invalid signature!";
-//                        break;
-//                }
+            return new PaymentResponseModel()
+            {
+                Success = transactionStatus == "00" ? true : false,
+                PaymentMethod = "VnPay",
+                OrderDescription = orderInfo,
+                OrderId = orderId.ToString(),
+                TransactionNo = vnPayTranId.ToString(),
+                TransactionToken = vnpSecureHash,
+                Token = vnpSecureHash,
+                VnPayResponseCode = vnpResponseCode,
+                BanKTranNo = banKTranNo,
+                AmountOfMoney = decimal.Divide(amount, 100),
+                PayDate = vnPayDate,
+            };
+        }
 
-//                return iPNReponse;
-//            }
-//            //Invalid signature
-//            iPNReponse.status = TransactionStatusEnums.FAILED;
-//            iPNReponse.message = "Invalid signature!";
-//            return iPNReponse;
-//        }
+        private string GetLink(string baseUrl, string secretKey)
+        {
+            StringBuilder data = new StringBuilder();
+            foreach (KeyValuePair<string, string> kv in requestData)
+            {
+                if (!string.IsNullOrEmpty(kv.Value))
+                {
+                    data.Append(WebUtility.UrlEncode(kv.Key) + "=" + WebUtility.UrlEncode(kv.Value) + "&");
+                }
+            }
 
-//        private async Task UpdateStatusTransaction(Transaction transaction)
-//        {
-//            if (Enum.IsDefined(typeof(TransactionTypeEnums), transaction.TransactionType.ToUpper()))
-//            {
-//                switch ((TransactionTypeEnums)Enum.Parse(typeof(TransactionTypeEnums), transaction.TransactionType))
-//                {
-//                    case TransactionTypeEnums.DEPOSIT:
-//                        await _walletService.ConfirmTransaction(transaction.Id);
-//                        break;
+            string result = baseUrl + "?" + data.ToString();
+            var secureHash = HashHelper.HmacSHA512(secretKey, data.ToString().Remove(data.Length - 1, 1));
+            return result += "vnp_SecureHash=" + secureHash;
+        }
 
-//                    case TransactionTypeEnums.WITHDRAW:
-//                        await _walletService.ConfirmTransaction(transaction.Id);
-//                        break;
+        public async Task<IPNReponse> IPNReceiver(string vnpTmnCode, string vnpSecureHash, string vnpTxnRef,
+            string vnpTransactionStatus, string vnpResponseCode, string vnpTransactionNo, string vnpBankCode,
+            string vnpAmount, string vnpPayDate, string vnpBankTranNo, string vnpCardType,
+            NameValueCollection requestNameValue)
+        {
+            foreach (string s in requestNameValue)
+            {
+                //get all querystring data
+                if (!string.IsNullOrEmpty(s) && s.StartsWith("vnp_"))
+                {
+                    responseData.Add(s, requestNameValue[s]);
+                }
+            }
 
-//                    case TransactionTypeEnums.PURCHASE:
-//                        await _walletService.ConfirmTransaction(transaction.Id);
-//                        break;
+            IPNReponse iPNReponse = new IPNReponse
+            {
+                price = vnpAmount,
+                message = "Transaction Invalid",
+                status = TransactionStatusEnums.FAILED,
+                transactionId = 0
+            };
 
-//                    default:
-//                        break;
-//                }
-//            }
-//            else
-//            {
-//                // Handle values not in enum here if needed
-//                throw new InvalidOperationException("Transaction type is not valid");
-//            }
-//        }
+            // Get HashSecret from env
+            var vnp_HashSecret = _configuration["Vnpay:HashSecret"];
 
-//        private async Task UpdateErrorTransaction(Transaction transaction, string message)
-//        {
-//            transaction.Status = TransactionStatusEnums.FAILED.ToString();
-//            transaction.Description = message;
-//            await _unitOfWork.TransactionRepository.Update(transaction);
-//            await _unitOfWork.SaveChangeAsync();
-//        }
+            var checkSignature = ValidateSignature(vnpSecureHash, vnp_HashSecret);
+            if (checkSignature)
+            {
+                try
+                {
+                    var txnId = int.Parse(vnpTxnRef);
+                    iPNReponse.transactionId = txnId;
+                }
+                catch (Exception ex)
+                {
+                    return iPNReponse;
+                }
+                //    var transaction = await _unitOfWork.TransactionRepository.GetByIdAsync(iPNReponse.transactionId);
+                //    if (transaction == null)
+                //    {
+                //        //payment not found
+                //        return iPNReponse;
+                //    }
+                //    if (transaction.Status == TransactionStatusEnums.SUCCESS.ToString())
+                //    {
+                //        //payment paid
+                //        iPNReponse.status = TransactionStatusEnums.SUCCESS;
+                //        iPNReponse.message = "This transaction has been paid!";
+                //        return iPNReponse;
+                //    }
+                //    if (transaction.Status == TransactionStatusEnums.FAILED.ToString())
+                //    {
+                //        //payment failed
+                //        iPNReponse.status = TransactionStatusEnums.FAILED;
+                //        iPNReponse.message = "This transaction has been cancelled! Please create new order!";
+                //        return iPNReponse;
+                //    }
 
-//        private bool ValidateSignature(string inputHash, string secretKey)
-//        {
-//            string rspRaw = GetResponseData();
-//            string myChecksum = HashHelper.HmacSHA512(secretKey, rspRaw);
-//            return myChecksum.Equals(inputHash, StringComparison.InvariantCultureIgnoreCase);
-//        }
+                //    switch (vnpTransactionStatus)
+                //    {
+                //        case "01": //Giao dich chưa hoàn tất
+                //            iPNReponse.status = TransactionStatusEnums.FAILED;
+                //            if (vnpResponseCode == "24")
+                //            {
+                //                iPNReponse.message = "Khách hàng hủy giao dịch";
+                //                await UpdateErrorTransaction(transaction, "Khách hàng hủy giao dịch");
+                //            }
+                //            else
+                //            {
+                //                iPNReponse.message = "Error 99: Giao dịch bị lỗi khác";
+                //                await UpdateErrorTransaction(transaction, "Error 99: Giao dịch bị lỗi khác");
+                //            }
+                //            break;
 
-//        private string GetResponseData()
-//        {
-//            StringBuilder data = new StringBuilder();
-//            if (responseData.ContainsKey("vnp_SecureHashType"))
-//            {
-//                responseData.Remove("vnp_SecureHashType");
-//            }
-//            if (responseData.ContainsKey("vnp_SecureHash"))
-//            {
-//                responseData.Remove("vnp_SecureHash");
-//            }
-//            foreach (KeyValuePair<string, string> kv in responseData)
-//            {
-//                if (!string.IsNullOrEmpty(kv.Value))
-//                {
-//                    data.Append(WebUtility.UrlEncode(kv.Key) + "=" + WebUtility.UrlEncode(kv.Value) + "&");
-//                }
-//            }
-//            //remove last '&'
-//            if (data.Length > 0)
-//            {
-//                data.Remove(data.Length - 1, 1);
-//            }
-//            return data.ToString();
-//        }
+                //        case "02": //Giao dịch bị lỗi
+                //            iPNReponse.status = TransactionStatusEnums.FAILED;
+                //            if (vnpResponseCode == "10")
+                //            {
+                //                iPNReponse.message = "Khách hàng xác thực thông tin thẻ/tài khoản không đúng quá 3 lần";
+                //                await UpdateErrorTransaction(transaction, "Khách hàng xác thực thông tin thẻ/tài khoản không đúng quá 3 lần");
+                //            }
+                //            else if (vnpResponseCode == "24")
+                //            {
+                //                iPNReponse.message = "Khách hàng hủy giao dịch";
+                //                await UpdateErrorTransaction(transaction, "Khách hàng hủy giao dịch");
+                //            }
+                //            else if (vnpResponseCode == "51")
+                //            {
+                //                iPNReponse.message = "Tài khoản của quý khách không đủ số dư để thực hiện giao dịch.";
+                //                await UpdateErrorTransaction(transaction, "Tài khoản của quý khách không đủ số dư để thực hiện giao dịch.");
+                //            }
+                //            else
+                //            {
+                //                iPNReponse.message = "Error 99: Giao dịch bị lỗi khác";
+                //                await UpdateErrorTransaction(transaction, "Error 99: Giao dịch bị lỗi khác");
+                //            }
+                //            break;
+                //        case "00": //giao dịch thành công
+                //            await UpdateStatusTransaction(transaction);
+                //            iPNReponse.status = TransactionStatusEnums.SUCCESS;
+                //            iPNReponse.message = "Transaction has been paid successfully!";
+                //            break;
+                //        default:
+                //            iPNReponse.status = TransactionStatusEnums.FAILED;
+                //            iPNReponse.message = "Invalid signature!";
+                //            break;
+                //    }
+                //    return iPNReponse;
+                //}
+            }
+            //Invalid signature
+            iPNReponse.status = TransactionStatusEnums.FAILED;
+            iPNReponse.message = "Invalid signature!";
+            return iPNReponse;
+        }
 
-//        private void BindRequestData()
-//        {
-//            if (vnp_Amount != null)
-//                requestData.Add("vnp_Amount", vnp_Amount.ToString() ?? string.Empty);
-//            if (vnp_Command != null)
-//                requestData.Add("vnp_Command", vnp_Command);
-//            if (vnp_CreateDate != null)
-//                requestData.Add("vnp_CreateDate", vnp_CreateDate);
-//            if (vnp_CurrCode != null)
-//                requestData.Add("vnp_CurrCode", vnp_CurrCode);
-//            if (vnp_BankCode != null)
-//                requestData.Add("vnp_BankCode", vnp_BankCode);
-//            if (vnp_IpAddr != null)
-//                requestData.Add("vnp_IpAddr", vnp_IpAddr);
-//            if (vnp_Locale != null)
-//                requestData.Add("vnp_Locale", vnp_Locale);
-//            if (vnp_OrderInfo != null)
-//                requestData.Add("vnp_OrderInfo", vnp_OrderInfo);
-//            if (vnp_OrderType != null)
-//                requestData.Add("vnp_OrderType", vnp_OrderType);
-//            if (vnp_ReturnUrl != null)
-//                requestData.Add("vnp_ReturnUrl", vnp_ReturnUrl);
-//            if (vnp_TmnCode != null)
-//                requestData.Add("vnp_TmnCode", vnp_TmnCode);
-//            if (vnp_ExpireDate != null)
-//                requestData.Add("vnp_ExpireDate", vnp_ExpireDate);
-//            if (vnp_TxnRef != null)
-//                requestData.Add("vnp_TxnRef", vnp_TxnRef);
-//            if (vnp_Version != null)
-//                requestData.Add("vnp_Version", vnp_Version);
-//        }
+        private bool ValidateSignature(string inputHash, string secretKey)
+        {
+            string rspRaw = GetResponseData();
+            string myChecksum = HashHelper.HmacSHA512(secretKey, rspRaw);
+            return myChecksum.Equals(inputHash, StringComparison.InvariantCultureIgnoreCase);
+        }
 
-//        public string? vnp_Amount { get; set; }
-//        public string? vnp_Command { get; set; }
-//        public string? vnp_CreateDate { get; set; }
-//        public string? vnp_CurrCode { get; set; }
-//        public string? vnp_BankCode { get; set; }
-//        public string? vnp_IpAddr { get; set; }
-//        public string? vnp_Locale { get; set; }
-//        public string? vnp_OrderInfo { get; set; }
-//        public string? vnp_OrderType { get; set; }
-//        public string? vnp_ReturnUrl { get; set; }
-//        public string? vnp_TmnCode { get; set; }
-//        public string? vnp_ExpireDate { get; set; }
-//        public string? vnp_TxnRef { get; set; }
-//        public string? vnp_Version { get; set; }
-//    }
-//}
+        private string GetResponseData()
+        {
+            StringBuilder data = new StringBuilder();
+            if (responseData.ContainsKey("vnp_SecureHashType"))
+            {
+                responseData.Remove("vnp_SecureHashType");
+            }
+            if (responseData.ContainsKey("vnp_SecureHash"))
+            {
+                responseData.Remove("vnp_SecureHash");
+            }
+            foreach (KeyValuePair<string, string> kv in responseData)
+            {
+                if (!string.IsNullOrEmpty(kv.Value))
+                {
+                    data.Append(WebUtility.UrlEncode(kv.Key) + "=" + WebUtility.UrlEncode(kv.Value) + "&");
+                }
+            }
+            //remove last '&'
+            if (data.Length > 0)
+            {
+                data.Remove(data.Length - 1, 1);
+            }
+            return data.ToString();
+        }
+
+        private void BindRequestData()
+        {
+            if (vnp_Amount != null)
+                requestData.Add("vnp_Amount", vnp_Amount.ToString() ?? string.Empty);
+            if (vnp_Command != null)
+                requestData.Add("vnp_Command", vnp_Command);
+            if (vnp_CreateDate != null)
+                requestData.Add("vnp_CreateDate", vnp_CreateDate);
+            if (vnp_CurrCode != null)
+                requestData.Add("vnp_CurrCode", vnp_CurrCode);
+            if (vnp_BankCode != null)
+                requestData.Add("vnp_BankCode", vnp_BankCode);
+            if (vnp_IpAddr != null)
+                requestData.Add("vnp_IpAddr", vnp_IpAddr);
+            if (vnp_Locale != null)
+                requestData.Add("vnp_Locale", vnp_Locale);
+            if (vnp_OrderInfo != null)
+                requestData.Add("vnp_OrderInfo", vnp_OrderInfo);
+            if (vnp_OrderType != null)
+                requestData.Add("vnp_OrderType", vnp_OrderType);
+            if (vnp_ReturnUrl != null)
+                requestData.Add("vnp_ReturnUrl", vnp_ReturnUrl);
+            if (vnp_TmnCode != null)
+                requestData.Add("vnp_TmnCode", vnp_TmnCode);
+            if (vnp_ExpireDate != null)
+                requestData.Add("vnp_ExpireDate", vnp_ExpireDate);
+            if (vnp_TxnRef != null)
+                requestData.Add("vnp_TxnRef", vnp_TxnRef);
+            if (vnp_Version != null)
+                requestData.Add("vnp_Version", vnp_Version);
+        }
+
+        public string? vnp_Amount { get; set; }
+        public string? vnp_Command { get; set; }
+        public string? vnp_CreateDate { get; set; }
+        public string? vnp_CurrCode { get; set; }
+        public string? vnp_BankCode { get; set; }
+        public string? vnp_IpAddr { get; set; }
+        public string? vnp_Locale { get; set; }
+        public string? vnp_OrderInfo { get; set; }
+        public string? vnp_OrderType { get; set; }
+        public string? vnp_ReturnUrl { get; set; }
+        public string? vnp_TmnCode { get; set; }
+        public string? vnp_ExpireDate { get; set; }
+        public string? vnp_TxnRef { get; set; }
+        public string? vnp_Version { get; set; }
+    }
+}

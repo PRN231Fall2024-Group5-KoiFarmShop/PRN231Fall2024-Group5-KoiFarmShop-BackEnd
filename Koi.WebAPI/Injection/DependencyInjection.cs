@@ -10,6 +10,7 @@ using Koi.Services.Services;
 using Koi.WebAPI.MiddleWares;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using ServiceLayer.Services.VnPayConfig;
 using System.Diagnostics;
 
 namespace Koi.WebAPI.Injection
@@ -21,7 +22,7 @@ namespace Koi.WebAPI.Injection
             // CONNECT TO DATABASE
             services.AddDbContext<KoiFarmShopDbContext>(options =>
             {
-                options.UseSqlServer(configuration.GetConnectionString("LocalDB"));
+                options.UseSqlServer(configuration.GetConnectionString("DefaultConnection"));
             });
 
             //sign up for middleware
@@ -35,17 +36,23 @@ namespace Koi.WebAPI.Injection
             services.AddHttpContextAccessor();
             services.AddAutoMapper(typeof(MapperConfigProfile).Assembly);
             services.AddScoped<IClaimsService, ClaimsService>();
+            services.AddScoped<IVnPayService, VnPayService>();
 
             // add repositories
             services.AddScoped<IUserRepository, UserRepository>();
             services.AddScoped<IKoiFishRepository, KoiFishRepository>();
             services.AddScoped<IKoiBreedRepository, KoiBreedRepository>();
+            services.AddScoped<IOrderRepository, OrderRepository>();
+            services.AddScoped<IWalletRepository, WalletRepository>();
+            services.AddScoped<ITransactionRepository, TransactionRepository>();
             services.AddScoped<IKoiCertificateRepository, KoiCertificateRepository>();
 
             // add generic repositories
             services.AddScoped<IGenericRepository<KoiFish>, GenericRepository<KoiFish>>();
             services.AddScoped<IGenericRepository<KoiFish>, GenericRepository<KoiFish>>();
             services.AddScoped<IGenericRepository<KoiBreed>, GenericRepository<KoiBreed>>();
+            services.AddScoped<IGenericRepository<Order>, GenericRepository<Order>>();
+            services.AddScoped<IGenericRepository<Transaction>, GenericRepository<Transaction>>();
             services.AddScoped<IGenericRepository<KoiCertificate>, GenericRepository<KoiCertificate>>();
 
             // add signInManager
@@ -54,6 +61,8 @@ namespace Koi.WebAPI.Injection
             services.AddScoped<IUserService, UserService>();
             services.AddScoped<IKoiBreedService, KoiBreedService>();
             services.AddScoped<IKoiFishService, KoiFishService>();
+            services.AddScoped<IOrderService, OrderService>();
+            services.AddScoped<IWalletService, WalletService>();
             services.AddScoped<IKoiCertificateService, KoiCertificcateService>();
 
             // add unitOfWork

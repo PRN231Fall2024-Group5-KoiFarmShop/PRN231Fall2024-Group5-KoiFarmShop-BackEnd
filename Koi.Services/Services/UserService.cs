@@ -105,6 +105,37 @@ namespace Koi.Services.Services
             };
         }
 
+        public async Task<ApiResult<UserDetailsModel>> UpdateUserWithRoleAsync(int userId, UserUpdateModel userUpdateMode, string role)
+        {
+            var existingUser = await _unitOfWork.UserRepository.GetAccountDetailsAsync(userId);
+            if (existingUser != null)
+            {
+                existingUser = _mapper.Map(userUpdateMode, existingUser);
+                var updatedAccount = await _unitOfWork.UserRepository.UpdateAccountAsync(existingUser);
+
+                if (!string.IsNullOrEmpty(role))
+                {
+                    await _unitOfWork.UserRepository.UpdateUserRoleAsync(userId, role);
+                }
+
+                if (updatedAccount != null)
+                {
+                    var response = new ApiResult<UserDetailsModel>();
+                    response.Data = _mapper.Map<UserDetailsModel>(existingUser);
+                    response.Message = "Updated user successfully";
+                    response.IsSuccess = true;
+                    return response;
+                }
+            }
+
+            return new ApiResult<UserDetailsModel>
+            {
+                Data = null,
+                IsSuccess = false,
+                Message = "This user is not existed"
+            };
+        }
+
         public async Task<ApiResult<UserDetailsModel>> GetCurrentUserAsync()
         {
             var result = await _unitOfWork.UserRepository.GetCurrentUserAsync();

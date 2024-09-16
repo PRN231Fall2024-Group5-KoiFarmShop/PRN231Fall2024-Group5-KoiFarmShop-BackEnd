@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations.Schema;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Koi.BusinessObjects
 {
@@ -23,16 +18,20 @@ namespace Koi.BusinessObjects
         public bool? IsConsigned { get; set; }
         public bool? IsSold { get; set; }
 
+        //foreign key
+        public int? ConsignedBy { get; set; }
+
         //navigation
         [ForeignKey("ConsignedBy")]
-        public virtual User Consigner { get; set; }
+        public virtual User? Consigner { get; set; }
 
         // Navigation property for many-to-many relationship with KoiBreed
-        public virtual ICollection<KoiFishKoiBreed> KoiFishKoiBreeds { get; set; }
+        //public virtual ICollection<KoiFishKoiBreed> KoiFishKoiBreeds { get; set; }
+        public virtual ICollection<KoiBreed> KoiBreeds { get; set; }
 
         public virtual ICollection<KoiCertificate>? KoiCertificates { get; set; }
 
         //foreign key
-        public int ConsignedBy { get; set; }
+
     }
 }

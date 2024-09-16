@@ -1,13 +1,6 @@
 ﻿using Koi.BusinessObjects;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Logging;
-using System;
-using System.Collections.Generic;
-using System.Data;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Koi.Repositories
 {
@@ -17,7 +10,7 @@ namespace Koi.Repositories
         public DbSet<Order> Orders { get; set; }
         public DbSet<OrderDetail> OrderDetails { get; set; }
         public DbSet<KoiBreed> KoiBreeds { get; set; }
-        public DbSet<KoiFishKoiBreed> KoiFishKoiBreeds { get; set; }
+        //public DbSet<KoiFishKoiBreed> KoiFishKoiBreeds { get; set; }
         public DbSet<FAQ> FAQs { get; set; }
         public DbSet<Blog> Blogs { get; set; }
         public DbSet<OrderDetailFeedback> OrderDetailFeedbacks { get; set; }
@@ -28,6 +21,7 @@ namespace Koi.Repositories
         public DbSet<KoiCertificate> KoiCertificates { get; set; }
         public DbSet<PackageCare> PackageCares { get; set; } // Add DbSet for PackageCare
         public DbSet<WalletTransaction> WalletTransactions { get; set; }  // Add DbSet for WalletTransaction
+        public DbSet<Wallet> Wallets { get; set; }
 
         public KoiFarmShopDbContext(DbContextOptions options) : base(options)
         {
@@ -37,19 +31,19 @@ namespace Koi.Repositories
         {
             base.OnModelCreating(modelBuilder);
 
-            // Configure many-to-many relationship
-            modelBuilder.Entity<KoiFishKoiBreed>()
-                .HasKey(kfkb => new { kfkb.KoiFishId, kfkb.KoiBreedId });
+            //// Configure many-to-many relationship
+            //modelBuilder.Entity<KoiFishKoiBreed>()
+            //    .HasKey(kfkb => new { kfkb.KoiFishId, kfkb.KoiBreedId });
 
-            modelBuilder.Entity<KoiFishKoiBreed>()
-                .HasOne(kfkb => kfkb.KoiFish)
-                .WithMany(kf => kf.KoiFishKoiBreeds)
-                .HasForeignKey(kfkb => kfkb.KoiFishId);
+            //modelBuilder.Entity<KoiFishKoiBreed>()
+            //    .HasOne(kfkb => kfkb.KoiFish)
+            //    .WithMany(kf => kf.KoiFishKoiBreeds)
+            //    .HasForeignKey(kfkb => kfkb.KoiFishId);
 
-            modelBuilder.Entity<KoiFishKoiBreed>()
-                .HasOne(kfkb => kfkb.KoiBreed)
-                .WithMany(kb => kb.KoiFishKoiBreeds)
-                .HasForeignKey(kfkb => kfkb.KoiBreedId);
+            //modelBuilder.Entity<KoiFishKoiBreed>()
+            //    .HasOne(kfkb => kfkb.KoiBreed)
+            //    .WithMany(kb => kb.KoiFishKoiBreeds)
+            //    .HasForeignKey(kfkb => kfkb.KoiBreedId);
 
             modelBuilder.Entity<OrderDetail>()
         .HasOne(od => od.Order)
@@ -90,6 +84,12 @@ namespace Koi.Repositories
                 .WithMany()
                 .HasForeignKey(c => c.KoiFishId)
                 .OnDelete(DeleteBehavior.Restrict);
+
+            // Configure 1-1 relationship between User and Wallet
+            modelBuilder.Entity<User>()
+                .HasOne(u => u.Wallet)
+                .WithOne(w => w.User)
+                .HasForeignKey<Wallet>(w => w.UserId);
         }
     }
 }

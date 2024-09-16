@@ -12,9 +12,10 @@
         public int? DailyFeedAmount { get; set; }
         public DateTime? LastHealthCheck { get; set; }
         public bool? IsAvailableForSale { get; set; }
-        public long Price { get; set; }
         public bool? IsConsigned { get; set; }
         public bool? IsSold { get; set; }
         public int ConsignedBy { get; set; }
+        public List<int> KoiBreeds { get; set; }
+        public List<int> Certificates { get; set; }
     }
 }

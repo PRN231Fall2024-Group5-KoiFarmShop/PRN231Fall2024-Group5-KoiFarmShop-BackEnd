@@ -97,7 +97,7 @@ namespace Koi.WebAPI.Controllers
                     return BadRequest(ApiResult<object>.Fail(ex));
                 if (ex.Message.Contains("404"))
                     return NotFound(ApiResult<object>.Fail(ex));
-                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+                return StatusCode(StatusCodes.Status500InternalServerError, ApiResult<object>.Fail(ex));
             }
         }
 
@@ -112,7 +112,7 @@ namespace Koi.WebAPI.Controllers
             try
             {
                 var koiFishModel = await _koiBreedService.CreateKoiBreed(koiBreed);
-                return Created();
+                return StatusCode(StatusCodes.Status201Created, ApiResult<object>.Succeed(koiFishModel, "Created!"));
             }
             catch (Exception ex)
             {
@@ -120,7 +120,7 @@ namespace Koi.WebAPI.Controllers
                     return BadRequest(ApiResult<object>.Fail(ex));
                 if (ex.Message.Contains("404"))
                     return NotFound(ApiResult<object>.Fail(ex));
-                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+                return StatusCode(StatusCodes.Status500InternalServerError, ApiResult<object>.Fail(ex));
             }
         }
 
@@ -143,7 +143,7 @@ namespace Koi.WebAPI.Controllers
                     return BadRequest(ApiResult<object>.Fail(ex));
                 if (ex.Message.Contains("404"))
                     return NotFound(ApiResult<object>.Fail(ex));
-                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+                return StatusCode(StatusCodes.Status500InternalServerError, ApiResult<object>.Fail(ex));
             }
         }
 
@@ -166,7 +166,7 @@ namespace Koi.WebAPI.Controllers
                     return BadRequest(ApiResult<object>.Fail(ex));
                 if (ex.Message.Contains("404"))
                     return NotFound(ApiResult<object>.Fail(ex));
-                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+                return StatusCode(StatusCodes.Status500InternalServerError, ApiResult<object>.Fail(ex));
             }
         }
     }

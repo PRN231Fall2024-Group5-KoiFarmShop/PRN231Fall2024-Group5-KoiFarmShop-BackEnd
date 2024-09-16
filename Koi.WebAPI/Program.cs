@@ -23,7 +23,7 @@ builder.Services.AddControllers()
     {
         options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
         options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles;
-        options.JsonSerializerOptions.PropertyNamingPolicy = JsonNamingPolicy.KebabCaseLower;
+        options.JsonSerializerOptions.PropertyNamingPolicy = JsonNamingPolicy.CamelCase;
     });
 
 //CONFIG FOR JWT AUTHENTICATION ON SWAGGER
@@ -138,14 +138,35 @@ var scope = app.Services.CreateScope();
 var context = scope.ServiceProvider.GetRequiredService<KoiFarmShopDbContext>();
 var userManager = scope.ServiceProvider.GetRequiredService<UserManager<User>>();
 var logger = scope.ServiceProvider.GetRequiredService<ILogger<Program>>();
+
+// CONFIG CORS
+app.UseCors(options =>
+{
+    options.AllowAnyOrigin();
+    options.AllowAnyMethod();
+    options.AllowAnyHeader();
+});
+
+try
+{
+    await app.ApplyMigrations(logger);
+}
+catch (Exception e)
+{
+    logger.LogError(e, "An problem occurred during migration!");
+}
+
 try
 {
     await DBInitializer.Initialize(context, userManager);
 }
 catch (Exception e)
 {
-    logger.LogError(e, "An problem occurred during migration!");
+    logger.LogError(e, "An problem occurred seed data!");
 }
+//CLAIM SERVICE
+builder.Services.AddHttpContextAccessor();
+
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
@@ -155,7 +176,7 @@ if (app.Environment.IsDevelopment())
         // Always keep token after reload or refresh browser
         config.SwaggerEndpoint("/swagger/v1/swagger.json", "KOI FARM SHOP API v.01");
         config.ConfigObject.AdditionalItems.Add("persistAuthorization", "true");
-        // config.InjectJavascript("/custom-swagger.js"); de sau
+        config.InjectJavascript("/custom-swagger.js");
     });
 }
 
@@ -163,6 +184,7 @@ if (app.Environment.IsDevelopment())
 app.UseAuthorization();
 app.UseAuthentication();
 // USE CORS
+app.UseCors();
 
 //OTHERS
 app.UseHttpsRedirection();
@@ -170,6 +192,8 @@ app.UseHttpsRedirection();
 app.UseRouting();
 
 app.MapControllers();
+
+app.UseStaticFiles();
 
 // USE MIDDLEWARE
 app.UseMiddleware<GlobalExceptionMiddleware>();
