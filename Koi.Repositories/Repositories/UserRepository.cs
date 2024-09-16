@@ -257,10 +257,10 @@ namespace Koi.Repositories.Repositories
             }
         }
 
-        public async Task<bool> UpdateUserRoleAsync(string userId, string newRole)
+        public async Task<bool> UpdateUserRoleAsync(int userId, string newRole)
         {
             // Tìm người dùng theo ID
-            var user = await _userManager.FindByIdAsync(userId);
+            var user = await _userManager.FindByIdAsync(userId.ToString());
             if (user == null)
             {
                 throw new Exception("User not found.");
@@ -357,7 +357,6 @@ namespace Koi.Repositories.Repositories
             }
             catch (Exception)
             {
-
                 throw;
             }
         }

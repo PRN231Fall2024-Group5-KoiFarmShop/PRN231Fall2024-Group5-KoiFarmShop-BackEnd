@@ -10,7 +10,7 @@ namespace Koi.DTOs.PaymentDTOs
     {
         public string OrderDescription { get; set; }
         public string TransactionToken { get; set; }
-        public string PaymentId { get; set; }
+        public string OrderId { get; set; }
         public string PaymentMethod { get; set; }
         public string TransactionNo { get; set; }
         public bool Success { get; set; }
