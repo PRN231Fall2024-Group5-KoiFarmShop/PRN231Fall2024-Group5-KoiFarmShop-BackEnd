@@ -97,13 +97,14 @@ namespace Koi.Services.Services
             //eventEntity.User = isExistUser;
             //check koiBreed
             KoiFish fish = _mapper.Map<KoiFish>(fishModel);
-            foreach (var breedId in fishModel.KoiBreeds)
+            foreach (var breedId in fishModel.KoiBreedIds)
             {
                 var breed = await _unitOfWork.KoiBreedRepository.GetByIdAsync(breedId);
                 if (breed == null)
                 {
                     throw new Exception("400 - Invalid Koi breed");
                 }
+                fish.KoiBreeds = [];
                 fish.KoiBreeds.Add(_mapper.Map<KoiBreed>(breed));
             }
 
@@ -127,7 +128,7 @@ namespace Koi.Services.Services
             //check koiBreed
             KoiFish fish = await _unitOfWork.KoiFishRepository.GetByIdAsync(id);
             fish.KoiBreeds.Clear();
-            foreach (var breedId in fishModel.KoiBreeds)
+            foreach (var breedId in fishModel.KoiBreedIds)
             {
                 var breed = await _unitOfWork.KoiBreedRepository.GetByIdAsync(breedId);
                 if (breed == null)
@@ -141,7 +142,6 @@ namespace Koi.Services.Services
             //fish.KoiCertificates = fishModel.Certificate
             fish.Age = fishModel.Age;
             fish.Origin = fishModel.Origin;
-            fish.ConsignedBy = fishModel.ConsignedBy;
             fish.DailyFeedAmount = fishModel.DailyFeedAmount;
             fish.Gender = fishModel.Gender;
             fish.LastHealthCheck = fishModel.LastHealthCheck;
