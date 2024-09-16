@@ -10,6 +10,7 @@ namespace Koi.DTOs.Enums
     {
         MANAGER,
         STAFF,
-        CUSTOMER
+        CUSTOMER,
+        GUEST
     }
 }

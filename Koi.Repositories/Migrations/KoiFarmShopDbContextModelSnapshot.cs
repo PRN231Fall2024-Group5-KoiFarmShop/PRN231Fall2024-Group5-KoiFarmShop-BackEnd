@@ -239,6 +239,9 @@ namespace Koi.Repositories.Migrations
                     b.Property<int?>("CreatedBy")
                         .HasColumnType("int");
 
+                    b.Property<DateTime>("CreatedDate")
+                        .HasColumnType("datetime2");
+
                     b.Property<DateTime?>("DeletedAt")
                         .HasColumnType("datetime2");
 
@@ -257,6 +260,9 @@ namespace Koi.Repositories.Migrations
                     b.Property<string>("Question")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("UpdatedDate")
+                        .HasColumnType("datetime2");
 
                     b.HasKey("Id");
 
@@ -896,35 +902,6 @@ namespace Koi.Repositories.Migrations
                     b.ToTable("AspNetUsers", (string)null);
                 });
 
-            modelBuilder.Entity("Koi.BusinessObjects.Wallet", b =>
-                {
-                    b.Property<int>("UserId")
-                        .HasColumnType("int");
-
-                    b.Property<long>("Balance")
-                        .HasColumnType("bigint");
-
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("datetime2");
-
-                    b.Property<bool?>("IsDeleted")
-                        .HasColumnType("bit");
-
-                    b.Property<int>("LoyaltyPoints")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime?>("ModifiedAt")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("Status")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("UserId");
-
-                    b.ToTable("Wallets");
-                });
-
             modelBuilder.Entity("Koi.BusinessObjects.WalletTransaction", b =>
                 {
                     b.Property<int>("Id")
@@ -1267,17 +1244,6 @@ namespace Koi.Repositories.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("Koi.BusinessObjects.Wallet", b =>
-                {
-                    b.HasOne("Koi.BusinessObjects.User", "User")
-                        .WithOne("Wallet")
-                        .HasForeignKey("Koi.BusinessObjects.Wallet", "UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("User");
-                });
-
             modelBuilder.Entity("Koi.BusinessObjects.WalletTransaction", b =>
                 {
                     b.HasOne("Koi.BusinessObjects.Order", "Order")
@@ -1392,9 +1358,6 @@ namespace Koi.Repositories.Migrations
                     b.Navigation("KoiFishsConsigned");
 
                     b.Navigation("Orders");
-
-                    b.Navigation("Wallet")
-                        .IsRequired();
 
                     b.Navigation("WalletTransactions");
                 });

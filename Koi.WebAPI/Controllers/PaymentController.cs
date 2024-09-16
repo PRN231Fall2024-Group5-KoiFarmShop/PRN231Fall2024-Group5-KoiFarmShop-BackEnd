@@ -13,10 +13,10 @@ namespace Koi.WebAPI.Controllers
     [ApiController]
     public class PaymentController : ControllerBase
     {
-        private readonly IOrderService _paymentService;
+        private readonly IPaymentService _paymentService;
         private readonly IVnPayService _vnPayService;
 
-        public PaymentController(IOrderService paymentService, IVnPayService vnPayService)
+        public PaymentController(IPaymentService paymentService, IVnPayService vnPayService)
         {
             _paymentService = paymentService;
             _vnPayService = vnPayService;
@@ -42,26 +42,12 @@ namespace Koi.WebAPI.Controllers
             }
         }
 
-        [HttpGet("users/{id}/orders")]
-        public async Task<IActionResult> GetOrdersByUserId(int id)
-        {
-            try
-            {
-                var result = await _paymentService.GetOrdersByUserIdAsync(id);
-                return Ok(ApiResult<List<OrderDTO>>.Succeed(result, "Get list order Successfully!"));
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(ApiResult<object>.Fail(ex));
-            }
-        }
-
-        [HttpPost("payment/check-out")]
+        [HttpPost("orders/check-out)")]
         public async Task<IActionResult> CheckOutAsync(VnpayOrderInfo orderInfo)
         {
             try
             {
-                var result = await _paymentService.NewOrderAsync(orderInfo);
+                var result = await _paymentService.NewPurchaseAsync(orderInfo);
                 if (result != null)
                 {
                     return Ok(ApiResult<OrderDTO>.Succeed(result, "purchase successfully"));
@@ -83,6 +69,39 @@ namespace Koi.WebAPI.Controllers
                     return StatusCode(StatusCodes.Status403Forbidden, ApiResult<object>.Fail(ex));
 
                 return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+            }
+        }
+
+        /// <summary>
+        /// [DONT'T TOUCH] VnPay IPN Receiver [FromQuery] VnpayResponseModel vnpayResponseModel
+        /// </summary>
+        [HttpGet("orders/vnpay-ipn-receive")]
+        public async Task<IActionResult> PaymentReturn()
+        {
+            try
+            {
+                var requestNameValue = _vnPayService.GetFullResponseData(Request.Query);
+                //var htmlString = string.Empty;
+                //var requestNameValue = HttpUtility.ParseQueryString(HttpContext.Request.QueryString.ToString());
+
+                //IPNReponse iPNReponse = await _vnPayService.IPNReceiver(
+                //    vnpayResponseModel.vnp_TmnCode,
+                //    vnpayResponseModel.vnp_SecureHash,
+                //    vnpayResponseModel.vnp_TxnRef,
+                //    vnpayResponseModel.vnp_TransactionStatus,
+                //    vnpayResponseModel.vnp_ResponseCode,
+                //    vnpayResponseModel.vnp_TransactionNo,
+                //    vnpayResponseModel.vnp_BankCode,
+                //    vnpayResponseModel.vnp_Amount,
+                //    vnpayResponseModel.vnp_PayDate,
+                //    vnpayResponseModel.vnp_BankTranNo,
+                //    vnpayResponseModel.vnp_CardType, requestNameValue);
+
+                return Ok(requestNameValue);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ApiResult<object>.Fail(ex));
             }
         }
     }

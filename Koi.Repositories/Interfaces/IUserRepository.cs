@@ -16,9 +16,7 @@ namespace Koi.Repositories.Interfaces
         Task<User> GetAccountDetailsAsync(int userId);
 
         Task<List<Role>> GetAllRoleAsync();
-
         Task<User> GetCurrentUserAsync();
-
         Task<List<string>> GetRoleName(User User);
 
         Task<User> GetUserByEmailAsync(string email);
@@ -31,6 +29,6 @@ namespace Koi.Repositories.Interfaces
 
         Task<User> UpdateAccountAsync(User user);
 
-        Task<bool> UpdateUserRoleAsync(int userId, string newRole);
+        Task<bool> UpdateUserRoleAsync(string userId, string newRole);
     }
 }

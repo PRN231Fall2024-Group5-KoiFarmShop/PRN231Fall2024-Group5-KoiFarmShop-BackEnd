@@ -12,24 +12,26 @@ using System.Threading.Tasks;
 
 namespace Koi.Services.Services
 {
-    public class OrderService : IOrderService
+    public class PaymentService : IPaymentService
     {
         private readonly IConfiguration _configuration;
         private readonly IMapper _mapper;
         private readonly IClaimsService _claimsService;
         private readonly IUnitOfWork _unitOfWork;
         private readonly ICurrentTime _currentTime;
+        private readonly IVnPayService _vpnPayService;
 
-        public OrderService(IConfiguration configuration, IMapper mapper, IClaimsService claimsService, IUnitOfWork unitOfWork, ICurrentTime currentTime)
+        public PaymentService(IConfiguration configuration, IMapper mapper, IClaimsService claimsService, IUnitOfWork unitOfWork, ICurrentTime currentTime, IVnPayService vpnPayService)
         {
             _configuration = configuration;
             _mapper = mapper;
             _claimsService = claimsService;
             _unitOfWork = unitOfWork;
             _currentTime = currentTime;
+            _vpnPayService = vpnPayService;
         }
 
-        public async Task<OrderDTO> NewOrderAsync(VnpayOrderInfo orderInfo)
+        public async Task<OrderDTO> NewPurchaseAsync(VnpayOrderInfo orderInfo)
         {
             //var user = await _unitOfWork.UserRepository.GetCurrentUserAsync();
             //if (user == null)
@@ -51,8 +53,9 @@ namespace Koi.Services.Services
             var check = await _unitOfWork.SaveChangeAsync();
             if (check > 0)
             {
-                orderInfo.OrderId = newOrder.Id;
+                var url = _vpnPayService.CreateLink(orderInfo);
                 var result = _mapper.Map<OrderDTO>(newOrder);
+                result.Note = url;
                 return result;
             }
             else
@@ -64,11 +67,6 @@ namespace Koi.Services.Services
         public async Task<List<OrderDTO>> GetOrdersAsync()
         {
             return _mapper.Map<List<OrderDTO>>(await _unitOfWork.OrderRepository.GetAllAsync());
-        }
-
-        public async Task<List<OrderDTO>> GetOrdersByUserIdAsync(int userId)
-        {
-            return _mapper.Map<List<OrderDTO>>(await _unitOfWork.OrderRepository.GetOrdersByUserId(userId)); ;
         }
     }
 }

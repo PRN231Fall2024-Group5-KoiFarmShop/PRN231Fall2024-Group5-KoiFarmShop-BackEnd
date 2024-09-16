@@ -21,7 +21,6 @@ namespace Koi.Repositories
         public DbSet<KoiCertificate> KoiCertificates { get; set; }
         public DbSet<PackageCare> PackageCares { get; set; } // Add DbSet for PackageCare
         public DbSet<WalletTransaction> WalletTransactions { get; set; }  // Add DbSet for WalletTransaction
-        public DbSet<Wallet> Wallets { get; set; }
 
         public KoiFarmShopDbContext(DbContextOptions options) : base(options)
         {
@@ -84,12 +83,6 @@ namespace Koi.Repositories
                 .WithMany()
                 .HasForeignKey(c => c.KoiFishId)
                 .OnDelete(DeleteBehavior.Restrict);
-
-            // Configure 1-1 relationship between User and Wallet
-            modelBuilder.Entity<User>()
-                .HasOne(u => u.Wallet)
-                .WithOne(w => w.User)
-                .HasForeignKey<Wallet>(w => w.UserId);
         }
     }
 }

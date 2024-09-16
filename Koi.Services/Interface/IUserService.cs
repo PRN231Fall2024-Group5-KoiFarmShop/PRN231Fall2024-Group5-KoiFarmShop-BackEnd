@@ -17,6 +17,5 @@ namespace Koi.Services.Interface
         Task<ApiResult<object>> LoginAsync(UserLoginModel User);
         Task<ApiResult<UserDetailsModel>> ResigerAsync(UserSignupModel UserLogin, string role);
         Task<ApiResult<UserDetailsModel>> UpdateUserAsync(int userId, UserUpdateModel userUpdateMode);
-        Task<ApiResult<UserDetailsModel>> UpdateUserWithRoleAsync(int userId, UserUpdateModel userUpdateMode, string role);
     }
 }

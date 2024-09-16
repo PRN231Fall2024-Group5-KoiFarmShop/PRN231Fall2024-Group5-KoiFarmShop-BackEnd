@@ -7,10 +7,10 @@ using System.Threading.Tasks;
 
 namespace Koi.Services.Interface
 {
-    public interface IOrderService
+    public interface IPaymentService
     {
         Task<List<OrderDTO>> GetOrdersAsync();
-        Task<List<OrderDTO>> GetOrdersByUserIdAsync(int userId);
-        Task<OrderDTO> NewOrderAsync(VnpayOrderInfo orderInfo);
+
+        Task<OrderDTO> NewPurchaseAsync(VnpayOrderInfo orderInfo);
     }
 }

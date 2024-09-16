@@ -11,16 +11,12 @@ namespace Koi.Repositories
 
         private readonly IKoiBreedRepository _koiBreedRepository;
         private readonly IOrderRepository _orderRepository;
-        private readonly IWalletRepository _walletRepository;
-        private readonly ITransactionRepository _transactionRepository;
 
         public UnitOfWork(KoiFarmShopDbContext context,
             IKoiBreedRepository koiBreedRepository,
             IKoiFishRepository koiFishRepository,
             IUserRepository userRepository,
-            IOrderRepository orderRepository,
-            IWalletRepository walletRepository,
-            ITransactionRepository transactionRepository
+            IOrderRepository orderRepository
 
         )
         {
@@ -29,8 +25,6 @@ namespace Koi.Repositories
             _context = context;
             _userRepository = userRepository;
             _orderRepository = orderRepository;
-            _walletRepository = walletRepository;
-            _transactionRepository = transactionRepository;
         }
 
         public IUserRepository UserRepository => _userRepository;
@@ -39,8 +33,6 @@ namespace Koi.Repositories
         public IKoiBreedRepository KoiBreedRepository => _koiBreedRepository;
 
         public IOrderRepository OrderRepository => _orderRepository;
-        public IWalletRepository WalletRepository => _walletRepository;
-        public ITransactionRepository TransactionRepository => _transactionRepository;
 
         public Task<int> SaveChangeAsync()
         {

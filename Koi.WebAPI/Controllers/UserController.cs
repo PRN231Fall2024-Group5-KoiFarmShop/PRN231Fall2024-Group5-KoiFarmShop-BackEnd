@@ -1,6 +1,4 @@
-﻿using Koi.BusinessObjects;
-using Koi.DTOs.Enums;
-using Koi.Repositories.Commons;
+﻿using Koi.Repositories.Commons;
 
 using Koi.Repositories.Models.UserModels;
 using Koi.Services.Interface;
@@ -22,7 +20,7 @@ namespace Koi.WebAPI.Controllers
         }
 
         /// <summary>
-        /// Registers a new user with the CUSTOMER role.
+        /// Registers a new user with the STUDENT role.
         ///
         /// INPUT THE IMAGE ONLY, DO NOT INPUT THE STRING URL
         /// </summary>
@@ -68,56 +66,7 @@ namespace Koi.WebAPI.Controllers
         }
 
         /// <summary>
-        /// ADMIN create a new user with the CUSTOMER role.
-        ///
-        /// INPUT THE IMAGE ONLY, DO NOT INPUT THE STRING URL
-        /// </summary>
-        /// <param name="userSignup">The user signup data.</param>
-        /// <param name="role">Optional new role for the user (if applicable).</param>
-        /// <returns>A result object indicating success or failure, with additional information.</returns>
-        /// <remarks>
-        /// Sample request:
-        ///
-        ///     POST /api/v1/users/register
-        ///{
-        /// "email": "admin@gmail.com",
-        ///  "password": "123456",
-        ///  "full-name": "Hoang Tien",
-        ///  "dob": "2024-09-11T01:12:17.955Z",
-        ///  "phone-number": "0925136908",
-        /// "profile-picture-url": "string",
-        ///  "address": "string"
-        ///}
-        /// </remarks>
-        /// <response code="200">Returns a success message with user data if registration is successful.</response>
-        /// <response code="400">Returns an error message if registration fails (e.g., email already exists, invalid data).</response>
-        [HttpPost()]
-        public async Task<IActionResult> CreateUserAsync(UserSignupModel userSignup, RoleEnums role)
-        {
-            try
-            {
-                string roleName = string.IsNullOrEmpty(role.ToString()) ? role.ToString() : "CUSTOMER";
-
-                var data = await _userService.ResigerAsync(userSignup, role.ToString());
-                if (data.IsSuccess)
-                {
-                    // var confirmationLink = Url.Action(nameof(ConfirmEmail), "users", new { email = userLogin.Email, token = data.Message }, Request.Scheme);
-                    //var message = new Message(new string[] { data.Data.Email }, "Confirmation email link", confirmationLink!);
-                    // await _emailService.SendEmail(message);
-                    data.Message = "Register Successfuly <3";
-                    return Ok(data);
-                }
-
-                return BadRequest(data);
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(ApiResult<object>.Fail(ex));
-            }
-        }
-
-        /// <summary>
-        /// Updates customer account information.
+        /// Updates user account information.
         /// </summary>
         /// <param name="id">The ID of the user to update.</param>
         /// <param name="userUpdatemodel">The updated user data.</param>
@@ -136,52 +85,11 @@ namespace Koi.WebAPI.Controllers
         /// <response code="200">Returns a success message if the update is successful.</response>
         /// <response code="404">If the user with the specified ID is not found.</response>
         /// <response code="400">Returns an error message if the update fails (e.g., invalid data).</response>
-        [HttpPut("customers/{id}")]
+        [HttpPut("{id}")]
         public async Task<IActionResult> UpdateAccount([FromRoute] int id, [FromBody] UserUpdateModel userUpdatemodel)
         {
             try
             {
-                var result = await _userService.UpdateUserAsync(id, userUpdatemodel);
-                if (result.IsSuccess == false)
-                {
-                    return NotFound(result);
-                }
-                return Ok(result);
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(ex.Message);
-            }
-        }
-
-        /// <summary>
-        /// Admin Updates user account information.
-        /// </summary>
-        /// <param name="id">The ID of the user to update.</param>
-        /// <param name="userUpdatemodel">The updated user data.</param>
-        /// <param name="role">Optional new role for the user (if applicable).</param>
-        /// <returns>A result object indicating success or failure.</returns>
-        /// <remarks>
-        /// Sample request body:
-        ///
-        ///     {
-        ///         "FullName": "Updated Name",
-        ///         "Dob": "2001-01-01",
-        ///         "Gender": "Female",
-        ///         "Image": "base64_encoded_image_data",
-        ///         "University": "Updated University"
-        ///     }
-        /// </remarks>
-        /// <response code="200">Returns a success message if the update is successful.</response>
-        /// <response code="404">If the user with the specified ID is not found.</response>
-        /// <response code="400">Returns an error message if the update fails (e.g., invalid data).</response>
-        [HttpPut()]
-        public async Task<IActionResult> UpdateAccount([FromRoute] int id, [FromBody] UserUpdateModel userUpdatemodel, RoleEnums role)
-        {
-            try
-            {
-                string roleName = string.IsNullOrEmpty(role.ToString()) ? role.ToString() : "";
-
                 var result = await _userService.UpdateUserAsync(id, userUpdatemodel);
                 if (result.IsSuccess == false)
                 {
@@ -277,6 +185,7 @@ namespace Koi.WebAPI.Controllers
         /// <param name="paginationParameter">Pagination parameters (page number, page size).</param>
         /// <param name="userFilterModel">Filters to apply (e.g., name, email).</param>
         /// <response code="200">Returns a paginated list of users and pagination metadata in the headers.</response>
+        [HttpGet()]
         [HttpGet()] // lấy tất cả user theo paging và filter
         public async Task<IActionResult> GetAccountByFilters(//[FromQuery] PaginationParameter paginationParameter, [FromQuery] UserFilterModel userFilterModel
             )
