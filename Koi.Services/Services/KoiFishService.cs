@@ -1,6 +1,5 @@
 ﻿using AutoMapper;
 using Koi.BusinessObjects;
-using Koi.DTOs;
 using Koi.DTOs.KoiFishDTOs;
 using Koi.Repositories.Helper;
 using Koi.Repositories.Interfaces;
@@ -45,7 +44,7 @@ namespace Koi.Services.Services
         public async Task<KoiFishResponseDTO> GetKoiFishByIdOld(int id)
         {
             var existingFishes = await _unitOfWork.KoiFishRepository.GetByIdAsync(id,
-                x => x.KoiFishKoiBreeds,
+                //x => x.KoiFishKoiBreeds,
                 x => x.Consigner
             );
 
@@ -72,7 +71,7 @@ namespace Koi.Services.Services
 
             if (fish == null)
             {
-                throw new Exception("404 Fish not found!");
+                throw new Exception("404 - Fish not found!");
             }
 
             var result = _mapper.Map<KoiFishResponseDTO>(fish);
@@ -87,103 +86,70 @@ namespace Koi.Services.Services
 
         public async Task<KoiFishResponseDTO> CreateKoiFish(CreateKoiFishDTO fishModel)
         {
-            throw new NotImplementedException("501 - Not Implemented");
-            //var fishEntity = _mapper.Map<KoiFishResponseDTO>(fishModel);
-            //////check user
-            ////Guid userId = _claimsService.GetCurrentUserId;
-            ////var isExistUser = await _unitOfWork.UserRepository.GetUserByIdAsync(userId);
-            ////if (isExistUser == null)
-            ////{
-            ////    throw new Exception("User does not exist!");
-            ////}
-            ////eventEntity.UserId = isExistUser.Id;
-            ////eventEntity.User = isExistUser;
-            ////check koiBreed
-            //var eventCategory = await _unitOfWork.KoiBreedRepository.GetByIdAsync(fishModel.);
-            //if (eventCategory == null)
+            ////check user
+            //Guid userId = _claimsService.GetCurrentUserId;
+            //var isExistUser = await _unitOfWork.UserRepository.GetUserByIdAsync(userId);
+            //if (isExistUser == null)
             //{
-            //    throw new Exception("Event category not null when create event");
+            //    throw new Exception("User does not exist!");
             //}
-            //eventEntity.EventCategory = eventCategory;
+            //eventEntity.UserId = isExistUser.Id;
+            //eventEntity.User = isExistUser;
+            //check koiBreed
+            KoiFish fish = _mapper.Map<KoiFish>(fishModel);
+            foreach (var breedId in fishModel.KoiBreeds)
+            {
+                var breed = await _unitOfWork.KoiBreedRepository.GetByIdAsync(breedId);
+                if (breed == null)
+                {
+                    throw new Exception("400 - Invalid Koi breed");
+                }
+                fish.KoiBreeds.Add(_mapper.Map<KoiBreed>(breed));
+            }
 
-            ////eventEntity.Name = eventModel.Name;
-            ////eventEntity.Description = eventModel.Description;
-            ////eventEntity.ThumbnailUrl = eventModel.ThumbnailUrl;
-            ////eventEntity.EventStartDate = eventModel.EventStartDate;
-            ////eventEntity.EventEndDate = eventModel.EventEndDate;
+            var result = await _unitOfWork.KoiFishRepository.AddAsync(fish);
 
-            //eventEntity.Status = EventStatusEnums.DRAFT.ToString();
-
-            //var newEvent = await _unitOfWork.EventRepository.AddAsync(eventEntity);
-
-            //var isSuccess = await _unitOfWork.SaveChangeAsync() > 0;
-            //var result = _mapper.Map<EventResponseDTO>(newEvent);
-
-            //if (isSuccess)
-            //{
-            //    //    await _notificationService.PushNotificationToManager(new Notification
-            //    //    {
-            //    //        Title = "User " + isExistUser.Email + " Has Created Event",
-            //    //        Body = $"Event Name: " + eventModel.Name,
-            //    //        Url = "/dashboard/feedback/event/" + newEvent.Id,
-            //    //    });
-
-            //    // Clear cache as new category is added
-            //    await _redisService.DeleteKeyAsync(CacheKeys.Events);
-            //    return result;
-            //}
-            //else
-            //{
-            //    throw new Exception("Failed to create event");
-            //}
+            if (await _unitOfWork.SaveChangeAsync() <= 0) throw new Exception("400 - Fail saving changes!");
+            return _mapper.Map<KoiFishResponseDTO>(result);
         }
 
-        public async Task<KoiFishResponseDTO> UpdateKoiFish(int id, CreateKoiFishDTO eventModel)
+        public async Task<KoiFishResponseDTO> UpdateKoiFish(int id, UpdateKoiFishDTO fishModel)
         {
-            throw new NotImplementedException("501 - Not Implemented");
-            //var existingEvent = await _unitOfWork.EventRepository.GetByIdAsync(id);
-
-            //if (existingEvent == null)
-            //{
-            //    throw new Exception("Event not found");
-            //}
             ////check user
-            ////var user = await _unitOfWork.UserRepository.GetAllUsersAsync();
-            ////var isExistUser = user.FirstOrDefault(x => x.Id == eventModel.UserId);
-            ////if (isExistUser == null)
-            ////{
-            ////    throw new Exception("User does not exist!");
-            ////}
-            ////existingEvent.User = isExistUser;
-            ////check eventCategory
-            //var eventCategory = await _unitOfWork.EventCategoryRepository.GetByIdAsync(eventModel.EventCategoryId);
-            //if (eventCategory == null)
+            //Guid userId = _claimsService.GetCurrentUserId;
+            //var isExistUser = await _unitOfWork.UserRepository.GetUserByIdAsync(userId);
+            //if (isExistUser == null)
             //{
-            //    throw new Exception("Event category does not exist!");
+            //    throw new Exception("User does not exist!");
             //}
-            //existingEvent.EventCategory = eventCategory;
+            //eventEntity.UserId = isExistUser.Id;
+            //eventEntity.User = isExistUser;
+            //check koiBreed
+            KoiFish fish = await _unitOfWork.KoiFishRepository.GetByIdAsync(id);
+            fish.KoiBreeds.Clear();
+            foreach (var breedId in fishModel.KoiBreeds)
+            {
+                var breed = await _unitOfWork.KoiBreedRepository.GetByIdAsync(breedId);
+                if (breed == null)
+                {
+                    throw new Exception("400 - Invalid Koi breed");
+                }
+                fish.KoiBreeds.Add(_mapper.Map<KoiBreed>(breed));
+            }
+            fish.Length = fishModel.Length;
+            fish.Weight = fishModel.Weight;
+            //fish.KoiCertificates = fishModel.Certificate
+            fish.Age = fishModel.Age;
+            fish.Origin = fishModel.Origin;
+            fish.ConsignedBy = fishModel.ConsignedBy;
+            fish.DailyFeedAmount = fishModel.DailyFeedAmount;
+            fish.Gender = fishModel.Gender;
+            fish.LastHealthCheck = fishModel.LastHealthCheck;
+            fish.PersonalityTraits = fishModel.PersonalityTraits;
+            fish.Name = fishModel.Name;
 
-            //existingEvent.Name = eventModel.Name ?? existingEvent.Name;
-            //existingEvent.Description = eventModel.Description ?? existingEvent.Description;
-            //existingEvent.ThumbnailUrl = eventModel.ThumbnailUrl ?? existingEvent.ThumbnailUrl;
-            //existingEvent.EventStartDate = eventModel.EventStartDate ?? existingEvent.EventStartDate;
-            //existingEvent.EventEndDate = eventModel.EventEndDate ?? existingEvent.EventEndDate;
-            //existingEvent.Status = eventModel.Status.ToString() ?? existingEvent.Status;
-
-            //var isUpdated = await _unitOfWork.EventRepository.Update(existingEvent);
-
-            //if (isUpdated == false)
-            //{
-            //    throw new Exception("Failed to update event");
-            //}
-
-            //await _unitOfWork.SaveChangeAsync();
-            //// Clear specific cache key
-            //await _redisService.DeleteKeyAsync(CacheKeys.Event(id));
-            //// Clear general list cache
-            //await _redisService.DeleteKeyAsync(CacheKeys.Events);
-            //var result = _mapper.Map<EventResponseDTO>(existingEvent);
-            //return result;
+            if (await _unitOfWork.SaveChangeAsync() <= 0) throw new Exception("400 - Fail saving changes!");
+            return _mapper.Map<KoiFishResponseDTO>(fish);
         }
 
         public async Task<KoiFishResponseDTO> DeleteKoiFish(int id)

@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace Koi.Repositories.Migrations
 {
     /// <inheritdoc />
-    public partial class initdb : Migration
+    public partial class update_Koi_Consigner : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -319,7 +319,7 @@ namespace Koi.Repositories.Migrations
                     Price = table.Column<long>(type: "bigint", nullable: false),
                     IsConsigned = table.Column<bool>(type: "bit", nullable: true),
                     IsSold = table.Column<bool>(type: "bit", nullable: true),
-                    ConsignedBy = table.Column<int>(type: "int", nullable: false),
+                    ConsignedBy = table.Column<int>(type: "int", nullable: true),
                     CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
                     CreatedBy = table.Column<int>(type: "int", nullable: true),
                     ModifiedAt = table.Column<DateTime>(type: "datetime2", nullable: true),
@@ -335,8 +335,7 @@ namespace Koi.Repositories.Migrations
                         name: "FK_KoiFishs_AspNetUsers_ConsignedBy",
                         column: x => x.ConsignedBy,
                         principalTable: "AspNetUsers",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateTable(
@@ -472,6 +471,30 @@ namespace Koi.Repositories.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "KoiBreedKoiFish",
+                columns: table => new
+                {
+                    KoiBreedsId = table.Column<int>(type: "int", nullable: false),
+                    KoiFishesId = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_KoiBreedKoiFish", x => new { x.KoiBreedsId, x.KoiFishesId });
+                    table.ForeignKey(
+                        name: "FK_KoiBreedKoiFish_KoiBreeds_KoiBreedsId",
+                        column: x => x.KoiBreedsId,
+                        principalTable: "KoiBreeds",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_KoiBreedKoiFish_KoiFishs_KoiFishesId",
+                        column: x => x.KoiFishesId,
+                        principalTable: "KoiFishs",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "KoiCertificates",
                 columns: table => new
                 {
@@ -493,30 +516,6 @@ namespace Koi.Repositories.Migrations
                     table.PrimaryKey("PK_KoiCertificates", x => x.Id);
                     table.ForeignKey(
                         name: "FK_KoiCertificates_KoiFishs_KoiFishId",
-                        column: x => x.KoiFishId,
-                        principalTable: "KoiFishs",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "KoiFishKoiBreeds",
-                columns: table => new
-                {
-                    KoiFishId = table.Column<int>(type: "int", nullable: false),
-                    KoiBreedId = table.Column<int>(type: "int", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_KoiFishKoiBreeds", x => new { x.KoiFishId, x.KoiBreedId });
-                    table.ForeignKey(
-                        name: "FK_KoiFishKoiBreeds_KoiBreeds_KoiBreedId",
-                        column: x => x.KoiBreedId,
-                        principalTable: "KoiBreeds",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_KoiFishKoiBreeds_KoiFishs_KoiFishId",
                         column: x => x.KoiFishId,
                         principalTable: "KoiFishs",
                         principalColumn: "Id",
@@ -743,14 +742,14 @@ namespace Koi.Repositories.Migrations
                 column: "StaffId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_KoiBreedKoiFish_KoiFishesId",
+                table: "KoiBreedKoiFish",
+                column: "KoiFishesId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_KoiCertificates_KoiFishId",
                 table: "KoiCertificates",
                 column: "KoiFishId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_KoiFishKoiBreeds_KoiBreedId",
-                table: "KoiFishKoiBreeds",
-                column: "KoiBreedId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_KoiFishs_ConsignedBy",
@@ -829,10 +828,10 @@ namespace Koi.Repositories.Migrations
                 name: "FAQs");
 
             migrationBuilder.DropTable(
-                name: "KoiCertificates");
+                name: "KoiBreedKoiFish");
 
             migrationBuilder.DropTable(
-                name: "KoiFishKoiBreeds");
+                name: "KoiCertificates");
 
             migrationBuilder.DropTable(
                 name: "Notifications");

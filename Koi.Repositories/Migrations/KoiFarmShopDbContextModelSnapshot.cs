@@ -429,21 +429,6 @@ namespace Koi.Repositories.Migrations
                     b.ToTable("KoiFishs");
                 });
 
-            modelBuilder.Entity("Koi.BusinessObjects.KoiFishKoiBreed", b =>
-                {
-                    b.Property<int>("KoiFishId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("KoiBreedId")
-                        .HasColumnType("int");
-
-                    b.HasKey("KoiFishId", "KoiBreedId");
-
-                    b.HasIndex("KoiBreedId");
-
-                    b.ToTable("KoiFishKoiBreeds");
-                });
-
             modelBuilder.Entity("Koi.BusinessObjects.Notification", b =>
                 {
                     b.Property<int>("Id")
@@ -1016,6 +1001,21 @@ namespace Koi.Repositories.Migrations
                     b.ToTable("WalletTransactions");
                 });
 
+            modelBuilder.Entity("KoiBreedKoiFish", b =>
+                {
+                    b.Property<int>("KoiBreedsId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("KoiFishesId")
+                        .HasColumnType("int");
+
+                    b.HasKey("KoiBreedsId", "KoiFishesId");
+
+                    b.HasIndex("KoiFishesId");
+
+                    b.ToTable("KoiBreedKoiFish");
+                });
+
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<int>", b =>
                 {
                     b.Property<int>("Id")
@@ -1212,25 +1212,6 @@ namespace Koi.Repositories.Migrations
                     b.Navigation("Consigner");
                 });
 
-            modelBuilder.Entity("Koi.BusinessObjects.KoiFishKoiBreed", b =>
-                {
-                    b.HasOne("Koi.BusinessObjects.KoiBreed", "KoiBreed")
-                        .WithMany("KoiFishKoiBreeds")
-                        .HasForeignKey("KoiBreedId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Koi.BusinessObjects.KoiFish", "KoiFish")
-                        .WithMany("KoiFishKoiBreeds")
-                        .HasForeignKey("KoiFishId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("KoiBreed");
-
-                    b.Navigation("KoiFish");
-                });
-
             modelBuilder.Entity("Koi.BusinessObjects.Order", b =>
                 {
                     b.HasOne("Koi.BusinessObjects.User", "User")
@@ -1325,6 +1306,21 @@ namespace Koi.Repositories.Migrations
                     b.Navigation("User");
                 });
 
+            modelBuilder.Entity("KoiBreedKoiFish", b =>
+                {
+                    b.HasOne("Koi.BusinessObjects.KoiBreed", null)
+                        .WithMany()
+                        .HasForeignKey("KoiBreedsId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Koi.BusinessObjects.KoiFish", null)
+                        .WithMany()
+                        .HasForeignKey("KoiFishesId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<int>", b =>
                 {
                     b.HasOne("Koi.BusinessObjects.Role", null)
@@ -1376,16 +1372,9 @@ namespace Koi.Repositories.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("Koi.BusinessObjects.KoiBreed", b =>
-                {
-                    b.Navigation("KoiFishKoiBreeds");
-                });
-
             modelBuilder.Entity("Koi.BusinessObjects.KoiFish", b =>
                 {
                     b.Navigation("KoiCertificates");
-
-                    b.Navigation("KoiFishKoiBreeds");
                 });
 
             modelBuilder.Entity("Koi.BusinessObjects.Order", b =>

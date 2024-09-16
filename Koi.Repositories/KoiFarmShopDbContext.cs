@@ -1,13 +1,6 @@
 ﻿using Koi.BusinessObjects;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Logging;
-using System;
-using System.Collections.Generic;
-using System.Data;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Koi.Repositories
 {
@@ -17,7 +10,7 @@ namespace Koi.Repositories
         public DbSet<Order> Orders { get; set; }
         public DbSet<OrderDetail> OrderDetails { get; set; }
         public DbSet<KoiBreed> KoiBreeds { get; set; }
-        public DbSet<KoiFishKoiBreed> KoiFishKoiBreeds { get; set; }
+        //public DbSet<KoiFishKoiBreed> KoiFishKoiBreeds { get; set; }
         public DbSet<FAQ> FAQs { get; set; }
         public DbSet<Blog> Blogs { get; set; }
         public DbSet<OrderDetailFeedback> OrderDetailFeedbacks { get; set; }
@@ -38,19 +31,19 @@ namespace Koi.Repositories
         {
             base.OnModelCreating(modelBuilder);
 
-            // Configure many-to-many relationship
-            modelBuilder.Entity<KoiFishKoiBreed>()
-                .HasKey(kfkb => new { kfkb.KoiFishId, kfkb.KoiBreedId });
+            //// Configure many-to-many relationship
+            //modelBuilder.Entity<KoiFishKoiBreed>()
+            //    .HasKey(kfkb => new { kfkb.KoiFishId, kfkb.KoiBreedId });
 
-            modelBuilder.Entity<KoiFishKoiBreed>()
-                .HasOne(kfkb => kfkb.KoiFish)
-                .WithMany(kf => kf.KoiFishKoiBreeds)
-                .HasForeignKey(kfkb => kfkb.KoiFishId);
+            //modelBuilder.Entity<KoiFishKoiBreed>()
+            //    .HasOne(kfkb => kfkb.KoiFish)
+            //    .WithMany(kf => kf.KoiFishKoiBreeds)
+            //    .HasForeignKey(kfkb => kfkb.KoiFishId);
 
-            modelBuilder.Entity<KoiFishKoiBreed>()
-                .HasOne(kfkb => kfkb.KoiBreed)
-                .WithMany(kb => kb.KoiFishKoiBreeds)
-                .HasForeignKey(kfkb => kfkb.KoiBreedId);
+            //modelBuilder.Entity<KoiFishKoiBreed>()
+            //    .HasOne(kfkb => kfkb.KoiBreed)
+            //    .WithMany(kb => kb.KoiFishKoiBreeds)
+            //    .HasForeignKey(kfkb => kfkb.KoiBreedId);
 
             modelBuilder.Entity<OrderDetail>()
         .HasOne(od => od.Order)
