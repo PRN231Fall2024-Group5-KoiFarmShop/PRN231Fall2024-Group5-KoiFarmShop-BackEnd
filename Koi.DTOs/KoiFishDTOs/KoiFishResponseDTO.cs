@@ -2,6 +2,7 @@
 {
     public class KoiFishResponseDTO
     {
+        public int Id { get; set; }
         public string Name { get; set; }
         public string? Origin { get; set; }
         public string? Gender { get; set; }
@@ -16,5 +17,7 @@
         public bool? IsConsigned { get; set; }
         public bool? IsSold { get; set; }
         public int ConsignedBy { get; set; }
+        public List<KoiFishResponseDTO> KoiBreeds { get; set; }
+        public bool? IsDeleted { get; set; } = false;
     }
 }

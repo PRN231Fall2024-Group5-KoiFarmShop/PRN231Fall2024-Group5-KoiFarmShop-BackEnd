@@ -21,7 +21,7 @@ namespace Koi.Repositories.Repositories
         public IQueryable<KoiFish> FilterAllField(KoiParams koiParams)
         {
             var query = _dbContext.KoiFishs
-            .Include(x => x.KoiFishKoiBreeds)
+            .Include(x => x.KoiBreeds)
             .Include(x => x.Consigner);
             return query;
         }

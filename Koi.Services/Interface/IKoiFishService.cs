@@ -12,7 +12,7 @@ namespace Koi.Services.Interface
 
         Task<KoiFishResponseDTO> CreateKoiFish(CreateKoiFishDTO koiFishModel);
 
-        Task<KoiFishResponseDTO> UpdateKoiFish(int id, CreateKoiFishDTO koiFishModel);
+        Task<KoiFishResponseDTO> UpdateKoiFish(int id, UpdateKoiFishDTO koiFishModel);
 
         Task<KoiFishResponseDTO> DeleteKoiFish(int id);
     }

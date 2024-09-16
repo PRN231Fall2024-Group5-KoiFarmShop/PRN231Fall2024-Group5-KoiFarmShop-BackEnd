@@ -120,9 +120,8 @@ namespace Koi.Services.Services
             //await _redisService.DeleteKeyAsync(CacheKeys.EventCategories);
 
             // mapper
-            var result = _mapper.Map<KoiBreedResponseDTO>(newCategory);
-            await _unitOfWork.SaveChangeAsync();
-            return result;
+            if (await _unitOfWork.SaveChangeAsync() <= 0) throw new Exception("500 - Adding process failed");
+            return _mapper.Map<KoiBreedResponseDTO>(newCategory);
         }
 
         public async Task<KoiBreedResponseDTO> UpdateKoiBreed(int id, CreateKoiBreedDTO koiBreedModel)
