@@ -20,12 +20,12 @@ namespace Koi.Services.Mapper
             CreateMap<KoiFish, CreateKoiFishDTO>()
                 .ForMember(dest => dest.Gender,
                     opt => opt.MapFrom(src => src.Gender != null && src.Gender == true ? "Male" : "Female"))
-                .ReverseMap();
+                .ReverseMap().ForMember(dest => dest.Gender, opt => opt.MapFrom(src => src.Gender == "Male" ? true : false));
 
             CreateMap<KoiFish, KoiFishResponseDTO>()
                 .ForMember(dest => dest.Gender,
                     opt => opt.MapFrom(src => src.Gender != null && src.Gender == true ? "Male" : "Female"))
-                .ReverseMap();
+                .ReverseMap().ForMember(dest => dest.Gender, opt => opt.MapFrom(src => src.Gender == "Male" ? true : false));
 
             CreateMap<User, UserDetailsModel>()
           // .ForMember(dest => dest.Gender, opt => opt.MapFrom(src => src.Gender != null && src.Gender == true ? "Male" : "Female"))

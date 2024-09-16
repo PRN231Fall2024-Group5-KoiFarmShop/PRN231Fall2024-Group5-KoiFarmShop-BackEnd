@@ -1,4 +1,6 @@
-﻿namespace Koi.DTOs.KoiFishDTOs
+﻿using Koi.DTOs.KoiBreedDTOs;
+
+namespace Koi.DTOs.KoiFishDTOs
 {
     public class KoiFishResponseDTO
     {
@@ -16,8 +18,7 @@
         public long Price { get; set; }
         public bool? IsConsigned { get; set; }
         public bool? IsSold { get; set; }
-        public int ConsignedBy { get; set; }
-        public List<KoiFishResponseDTO> KoiBreeds { get; set; }
-        public bool? IsDeleted { get; set; } = false;
+        public int? ConsignedBy { get; set; }
+        public List<KoiBreedResponseDTO> KoiBreeds { get; set; }
     }
 }
