@@ -1,7 +1,6 @@
 ﻿using Koi.BusinessObjects;
 using Koi.Repositories.Utils;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore;
 
 namespace Koi.Repositories
 {
@@ -167,8 +166,6 @@ namespace Koi.Repositories
             }
             #endregion
 
-            context.Database.ExecuteSqlRaw("TRUNCATE TABLE [KoiBreeds]");
-            context.Database.ExecuteSqlRaw("TRUNCATE TABLE [KoiBreed]");
             #region Seed KoiBreeds
             if (!context.KoiBreeds.Any())
             {

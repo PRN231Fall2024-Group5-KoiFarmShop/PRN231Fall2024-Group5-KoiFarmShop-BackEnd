@@ -20,7 +20,7 @@ namespace Koi.BusinessObjects
 
         //navigation
         [ForeignKey("ConsignedBy")]
-        public virtual User Consigner { get; set; }
+        public virtual User? Consigner { get; set; }
 
         // Navigation property for many-to-many relationship with KoiBreed
         //public virtual ICollection<KoiFishKoiBreed> KoiFishKoiBreeds { get; set; }
