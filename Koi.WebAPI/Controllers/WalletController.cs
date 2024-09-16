@@ -1,4 +1,5 @@
 ﻿using Koi.DTOs.PaymentDTOs;
+using Koi.DTOs.TransactionDTOs;
 using Koi.DTOs.WalletDTOs;
 using Koi.Repositories.Commons;
 using Koi.Services.Interface;
@@ -102,6 +103,21 @@ namespace Koi.WebAPI.Controllers
             {
                 var result = await _walletService.GetTransactionsByOrderId(orderId);
                 return Ok(ApiResult<List<TransactionDTO>>.Succeed(result, "Get list successfully"));
+            }
+            catch (Exception ex)
+            {
+                return HandleError(ex);
+            }
+        }
+
+        // Lấy danh sách transaction theo OrderId
+        [HttpGet("users/{id}/wallet")]
+        public async Task<IActionResult> GetWalletByUserId(int id)
+        {
+            try
+            {
+                var result = await _walletService.GetWalletByUserId(id);
+                return Ok(ApiResult<WalletDTO>.Succeed(result, "Get list successfully"));
             }
             catch (Exception ex)
             {

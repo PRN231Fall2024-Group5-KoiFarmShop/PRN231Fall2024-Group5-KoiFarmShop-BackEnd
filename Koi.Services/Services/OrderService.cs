@@ -51,7 +51,7 @@ namespace Koi.Services.Services
             var check = await _unitOfWork.SaveChangeAsync();
             if (check > 0)
             {
-                orderInfo.OrderId = newOrder.Id;
+                orderInfo.CommonId = newOrder.Id;
                 var result = _mapper.Map<OrderDTO>(newOrder);
                 return result;
             }

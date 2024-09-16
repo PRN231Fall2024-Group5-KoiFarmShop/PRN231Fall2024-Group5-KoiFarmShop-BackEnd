@@ -55,7 +55,7 @@ namespace ServiceLayer.Services.VnPayConfig
             vnp_OrderType = "email:" + _claimsService.GetCurrentUserId;
             this.vnp_ReturnUrl = vnp_ReturnUrl;
             this.vnp_TmnCode = vnp_TmnCode;
-            vnp_TxnRef = orderInfo.OrderId.ToString();
+            vnp_TxnRef = orderInfo.CommonId.ToString(); // common id is order Id
             vnp_ExpireDate = _currentTime.GetCurrentTime().AddMinutes(15).ToString("yyyyMMddHHmmss");
             vnp_BankCode = "VNBANK"; // sai
 

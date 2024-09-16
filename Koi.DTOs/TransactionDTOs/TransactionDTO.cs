@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Koi.DTOs.PaymentDTOs
+namespace Koi.DTOs.TransactionDTOs
 {
     public class TransactionDTO
     {

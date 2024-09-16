@@ -3,6 +3,7 @@ using Azure.Core;
 using Koi.BusinessObjects;
 using Koi.DTOs.Enums;
 using Koi.DTOs.PaymentDTOs;
+using Koi.DTOs.TransactionDTOs;
 using Koi.DTOs.WalletDTOs;
 using Koi.Repositories.Helper;
 using Koi.Repositories.Interfaces;
@@ -68,7 +69,7 @@ namespace Koi.Services.Services
             };
 
             var newOrder = await _orderService.NewOrderAsync(vnpayOrderInfo);
-            vnpayOrderInfo.OrderId = newOrder.Id;
+            vnpayOrderInfo.CommonId = newOrder.Id;
             var payUrl = _vnPayService.CreateLink(vnpayOrderInfo);
             var result = new DepositResponseDTO
             {
@@ -79,7 +80,7 @@ namespace Koi.Services.Services
             return result;
         }
 
-        public async Task<WalletDTO> GetWalletByUserIdAndType(int userId)
+        public async Task<WalletDTO> GetWalletByUserId(int userId)
         {
             var wallet = await _unitOfWork.WalletRepository.GetWalletByUserId(userId);
             var result = _mapper.Map<WalletDTO>(wallet);

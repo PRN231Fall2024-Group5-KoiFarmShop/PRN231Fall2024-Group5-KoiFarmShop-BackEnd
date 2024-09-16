@@ -9,7 +9,7 @@ namespace Koi.DTOs.PaymentDTOs
 {
     public class VnpayOrderInfo
     {
-        public int? OrderId { get; set; }
+        public int? CommonId { get; set; }
 
         [Required]
         public long Amount { get; set; }
