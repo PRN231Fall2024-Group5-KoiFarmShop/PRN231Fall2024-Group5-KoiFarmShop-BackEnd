@@ -32,7 +32,6 @@ namespace Koi.BusinessObjects
         public virtual ICollection<KoiCertificate>? KoiCertificates { get; set; }
 
         //foreign key
-        public int? ConsignedBy { get; set; }
 
     }
 }
