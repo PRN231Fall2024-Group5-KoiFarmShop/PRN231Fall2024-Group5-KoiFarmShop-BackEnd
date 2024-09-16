@@ -6,6 +6,7 @@
 
         public IKoiFishRepository KoiFishRepository { get; }
         public IKoiBreedRepository KoiBreedRepository { get; }
+        public IKoiCertificateRepository KoiCertificateRepository { get; }
         Task<int> SaveChangeAsync();
     }
 }
