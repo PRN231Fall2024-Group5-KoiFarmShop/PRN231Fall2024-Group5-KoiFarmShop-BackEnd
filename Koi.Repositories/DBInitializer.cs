@@ -895,6 +895,7 @@ namespace Koi.Repositories
                         IsConsigned = false,
                         IsSold = false,
                         ConsignedBy = null,
+                        Consigner = null,
                         KoiBreeds = new List<KoiBreed>
                         {
                             koiBreeds.FirstOrDefault(b => b.Name == "Goshiki"),
