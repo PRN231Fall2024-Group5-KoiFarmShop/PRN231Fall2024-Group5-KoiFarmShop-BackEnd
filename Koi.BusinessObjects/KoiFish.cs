@@ -18,9 +18,12 @@ namespace Koi.BusinessObjects
         public bool? IsConsigned { get; set; }
         public bool? IsSold { get; set; }
 
+        //foreign key
+        public int? ConsignedBy { get; set; }
+
         //navigation
         [ForeignKey("ConsignedBy")]
-        public virtual User Consigner { get; set; }
+        public virtual User? Consigner { get; set; }
 
         // Navigation property for many-to-many relationship with KoiBreed
         //public virtual ICollection<KoiFishKoiBreed> KoiFishKoiBreeds { get; set; }
@@ -29,6 +32,7 @@ namespace Koi.BusinessObjects
         public virtual ICollection<KoiCertificate>? KoiCertificates { get; set; }
 
         //foreign key
-        public int ConsignedBy { get; set; }
+        public int? ConsignedBy { get; set; }
+
     }
 }

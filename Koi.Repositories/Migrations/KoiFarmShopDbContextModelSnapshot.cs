@@ -361,7 +361,7 @@ namespace Koi.Repositories.Migrations
                     b.Property<int>("Age")
                         .HasColumnType("int");
 
-                    b.Property<int>("ConsignedBy")
+                    b.Property<int?>("ConsignedBy")
                         .HasColumnType("int");
 
                     b.Property<DateTime>("CreatedAt")
@@ -1202,9 +1202,7 @@ namespace Koi.Repositories.Migrations
                 {
                     b.HasOne("Koi.BusinessObjects.User", "Consigner")
                         .WithMany("KoiFishsConsigned")
-                        .HasForeignKey("ConsignedBy")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("ConsignedBy");
 
                     b.Navigation("Consigner");
                 });
