@@ -3,7 +3,6 @@
 FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS base
 USER app
 WORKDIR /app
-EXPOSE 8082
 EXPOSE 8081
 
 FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
@@ -11,7 +10,9 @@ ARG BUILD_CONFIGURATION=Release
 WORKDIR /src
 COPY ["Koi.WebAPI/Koi.WebAPI.csproj", "Koi.WebAPI/"]
 COPY ["Koi.Services/Koi.Services.csproj", "Koi.Services/"]
+COPY ["Koi.DTOs/Koi.DTOs.csproj", "Koi.DTOs/"]
 COPY ["Koi.Repositories/Koi.Repositories.csproj", "Koi.Repositories/"]
+COPY ["Koi.BusinessObjects/Koi.BusinessObjects.csproj", "Koi.BusinessObjects/"]
 RUN dotnet restore "./Koi.WebAPI/Koi.WebAPI.csproj"
 COPY . .
 WORKDIR "/src/Koi.WebAPI"
