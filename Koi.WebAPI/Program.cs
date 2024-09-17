@@ -149,15 +149,6 @@ app.UseCors(options =>
 
 try
 {
-    await app.ApplyMigrations(logger);
-}
-catch (Exception e)
-{
-    logger.LogError(e, "An problem occurred during migration!");
-}
-
-try
-{
     await DBInitializer.Initialize(context, userManager);
 }
 catch (Exception e)
@@ -178,6 +169,14 @@ if (app.Environment.IsDevelopment())
         config.ConfigObject.AdditionalItems.Add("persistAuthorization", "true");
         config.InjectJavascript("/custom-swagger.js");
     });
+    try
+    {
+        await app.ApplyMigrations(logger);
+    }
+    catch (Exception e)
+    {
+        logger.LogError(e, "An problem occurred during migration!");
+    }
 }
 
 // USE AUTHENTICATION, AUTHORIZATION
