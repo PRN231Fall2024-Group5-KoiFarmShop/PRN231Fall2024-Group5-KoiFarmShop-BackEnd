@@ -132,6 +132,21 @@ builder.Services.AddControllers()
 
 var app = builder.Build();
 
+
+//ADD CORS
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowSpecificOrigin",
+        policyBuilder =>
+        {
+            policyBuilder
+                .WithOrigins("http://localhost:3000")
+                .AllowAnyHeader()
+                .AllowAnyMethod()
+                .AllowCredentials();
+        });
+});
+
 // SCOPE FOR MIGRATION
 // explain: The CreateScope method creates a new scope. The scope is a way to manage the lifetime of objects in the container.var scope = app.Services.CreateScope();
 var scope = app.Services.CreateScope();
@@ -139,13 +154,8 @@ var context = scope.ServiceProvider.GetRequiredService<KoiFarmShopDbContext>();
 var userManager = scope.ServiceProvider.GetRequiredService<UserManager<User>>();
 var logger = scope.ServiceProvider.GetRequiredService<ILogger<Program>>();
 
-// CONFIG CORS
-app.UseCors(options =>
-{
-    options.AllowAnyOrigin();
-    options.AllowAnyMethod();
-    options.AllowAnyHeader();
-});
+// Use CORS policy
+app.UseCors("AllowSpecificOrigin");
 
 try
 {
