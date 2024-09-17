@@ -5,7 +5,7 @@ namespace Koi.WebAPI.Injection
 {
     public static class MigrationExtensions
     {
-        public static async Task ApplyMigrations(this IApplicationBuilder app, ILogger _logger)
+        public static void ApplyMigrations(this IApplicationBuilder app, ILogger _logger)
         {
             try
             {
@@ -14,7 +14,7 @@ namespace Koi.WebAPI.Injection
                 using KoiFarmShopDbContext dbContext =
                     scope.ServiceProvider.GetRequiredService<KoiFarmShopDbContext>();
 
-                await dbContext.Database.MigrateAsync();
+                dbContext.Database.Migrate();
             }
             catch (Exception e)
             {

@@ -171,7 +171,7 @@ if (app.Environment.IsDevelopment())
     });
     try
     {
-        await app.ApplyMigrations(logger);
+        app.ApplyMigrations(logger);
     }
     catch (Exception e)
     {
