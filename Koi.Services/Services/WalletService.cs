@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Azure.Core;
+using Google.Apis.Drive.v3.Data;
 using Koi.BusinessObjects;
 using Koi.DTOs.Enums;
 using Koi.DTOs.PaymentDTOs;
@@ -146,7 +147,7 @@ namespace Koi.Services.Services
             };
             newTransaction = await _unitOfWork.TransactionRepository.AddAsync(newTransaction);
             var userWallet = await _unitOfWork.WalletRepository.GetWalletByUserId(existingOrder.UserId);
-            existingOrder.OrderStatus = "SUCCESS";
+            existingOrder.OrderStatus = "COMPLETED";
             userWallet.Balance += newTransaction.Amount;
             if (await _unitOfWork.SaveChangeAsync() <= 0)
             {
@@ -166,6 +167,45 @@ namespace Koi.Services.Services
         {
             var transactions = await _unitOfWork.TransactionRepository.GetTransactionsByOrderId(orderId);
             var result = _mapper.Map<List<TransactionDTO>>(transactions);
+            return result;
+        }
+
+        public async Task<DepositResponseDTO> CompletePending(int orderId)
+        {
+            //var user = await _unitOfWork.UserRepository.GetCurrentUserAsync();
+            //if (user == null)
+            //{
+            //    throw new Exception("401 - User not existing");
+            //}
+            var existingOrder = await _orderService.GetOrderByIdAsync(orderId);
+            if (existingOrder == null)
+            {
+                return null;
+            }
+
+            var existingWallet = await _unitOfWork.WalletRepository.GetWalletByUserId(2);
+            if (existingWallet == null)
+            {
+                throw new Exception("404 - This user don't have wallet");
+            }
+            if (existingOrder.OrderStatus == "COMPLETED")
+            {
+                throw new Exception("400 - This order have been completed");
+            }
+
+            var vnpayOrderInfo = new VnpayOrderInfo
+            {
+                CommonId = existingOrder.Id
+                Amount = existingOrder.TotalAmount,
+                Description = ""
+            };
+            var payUrl = _vnPayService.CreateLink(vnpayOrderInfo);
+            var result = new DepositResponseDTO
+            {
+                Order = existingOrder,
+                PayUrl = payUrl
+            };
+
             return result;
         }
     }

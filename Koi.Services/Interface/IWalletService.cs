@@ -11,6 +11,7 @@ namespace Koi.Services.Interface
 {
     public interface IWalletService
     {
+        Task<DepositResponseDTO> CompletePending(int orderId);
         Task<DepositResponseDTO> Deposit(long amount);
 
         Task<List<WalletDTO>> GetAllWallets();

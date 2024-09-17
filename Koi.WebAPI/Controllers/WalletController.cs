@@ -1,4 +1,5 @@
-﻿using Koi.DTOs.PaymentDTOs;
+﻿using Koi.DTOs.Enums;
+using Koi.DTOs.PaymentDTOs;
 using Koi.DTOs.TransactionDTOs;
 using Koi.DTOs.WalletDTOs;
 using Koi.Repositories.Commons;
@@ -118,6 +119,36 @@ namespace Koi.WebAPI.Controllers
             {
                 var result = await _walletService.GetWalletByUserId(id);
                 return Ok(ApiResult<WalletDTO>.Succeed(result, "Get list successfully"));
+            }
+            catch (Exception ex)
+            {
+                return HandleError(ex);
+            }
+        }
+
+        /// <summary>
+        /// Create direct url for old pending transaction
+        /// </summary>
+        /// <returns>
+        ///     URL of payment
+        /// </returns>
+        [HttpPost("wallets/orders/{orderId}/complete-pending")]
+        [ProducesResponseType(200)]
+        [ProducesResponseType(404)]
+        public async Task<IActionResult> SubmitPendingOrderToPay(int orderId)
+        {
+            try
+            {
+                var result = await _walletService.CompletePending(orderId);
+
+                if (result == null)
+                {
+                    throw new Exception("404 - Order not found");
+                }
+                else
+                {
+                    return Ok(ApiResult<DepositResponseDTO>.Succeed(result, "Payment to pay!"));
+                }
             }
             catch (Exception ex)
             {

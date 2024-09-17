@@ -23,8 +23,6 @@ namespace Koi.WebAPI.Controllers
 
         /// <summary>
         /// Registers a new user with the CUSTOMER role.
-        ///
-        /// INPUT THE IMAGE ONLY, DO NOT INPUT THE STRING URL
         /// </summary>
         /// <param name="userSignup">The user signup data.</param>
         /// <returns>A result object indicating success or failure, with additional information.</returns>
@@ -69,8 +67,6 @@ namespace Koi.WebAPI.Controllers
 
         /// <summary>
         /// ADMIN create a new user with the CUSTOMER role.
-        ///
-        /// INPUT THE IMAGE ONLY, DO NOT INPUT THE STRING URL
         /// </summary>
         /// <param name="userSignup">The user signup data.</param>
         /// <param name="role">Optional new role for the user (if applicable).</param>
