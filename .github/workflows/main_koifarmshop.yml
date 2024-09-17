@@ -2,9 +2,9 @@ name: Build and deploy ASP.Net Core app to VPS - Koi Farm Shop
 
 on:
   push:
-    branches: [ "main" ]
+    branches: [ "master" ]
   pull_request:
-    branches: [ "main" ]
+    branches: [ "master" ]
   workflow_dispatch:
 
 jobs:
