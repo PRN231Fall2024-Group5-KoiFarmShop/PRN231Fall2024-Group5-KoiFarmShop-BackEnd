@@ -94,4 +94,4 @@
     checkboxContainer.addEventListener("change", filterContent);
 };
 
-setTimeout(myInitFunction, 1000);
+setTimeout(myInitFunction, 5000);
