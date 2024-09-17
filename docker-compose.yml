@@ -4,7 +4,7 @@ services:
     container_name: koi.webapi
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
-      - "ConnectionStrings__DefaultConnection=Server=koi-database,1435;Database=koi-database;User Id=sa;Password=YourStrong!Passw0rd;Encrypt=False;TrustServerCertificate=True"
+      - "ConnectionStrings__DefaultConnection=Server=koi-database;Database=koi-database;User Id=sa;Password=YourStrong!Passw0rd;Encrypt=False;TrustServerCertificate=True"
     build:
       context: .
       dockerfile: Koi.WebAPI/Dockerfile
@@ -21,7 +21,7 @@ services:
       ACCEPT_EULA: "Y"
       MSSQL_SA_PASSWORD: "YourStrong!Passw0rd"
     ports:
-      - "1435:1433"
+      - "1434:1433"
     volumes:
       - ./.containers/koi-database:/var/opt/mssql/data
       - ./bk:/var/opt/mssql/backup
