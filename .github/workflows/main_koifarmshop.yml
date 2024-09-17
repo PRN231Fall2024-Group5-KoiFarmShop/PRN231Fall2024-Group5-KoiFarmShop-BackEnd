@@ -2,9 +2,7 @@ name: Build and deploy ASP.Net Core app to VPS - Koi Farm Shop
 
 on:
   push:
-    branches: [ "main" ]
-  pull_request:
-    branches: [ "main" ]
+    branches: [ "master" ]
   workflow_dispatch:
 
 jobs:
@@ -30,7 +28,7 @@ jobs:
         uses: docker/build-push-action@v2
         with:
           context: . 
-          file: WebAPI/Dockerfile
+          file: Koi.WebAPI/Dockerfile
           push: true
           tags: lequocuy/koi.webapi:latest
 
