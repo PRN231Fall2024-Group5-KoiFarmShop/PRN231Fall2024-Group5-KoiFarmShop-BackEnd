@@ -10,8 +10,10 @@ namespace Koi.Repositories
         public DbSet<Order> Orders { get; set; }
         public DbSet<OrderDetail> OrderDetails { get; set; }
         public DbSet<KoiBreed> KoiBreeds { get; set; }
+
         //public DbSet<KoiFishKoiBreed> KoiFishKoiBreeds { get; set; }
         public DbSet<FAQ> FAQs { get; set; }
+
         public DbSet<Blog> Blogs { get; set; }
         public DbSet<OrderDetailFeedback> OrderDetailFeedbacks { get; set; }
         public DbSet<Transaction> Transactions { get; set; }
@@ -22,6 +24,7 @@ namespace Koi.Repositories
         public DbSet<PackageCare> PackageCares { get; set; } // Add DbSet for PackageCare
         public DbSet<WalletTransaction> WalletTransactions { get; set; }  // Add DbSet for WalletTransaction
         public DbSet<Wallet> Wallets { get; set; }
+        public DbSet<KoiFishImage> KoiFishImages { get; set; }
 
         public KoiFarmShopDbContext(DbContextOptions options) : base(options)
         {

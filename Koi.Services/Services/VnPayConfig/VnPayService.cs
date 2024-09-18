@@ -12,10 +12,9 @@ using Koi.DTOs.PaymentDTOs;
 using Koi.Repositories.Interfaces;
 using Koi.Repositories.Utils;
 using Koi.Services.Interface;
-using Koi.Services.Services.VnPayConfig;
 using Koi.DTOs.Enums;
 
-namespace ServiceLayer.Services.VnPayConfig
+namespace Koi.Services.Services.VnPayConfig
 {
     public class VnPayService : IVnPayService
     {

@@ -3,6 +3,7 @@ using Koi.DTOs.PaymentDTOs;
 using Koi.DTOs.TransactionDTOs;
 using Koi.DTOs.WalletDTOs;
 using Koi.Repositories.Commons;
+using Koi.Repositories.Interfaces;
 using Koi.Services.Interface;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -153,6 +154,48 @@ namespace Koi.WebAPI.Controllers
             catch (Exception ex)
             {
                 return HandleError(ex);
+            }
+        }
+
+        /// <summary>
+        /// Purchase a order
+        /// </summary>
+        [HttpPost("payment/event-orders/{orderId}")]
+        public async Task<IActionResult> PurchaseOrder(Guid orderId)
+        {
+            try
+            {
+                //var userId = _claimsService.GetCurrentUserId;
+
+                //if (userId == Guid.Empty)
+                //{
+                //    throw new Exception("User Id is invalid");
+                //}
+                //if (orderId == Guid.Empty)
+                //{
+                //    throw new Exception("OrderId is invalid");
+                //}
+                //var result = await _walletService.PurchaseOrder(orderId, userId);
+                //if (result.Status == TransactionStatusEnums.FAILED.ToString())
+                //{
+                //    throw new Exception("Purchase Order Failed!");
+                //}
+
+                //if (result.Status == TransactionStatusEnums.PENDING.ToString())
+                //{
+                //    throw new Exception("Purchase Order Pending!");
+                //}
+
+                //if (result.Status == TransactionStatusEnums.SUCCESS.ToString())
+                //{
+                //    return Ok(ApiResult<TransactionResponsesDTO>.Succeed(result, "Purchase Order Successfully!"));
+                //}
+
+                throw new Exception("Purchase Order Failed! Not Have a Type!");
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ApiResult<object>.Fail(ex));
             }
         }
 

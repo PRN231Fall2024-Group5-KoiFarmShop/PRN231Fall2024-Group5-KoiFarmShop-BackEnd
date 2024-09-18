@@ -8,7 +8,8 @@ namespace Koi.DTOs.PaymentDTOs
 {
     public class PurchaseDTO
     {
-        public int? FishId { get; set; }
-        public Int64? Price { get; set; }
+        public List<int> FishIds { get; set; }
+        public string? ShippingAddress { get; set; }
+        public string? Note { get; set; }
     }
 }

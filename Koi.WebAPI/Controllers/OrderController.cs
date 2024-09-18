@@ -4,7 +4,6 @@ using Koi.Services.Interface;
 using Koi.Services.Services.VnPayConfig;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using ServiceLayer.Services.VnPayConfig;
 using System.Web;
 
 namespace Koi.WebAPI.Controllers
