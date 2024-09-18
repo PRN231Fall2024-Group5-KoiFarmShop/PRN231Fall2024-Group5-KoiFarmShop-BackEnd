@@ -27,7 +27,6 @@ namespace Koi.BusinessObjects
         public virtual ICollection<KoiBreed> KoiBreeds { get; set; }
 
         public virtual ICollection<KoiCertificate>? KoiCertificates { get; set; }
-
-
+        public virtual ICollection<KoiFishImage>? KoiFishImages { get; set; }
     }
 }

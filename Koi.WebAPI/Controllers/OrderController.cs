@@ -4,19 +4,18 @@ using Koi.Services.Interface;
 using Koi.Services.Services.VnPayConfig;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using ServiceLayer.Services.VnPayConfig;
 using System.Web;
 
 namespace Koi.WebAPI.Controllers
 {
     [Route("api/v1")]
     [ApiController]
-    public class PaymentController : ControllerBase
+    public class OrderController : ControllerBase
     {
         private readonly IOrderService _paymentService;
         private readonly IVnPayService _vnPayService;
 
-        public PaymentController(IOrderService paymentService, IVnPayService vnPayService)
+        public OrderController(IOrderService paymentService, IVnPayService vnPayService)
         {
             _paymentService = paymentService;
             _vnPayService = vnPayService;
@@ -56,7 +55,7 @@ namespace Koi.WebAPI.Controllers
             }
         }
 
-        [HttpPost("payment/check-out")]
+        [HttpPost()]
         public async Task<IActionResult> CheckOutAsync(VnpayOrderInfo orderInfo)
         {
             try

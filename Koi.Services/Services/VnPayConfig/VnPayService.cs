@@ -12,10 +12,9 @@ using Koi.DTOs.PaymentDTOs;
 using Koi.Repositories.Interfaces;
 using Koi.Repositories.Utils;
 using Koi.Services.Interface;
-using Koi.Services.Services.VnPayConfig;
 using Koi.DTOs.Enums;
 
-namespace ServiceLayer.Services.VnPayConfig
+namespace Koi.Services.Services.VnPayConfig
 {
     public class VnPayService : IVnPayService
     {
@@ -55,7 +54,7 @@ namespace ServiceLayer.Services.VnPayConfig
             vnp_OrderType = "email:" + _claimsService.GetCurrentUserId;
             this.vnp_ReturnUrl = vnp_ReturnUrl;
             this.vnp_TmnCode = vnp_TmnCode;
-            vnp_TxnRef = orderInfo.OrderId.ToString();
+            vnp_TxnRef = orderInfo.CommonId.ToString(); // common id is order Id
             vnp_ExpireDate = _currentTime.GetCurrentTime().AddMinutes(15).ToString("yyyyMMddHHmmss");
             vnp_BankCode = "VNBANK"; // sai
 

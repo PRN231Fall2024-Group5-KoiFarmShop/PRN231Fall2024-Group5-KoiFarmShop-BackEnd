@@ -7,10 +7,10 @@ using Koi.Repositories.Repositories;
 using Koi.Services.Interface;
 using Koi.Services.Mapper;
 using Koi.Services.Services;
+using Koi.Services.Services.VnPayConfig;
 using Koi.WebAPI.MiddleWares;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using ServiceLayer.Services.VnPayConfig;
 using System.Diagnostics;
 
 namespace Koi.WebAPI.Injection

@@ -3,6 +3,7 @@ using Koi.BusinessObjects;
 using Koi.DTOs.KoiBreedDTOs;
 using Koi.DTOs.KoiFishDTOs;
 using Koi.DTOs.PaymentDTOs;
+using Koi.DTOs.TransactionDTOs;
 using Koi.DTOs.WalletDTOs;
 using Koi.Repositories.Models.UserModels;
 

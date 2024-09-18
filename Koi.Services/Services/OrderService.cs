@@ -51,7 +51,7 @@ namespace Koi.Services.Services
             var check = await _unitOfWork.SaveChangeAsync();
             if (check > 0)
             {
-                orderInfo.OrderId = newOrder.Id;
+                orderInfo.CommonId = newOrder.Id;
                 var result = _mapper.Map<OrderDTO>(newOrder);
                 return result;
             }
@@ -64,6 +64,11 @@ namespace Koi.Services.Services
         public async Task<List<OrderDTO>> GetOrdersAsync()
         {
             return _mapper.Map<List<OrderDTO>>(await _unitOfWork.OrderRepository.GetAllAsync());
+        }
+
+        public async Task<OrderDTO> GetOrderByIdAsync(int orderId)
+        {
+            return _mapper.Map<OrderDTO>(await _unitOfWork.OrderRepository.GetOrdersById(orderId));
         }
 
         public async Task<List<OrderDTO>> GetOrdersByUserIdAsync(int userId)

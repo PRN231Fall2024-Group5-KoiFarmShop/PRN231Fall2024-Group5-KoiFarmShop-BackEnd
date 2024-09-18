@@ -68,5 +68,42 @@ namespace Koi.Repositories.Repositories
         {
             return await _dbContext.Orders.ToListAsync();
         }
+
+        public async Task<Order> CreateOrderWithOrderDetails(Order order, List<KoiFish> purchaseFishes)
+        {
+            using (var transaction = await _dbContext.Database.BeginTransactionAsync())
+            {
+                try
+                {
+                    order.TotalAmount = 0;
+
+                    List<OrderDetail> eventOrderDetails = new List<OrderDetail>();
+                    foreach (var fish in purchaseFishes)
+                    {
+                        var orderDetail = new OrderDetail
+                        {
+                            OrderId = order.Id,
+                            KoiFishId = fish.Id,
+                            SubTotal = (int)fish.Price,
+                            Price = fish.Price,
+                        };
+                        order.OrderDetails.Add(orderDetail);
+                        eventOrderDetails.Add(orderDetail);
+                    }
+
+                    _dbContext.Entry(order).State = EntityState.Modified;
+                    await _dbContext.OrderDetails.AddRangeAsync(eventOrderDetails);
+                    await _dbContext.SaveChangesAsync();
+
+                    await transaction.CommitAsync();
+                    return order;
+                }
+                catch (Exception ex)
+                {
+                    await transaction.RollbackAsync();
+                    throw new Exception("Added transaction has been failed");
+                }
+            }
+        }
     }
 }
