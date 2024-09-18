@@ -13,9 +13,14 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Koi.BusinessObjects", "Koi.
 EndProject
 Project("{E53339B2-1760-4266-BCC7-CA923CBCF16C}") = "docker-compose", "docker-compose.dcproj", "{1A817A79-AEEC-4D4C-84BD-08DBF8112062}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Koi.DTOs", "Koi.DTOs\Koi.DTOs.csproj", "{FE7FEB31-5A81-4A42-841F-AF9A3B6CAD5B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Koi.DTOs", "Koi.DTOs\Koi.DTOs.csproj", "{FE7FEB31-5A81-4A42-841F-AF9A3B6CAD5B}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Koi.Tests", "Koi.Tests\Koi.Tests.csproj", "{31CD4C5D-7C00-4C6E-8CAB-67818AD88315}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Github Actions", "Github Actions", "{B06E42E5-95F1-472A-AC3A-0D40833759C6}"
+	ProjectSection(SolutionItems) = preProject
+		.github\workflows\main_koifarmshop.yml = .github\workflows\main_koifarmshop.yml
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

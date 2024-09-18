@@ -129,6 +129,19 @@ builder.Services.AddControllers()
         routePrefix: "odata",
         model: edmModel));
 // END - ADD ODATA
+//ADD CORS
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowSpecificOrigin",
+        policyBuilder =>
+        {
+            policyBuilder
+                .WithOrigins("http://localhost:3000")
+                .AllowAnyHeader()
+                .AllowAnyMethod()
+                .AllowCredentials();
+        });
+});
 
 var app = builder.Build();
 
@@ -139,22 +152,7 @@ var context = scope.ServiceProvider.GetRequiredService<KoiFarmShopDbContext>();
 var userManager = scope.ServiceProvider.GetRequiredService<UserManager<User>>();
 var logger = scope.ServiceProvider.GetRequiredService<ILogger<Program>>();
 
-// CONFIG CORS
-app.UseCors(options =>
-{
-    options.AllowAnyOrigin();
-    options.AllowAnyMethod();
-    options.AllowAnyHeader();
-});
 
-try
-{
-    await app.ApplyMigrations(logger);
-}
-catch (Exception e)
-{
-    logger.LogError(e, "An problem occurred during migration!");
-}
 
 try
 {
@@ -178,7 +176,18 @@ if (app.Environment.IsDevelopment())
         config.ConfigObject.AdditionalItems.Add("persistAuthorization", "true");
         config.InjectJavascript("/custom-swagger.js");
     });
+    try
+    {
+        app.ApplyMigrations(logger);
+    }
+    catch (Exception e)
+    {
+        logger.LogError(e, "An problem occurred during migration!");
+    }
 }
+
+// Use CORS policy
+app.UseCors("AllowSpecificOrigin");
 
 // USE AUTHENTICATION, AUTHORIZATION
 app.UseAuthorization();

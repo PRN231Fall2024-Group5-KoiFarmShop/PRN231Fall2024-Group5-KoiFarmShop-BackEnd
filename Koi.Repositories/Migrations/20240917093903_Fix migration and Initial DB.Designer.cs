@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Koi.Repositories.Migrations
 {
     [DbContext(typeof(KoiFarmShopDbContext))]
-    [Migration("20240916111957_trying_seed_data")]
-    partial class trying_seed_data
+    [Migration("20240917093903_Fix migration and Initial DB")]
+    partial class FixmigrationandInitialDB
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
