@@ -1,4 +1,5 @@
 ﻿using Koi.DTOs.PaymentDTOs;
+using Koi.DTOs.TransactionDTOs;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,7 +10,7 @@ namespace Koi.DTOs.WalletDTOs
 {
     public class DepositResponseDTO
     {
-        public OrderDTO? Order { get; set; }
+        public WalletTransactionDTO? Transaction { get; set; }
         public string? PayUrl { get; set; }
     }
 }

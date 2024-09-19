@@ -39,9 +39,8 @@ namespace Koi.Repositories.Repositories
                 return null; // Hoặc ném ngoại lệ
 
             existingWallet.Balance = updateWallet.Balance;
-            existingWallet.LoyaltyPoints = updateWallet.LoyaltyPoints;
-            existingWallet.Status = updateWallet.Status;
             existingWallet.ModifiedAt = _timeService.GetCurrentTime();
+            existingWallet.Status = updateWallet.Status;
 
             _dbContext.Wallets.Update(existingWallet);
 

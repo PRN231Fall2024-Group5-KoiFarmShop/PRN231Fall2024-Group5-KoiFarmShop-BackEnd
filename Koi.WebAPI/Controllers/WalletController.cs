@@ -63,7 +63,7 @@ namespace Koi.WebAPI.Controllers
             {
                 var result = await _walletService.UpdateBalanceWallet(Request.Query);
 
-                return Ok(ApiResult<TransactionDTO>.Succeed(result, "Deposit paid successfully"));
+                return Ok(ApiResult<WalletTransactionDTO>.Succeed(result, "Deposit paid successfully"));
             }
             catch (Exception ex)
             {
@@ -136,11 +136,11 @@ namespace Koi.WebAPI.Controllers
         [HttpPost("wallets/orders/{orderId}/complete-pending")]
         [ProducesResponseType(200)]
         [ProducesResponseType(404)]
-        public async Task<IActionResult> SubmitPendingOrderToPay(int orderId)
+        public async Task<IActionResult> SubmitPendingOrderToPay(int transactionId)
         {
             try
             {
-                var result = await _walletService.CompletePending(orderId);
+                var result = await _walletService.CompletePending(transactionId);
 
                 if (result == null)
                 {

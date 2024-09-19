@@ -7,7 +7,7 @@
         CONSIGNING,
         SHIPPING,
         COMPLETED,
-        CANCELED,
+        CANCELLED,
         REFUNDED
     }
 }

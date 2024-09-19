@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Koi.Repositories.Migrations
 {
     [DbContext(typeof(KoiFarmShopDbContext))]
-    [Migration("20240918062837_images")]
-    partial class images
+    [Migration("20240919103258_initDb")]
+    partial class initDb
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -582,14 +582,14 @@ namespace Koi.Repositories.Migrations
                     b.Property<int>("UserId")
                         .HasColumnType("int");
 
-                    b.Property<int?>("WalletId")
+                    b.Property<int?>("WalletUserId")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
 
                     b.HasIndex("UserId");
 
-                    b.HasIndex("WalletId");
+                    b.HasIndex("WalletUserId");
 
                     b.ToTable("Orders");
                 });
@@ -1281,8 +1281,8 @@ namespace Koi.Repositories.Migrations
                         .IsRequired();
 
                     b.HasOne("Koi.BusinessObjects.Wallet", "Wallet")
-                        .WithMany("Orders")
-                        .HasForeignKey("WalletId");
+                        .WithMany()
+                        .HasForeignKey("WalletUserId");
 
                     b.Navigation("User");
 
@@ -1470,11 +1470,6 @@ namespace Koi.Repositories.Migrations
                         .IsRequired();
 
                     b.Navigation("WalletTransactions");
-                });
-
-            modelBuilder.Entity("Koi.BusinessObjects.Wallet", b =>
-                {
-                    b.Navigation("Orders");
                 });
 #pragma warning restore 612, 618
         }

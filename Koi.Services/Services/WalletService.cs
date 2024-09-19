@@ -56,12 +56,25 @@ namespace Koi.Services.Services
                     Status = ""
                 };
 
-                newWallet = await _unitOfWork.WalletRepository.CreateAsync(newWallet);
+                existingWallet = await _unitOfWork.WalletRepository.CreateAsync(newWallet);
                 if (await _unitOfWork.SaveChangeAsync() <= 0)
                 {
                     throw new Exception("400 - Adding proccess has been failed");
                 }
             }
+
+            var newWalletTransaction = new WalletTransaction
+            {
+                UserId = existingWallet.UserId,
+                TransactionType = "DEPOSIT",
+                PaymentMethod = "VNPAY",
+                Amount = amount,
+                BalanceBefore = existingWallet.Balance,
+                BalanceAfter = existingWallet.Balance + amount,
+                TransactionDate = _currentTime.GetCurrentTime(),
+                TransactionStatus = TransactionStatusEnums.PENDING.ToString(),
+                Note = ""
+            };
 
             var vnpayOrderInfo = new VnpayOrderInfo
             {
@@ -69,12 +82,17 @@ namespace Koi.Services.Services
                 Description = ""
             };
 
-            var newOrder = await _orderService.NewOrderAsync(vnpayOrderInfo);
-            vnpayOrderInfo.CommonId = newOrder.Id;
+            newWalletTransaction = await _unitOfWork.TransactionRepository.AddWalletTransaction(newWalletTransaction);
+            if (await _unitOfWork.SaveChangeAsync() <= 0)
+            {
+                throw new Exception("400 - Adding proccess has been failed");
+            }
+
+            vnpayOrderInfo.CommonId = newWalletTransaction.Id;
             var payUrl = _vnPayService.CreateLink(vnpayOrderInfo);
             var result = new DepositResponseDTO
             {
-                Order = newOrder,
+                Transaction = _mapper.Map<WalletTransactionDTO>(newWalletTransaction),
                 PayUrl = payUrl
             };
 
@@ -95,13 +113,13 @@ namespace Koi.Services.Services
             return result;
         }
 
-        public async Task<TransactionDTO> UpdateBalanceWallet(IQueryCollection query)
+        public async Task<WalletTransactionDTO> UpdateBalanceWallet(IQueryCollection query)
         {
             var response = _vnPayService.GetFullResponseData(query);
-            var existingOrder = await _unitOfWork.OrderRepository.GetByIdAsync(int.Parse(response.OrderId));
-            if (existingOrder == null)
+            var existingTransaction = await _unitOfWork.TransactionRepository.GetWalletTransactionsById(int.Parse(response.OrderId));
+            if (existingTransaction == null)
             {
-                throw new Exception("This order is not existing please check again");
+                throw new Exception("This transaction is not existing please check again");
             }
 
             //var user = await _unitOfWork.UserRepository.GetCurrentUserAsync();
@@ -117,43 +135,19 @@ namespace Koi.Services.Services
 
             if (!response.Success)
             {
-                var failTransaction = new Transaction
-                {
-                    UserId = existingOrder.UserId,
-                    OrderId = existingOrder.Id,
-                    PaymentMethod = "VNPAY",
-                    TransactionDate = _currentTime.GetCurrentTime(),
-                    TransactionStatus = TransactionStatusEnums.FAILED.ToString()
-                };
-
-                existingOrder.OrderStatus = "CANCELLED";
-                if (await _unitOfWork.SaveChangeAsync() <= 0)
-                {
-                    throw new Exception("400 - Adding proccess has been failed");
-                }
-                return _mapper.Map<TransactionDTO>(failTransaction);
+                existingTransaction.TransactionStatus = TransactionStatusEnums.FAILED.ToString();
             }
             else
             {
+                var userWallet = await _unitOfWork.WalletRepository.GetWalletByUserId(existingTransaction.UserId);
+                existingTransaction.TransactionStatus = TransactionStatusEnums.COMPLETED.ToString();
+                userWallet.Balance += existingTransaction.Amount;
             }
-            var newTransaction = new Transaction
-            {
-                UserId = existingOrder.UserId,
-                OrderId = existingOrder.Id,
-                PaymentMethod = "VNPAY",
-                TransactionDate = _currentTime.GetCurrentTime(),
-                TransactionStatus = TransactionStatusEnums.FAILED.ToString(),
-                Amount = (long)response.AmountOfMoney
-            };
-            newTransaction = await _unitOfWork.TransactionRepository.AddAsync(newTransaction);
-            var userWallet = await _unitOfWork.WalletRepository.GetWalletByUserId(existingOrder.UserId);
-            existingOrder.OrderStatus = "COMPLETED";
-            userWallet.Balance += newTransaction.Amount;
             if (await _unitOfWork.SaveChangeAsync() <= 0)
             {
                 throw new Exception("400 - Adding proccess has been failed");
             }
-            return _mapper.Map<TransactionDTO>(newTransaction);
+            return _mapper.Map<WalletTransactionDTO>(existingTransaction);
         }
 
         public async Task<TransactionDTO> GetTransactionById(int transactionId)
@@ -170,15 +164,15 @@ namespace Koi.Services.Services
             return result;
         }
 
-        public async Task<DepositResponseDTO> CompletePending(int orderId)
+        public async Task<DepositResponseDTO> CompletePending(int transactionId)
         {
             //var user = await _unitOfWork.UserRepository.GetCurrentUserAsync();
             //if (user == null)
             //{
             //    throw new Exception("401 - User not existing");
             //}
-            var existingOrder = await _orderService.GetOrderByIdAsync(orderId);
-            if (existingOrder == null)
+            var existingWalletTransaction = await _unitOfWork.TransactionRepository.GetWalletTransactionsById(transactionId);
+            if (existingWalletTransaction == null)
             {
                 return null;
             }
@@ -188,21 +182,21 @@ namespace Koi.Services.Services
             {
                 throw new Exception("404 - This user don't have wallet");
             }
-            if (existingOrder.OrderStatus == "COMPLETED")
+            if (existingWalletTransaction.TransactionStatus == "COMPLETED")
             {
                 throw new Exception("400 - This order have been completed");
             }
 
             var vnpayOrderInfo = new VnpayOrderInfo
             {
-                CommonId = existingOrder.Id,
-                Amount = existingOrder.TotalAmount,
+                CommonId = existingWalletTransaction.Id,
+                Amount = existingWalletTransaction.Amount,
                 Description = ""
             };
             var payUrl = _vnPayService.CreateLink(vnpayOrderInfo);
             var result = new DepositResponseDTO
             {
-                Order = existingOrder,
+                Transaction = _mapper.Map<WalletTransactionDTO>(existingWallet),
                 PayUrl = payUrl
             };
 
@@ -210,175 +204,167 @@ namespace Koi.Services.Services
         }
 
         // Purchase method use wallet amount to pay order
-        //public async Task<OrderDTO> CheckOut(PurchaseDTO purchaseDTO)
-        //{
-        //    var user = await _unitOfWork.UserRepository.GetCurrentUserAsync();
-        //    if (user == null)
-        //    {
-        //        throw new Exception("401 - User not existing");
-        //    }
+        public async Task<OrderDTO> CheckOut(PurchaseDTO purchaseDTO)
+        {
+            var user = await _unitOfWork.UserRepository.GetCurrentUserAsync();
+            if (user == null)
+            {
+                throw new Exception("401 - User not existing");
+            }
 
-        //    var fishes = new List<KoiFish>();
-        //    long? totalAmount = 0;
-        //    foreach (var fish in purchaseDTO.FishIds)
-        //    {
-        //        var koiFish = await _unitOfWork.KoiFishRepository.GetByIdAsync(fish);
-        //        if (koiFish != null)
-        //        {
-        //            fishes.Add(koiFish);
-        //            totalAmount += koiFish.Price;
-        //        }
-        //        else
-        //        {
-        //            throw new Exception("404 - This koi fish not found id:" + fish);
-        //        }
-        //    }
+            var fishes = new List<KoiFish>();
+            long? totalAmount = 0;
+            foreach (var fish in purchaseDTO.FishIds)
+            {
+                var koiFish = await _unitOfWork.KoiFishRepository.GetByIdAsync(fish);
+                if (koiFish != null)
+                {
+                    fishes.Add(koiFish);
+                    totalAmount += koiFish.Price;
+                }
+                else
+                {
+                    throw new Exception("404 - This koi fish not found id:" + fish);
+                }
+            }
 
-        //    var newOrder = new Order
-        //    {
-        //        UserId = user.Id,
-        //        TotalAmount = totalAmount.Value,
-        //        OrderStatus = EventOrderStatusEnums.PENDING.ToString(),
-        //        ShippingAddress = purchaseDTO.ShippingAddress,
-        //        PaymentMethod = "VNPAY",
-        //        Note = purchaseDTO.ShippingAddress
-        //    };
+            var newOrder = new Order
+            {
+                UserId = user.Id,
+                TotalAmount = totalAmount.Value,
+                OrderStatus = EventOrderStatusEnums.PENDING.ToString(),
+                ShippingAddress = purchaseDTO.ShippingAddress,
+                PaymentMethod = "VNPAY",
+                Note = purchaseDTO.ShippingAddress
+            };
 
-        //    var personalWallet = await _unitOfWork.WalletRepository.GetWalletByUserId(user.Id);
-        //    if (personalWallet == null)
-        //    {
-        //        throw new Exception("Peronsal Wallet not found+");
-        //    }
+            var personalWallet = await _unitOfWork.WalletRepository.GetWalletByUserId(user.Id);
+            if (personalWallet == null)
+            {
+                throw new Exception("Personal Wallet not found+");
+            }
 
-        //    // Check balance
-        //    if (personalWallet.Balance < newOrder.TotalAmount)
-        //    {
-        //        throw new Exception("You dont have enough money to purchase this order");
-        //    }
+            // Check balance
+            if (personalWallet.Balance < newOrder.TotalAmount)
+            {
+                throw new Exception("You dont have enough money to purchase this order");
+            }
+            newOrder = await _unitOfWork.OrderRepository.AddAsync(newOrder);
 
-        //    // Send notification
-        //    //var notification = new Notification
-        //    //{
-        //    //    Title = "Purchase order " + orderId,
-        //    //    Body = "Amount: " + order.TotalAmount,
-        //    //    UserId = userId,
-        //    //    Url = "/profile/orders",
-        //    //    Sender = "System"
-        //    //};
+            if (await _unitOfWork.SaveChangeAsync() <= 0)
+            {
+                throw new Exception("400 - Adding proccess has been failed");
+            }
 
-        //    //await _notificationService.PushNotification(notification);
+            newOrder = await _unitOfWork.OrderRepository.CreateOrderWithOrderDetails(newOrder, fishes);
 
-        //    // Purchase
-        //    var transation = await _unitOfWork.WalletRepository.PurchaseItem(userId, orderId);
+            // Send notification
+            //var notification = new Notification
+            //{
+            //    Title = "Purchase order " + orderId,
+            //    Body = "Amount: " + order.TotalAmount,
+            //    UserId = userId,
+            //    Url = "/profile/orders",
+            //    Sender = "System"
+            //};
 
-        //    //Increase money of event owner
-        //    var eventModel = await _unitOfWork.EventRepository.GetByIdAsync(order.EventId);
-        //    var eventOwnerWallet = await _unitOfWork.WalletRepository.GetWalletByUserIdAndType(eventModel.UserId, WalletTypeEnums.PERSONAL);
-        //    eventOwnerWallet.Balance += order.TotalAmount;
-        //    await _unitOfWork.WalletRepository.Update(eventOwnerWallet);
-        //    await _unitOfWork.SaveChangeAsync();
+            //await _notificationService.PushNotification(notification);
 
-        //    //Notification to event order
-        //    //var notificationToOrganizer = new Notification
-        //    //{
-        //    //    Title = "One person buy your package" + orderId,
-        //    //    Body = "Amount: " + order.TotalAmount,
-        //    //    UserId = eventModel.UserId,
-        //    //    Url = "/dashboard/my-events/" + eventModel.Id + "/orders",
-        //    //    Sender = "System"
-        //    //};
-        //    //await _notificationService.PushNotification(notificationToOrganizer);
+            // Purchase
+            var transation = await PurchaseItem(user.Id, newOrder);
 
-        //    var result = _mapper.Map<TransactionResponsesDTO>(transation);
-        //    return result;
-        //}
+            //Notification to event order
+            //var notificationToOrganizer = new Notification
+            //{
+            //    Title = "One person buy your package" + orderId,
+            //    Body = "Amount: " + order.TotalAmount,
+            //    UserId = eventModel.UserId,
+            //    Url = "/dashboard/my-events/" + eventModel.Id + "/orders",
+            //    Sender = "System"
+            //};
+            //await _notificationService.PushNotification(notificationToOrganizer);
 
-        //// Purchase item and deduct money from wallet
-        //public async Task<Transaction> PurchaseItem(Guid userId, Order createdOrder)
-        //{
-        //    //Get order
-        //    var order = await _unitOfWork.OrderRepository.GetByIdAsync(createdOrder.Id);
-        //    if (order == null)
-        //    {
-        //        throw new Exception("Order not found");
-        //    }
-        //    if (order.UserId != userId)
-        //    {
-        //        throw new Exception("Order not belong to user");
-        //    }
-        //    if (order.Status == EventOrderStatusEnums.PAID.ToString())
-        //    {
-        //        throw new Exception("This order has been paid already");
-        //    }
-        //    if (order.Status == EventOrderStatusEnums.CANCELLED.ToString())
-        //    {
-        //        throw new Exception("This order has been cancelled");
-        //    }
+            var result = _mapper.Map<OrderDTO>(newOrder);
+            return result;
+        }
 
-        //    var wallet = await GetListWalletByUserId(userId);
-        //    var personalWallet = wallet.FirstOrDefault(x => x.WalletType.ToUpper() == WalletTypeEnums.PERSONAL.ToString().ToUpper());
-        //    if (personalWallet == null)
-        //    {
-        //        throw new Exception("Wallet not found");
-        //    }
+        // Purchase item and deduct money from wallet
+        public async Task<WalletTransactionDTO> PurchaseItem(int userId, Order createdOrder)
+        {
+            //Get order
+            var order = await _unitOfWork.OrderRepository.GetByIdAsync(createdOrder.Id);
+            if (order == null)
+            {
+                throw new Exception("Order not found");
+            }
+            if (order.UserId != userId)
+            {
+                throw new Exception("Order not belong to user");
+            }
+            if (order.OrderStatus == EventOrderStatusEnums.COMPLETED.ToString())
+            {
+                throw new Exception("This order has been paid already");
+            }
+            if (order.OrderStatus == EventOrderStatusEnums.CANCELLED.ToString())
+            {
+                throw new Exception("This order has been cancelled");
+            }
 
-        //    if (personalWallet.Balance < order.TotalAmount)
-        //    {
-        //        throw new Exception("Balance is not enough");
-        //    }
+            var existingWallet = await _unitOfWork.WalletRepository.GetWalletByUserId(userId);
+            if (existingWallet == null)
+            {
+                throw new Exception("Wallet not found");
+            }
 
-        //    using (var txn = _context.Database.BeginTransaction())
-        //    {
-        //        try
-        //        {
-        //            //Create new transaction
-        //            var transaction = new Transaction
-        //            {
-        //                WalletId = personalWallet.Id,
-        //                TransactionType = TransactionTypeEnums.PURCHASE.ToString(),
-        //                Amount = order.TotalAmount,
-        //                Description = "Purchase order with amount: " + order.TotalAmount,
-        //                TransactionDate = _timeService.GetCurrentTime(),
-        //                CreatedAt = _timeService.GetCurrentTime(),
-        //                Status = TransactionStatusEnums.SUCCESS.ToString()
-        //            };
+            if (existingWallet.Balance < order.TotalAmount)
+            {
+                throw new Exception("Balance is not enough");
+            }
 
-        //            //add transaction to database
-        //            await _context.Transactions.AddAsync(transaction);
-        //            await _context.SaveChangesAsync();
+            try
+            {
+                //Create new transaction
+                var newWalletTransaction = new WalletTransaction
+                {
+                    UserId = existingWallet.UserId,
+                    TransactionType = "PURCHASE",
+                    PaymentMethod = "WALLET",
+                    Amount = order.TotalAmount,
+                    BalanceBefore = existingWallet.Balance,
+                    BalanceAfter = existingWallet.Balance - order.TotalAmount,
+                    TransactionDate = _currentTime.GetCurrentTime(),
+                    Note = ""
+                };
 
-        //            //Create new transaction detail
-        //            var transactionDetail = new TransactionDetail
-        //            {
-        //                TransactionId = transaction.Id,
-        //                EventOrderId = order.Id,
-        //            };
-        //            //add transaction detail to database
-        //            await _context.TransactionDetails.AddAsync(transactionDetail);
-        //            await _context.SaveChangesAsync();
+                if (await _unitOfWork.SaveChangeAsync() <= 0)
+                {
+                    throw new Exception("400 - Adding proccess has been failed");
+                }
 
-        //            //Update wallet balance
-        //            personalWallet.Balance -= order.TotalAmount;
-        //            if (personalWallet.Balance < 0)
-        //            {
-        //                throw new Exception("PURCHASE: Balance is not enough");
-        //            }
-        //            _context.Entry(personalWallet).State = EntityState.Modified;
+                //Update wallet balance
+                existingWallet.Balance -= order.TotalAmount;
+                if (existingWallet.Balance < 0)
+                {
+                    throw new Exception("PURCHASE: Balance is not enough");
+                }
 
-        //            //update order status
-        //            order.Status = EventOrderStatusEnums.PAID.ToString();
-        //            _context.Entry(order).State = EntityState.Modified;
-        //            await _context.SaveChangesAsync();
+                //update order status
+                order.OrderStatus = EventOrderStatusEnums.COMPLETED.ToString();
+                await _unitOfWork.WalletRepository.UpdateWallet(existingWallet);
+                await _unitOfWork.OrderRepository.Update(order);
 
-        //            await txn.CommitAsync();
-        //            return transaction;
-        //        }
-        //        catch (Exception ex)
-        //        {
-        //            await txn.RollbackAsync();
-        //            throw ex;
-        //        }
-        //    }
-        //}
+                if (await _unitOfWork.SaveChangeAsync() <= 0)
+                {
+                    throw new Exception("400 - Adding proccess has been failed");
+                }
+
+                var result = _mapper.Map<WalletTransactionDTO>(newWalletTransaction);
+                return result;
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
     }
 }
