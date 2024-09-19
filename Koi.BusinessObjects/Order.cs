@@ -10,9 +10,6 @@
         public string? PaymentMethod { get; set; }
         public string? Note { get; set; }
 
-        //wallet
-        public int? WalletId { get; set; }
-
         //navigation
         public virtual ICollection<OrderDetail> OrderDetails { get; set; }
 

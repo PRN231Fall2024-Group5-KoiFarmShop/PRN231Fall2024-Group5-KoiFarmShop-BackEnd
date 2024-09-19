@@ -8,7 +8,7 @@ namespace Koi.DTOs.Enums
 {
     public enum TransactionStatusEnums
     {
-        SUCCESS,
+        COMPLETED,
         PENDING,
         FAILED
     }

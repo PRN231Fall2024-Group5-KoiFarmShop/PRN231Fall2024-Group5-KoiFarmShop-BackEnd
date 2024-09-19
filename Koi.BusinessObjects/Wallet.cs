@@ -25,7 +25,5 @@ namespace Koi.BusinessObjects
 
         // Navigation property for 1-1 relation with User
         public virtual User User { get; set; }
-
-        public virtual ICollection<Order> Orders { get; set; }
     }
 }

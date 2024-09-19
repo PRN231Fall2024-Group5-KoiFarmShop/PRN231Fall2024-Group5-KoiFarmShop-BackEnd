@@ -29,5 +29,16 @@ namespace Koi.Repositories.Repositories
                                    .Where(o => o.OrderId == orderId)
                                    .ToListAsync();
         }
+
+        public async Task<WalletTransaction> AddWalletTransaction(WalletTransaction walletTransaction)
+        {
+            var result = await _dbContext.WalletTransactions.AddAsync(walletTransaction);
+            return result.Entity;
+        }
+
+        public async Task<WalletTransaction> GetWalletTransactionsById(int id)
+        {
+            return await _dbContext.WalletTransactions.FindAsync(id);
+        }
     }
 }

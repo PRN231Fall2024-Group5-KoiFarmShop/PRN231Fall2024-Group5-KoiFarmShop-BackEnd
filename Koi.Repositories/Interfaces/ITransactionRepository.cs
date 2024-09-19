@@ -9,6 +9,8 @@ namespace Koi.Repositories.Interfaces
 {
     public interface ITransactionRepository : IGenericRepository<Transaction>
     {
+        Task<WalletTransaction> AddWalletTransaction(WalletTransaction walletTransaction);
         Task<List<Transaction>> GetTransactionsByOrderId(int orderId);
+        Task<WalletTransaction> GetWalletTransactionsById(int id);
     }
 }
