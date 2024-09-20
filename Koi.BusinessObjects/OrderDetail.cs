@@ -7,8 +7,12 @@ namespace Koi.BusinessObjects
         public int OrderId { get; set; }
         public int KoiFishId { get; set; }
 
-        public int SubTotal { get; set; }
+        public int? ConsignmentForNurtureId { get; set; }
+
         public long Price { get; set; }
+        public string? Status { get; set; }
+        public string? ShippingStatus { get; set; }
+        public string? NurtureStatus { get; set; }
 
         //navigation
         [ForeignKey("OrderId")]
@@ -16,5 +20,6 @@ namespace Koi.BusinessObjects
 
         public virtual KoiFish KoiFish { get; set; }
         public virtual ICollection<OrderDetailFeedback> OrderDetailFeedbacks { get; set; }
+        public virtual ConsignmentForNurture? ConsignmentForNurture { get; set; }
     }
 }
