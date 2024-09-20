@@ -12,5 +12,6 @@
         public int? DailyFeedAmount { get; set; }
         public DateTime? LastHealthCheck { get; set; }
         public List<int> KoiBreedIds { get; set; }
+        public List<string> ImageUrl { get; set; }
     }
 }

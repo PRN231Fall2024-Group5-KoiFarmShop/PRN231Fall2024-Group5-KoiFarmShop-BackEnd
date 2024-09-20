@@ -16,7 +16,7 @@ namespace Koi.Services.Mapper
             CreateMap<KoiBreed, CreateKoiBreedDTO>().ReverseMap();
 
             CreateMap<KoiBreed, KoiBreedResponseDTO>().ReverseMap();
-
+            CreateMap<ImageDTO, KoiFishImage>().ReverseMap();
             CreateMap<KoiFish, CreateKoiFishDTO>()
                 .ForMember(dest => dest.Gender,
                     opt => opt.MapFrom(src => src.Gender != null && src.Gender == true ? "Male" : "Female"))

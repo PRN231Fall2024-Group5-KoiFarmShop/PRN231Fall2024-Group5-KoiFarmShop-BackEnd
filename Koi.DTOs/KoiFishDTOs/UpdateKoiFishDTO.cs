@@ -13,5 +13,6 @@
         public DateTime? LastHealthCheck { get; set; }
         public List<int> KoiBreedIds { get; set; }
         public int? ConsignedBy { get; set; }
+        public List<string> ImageUrl { get; set; }
     }
 }
