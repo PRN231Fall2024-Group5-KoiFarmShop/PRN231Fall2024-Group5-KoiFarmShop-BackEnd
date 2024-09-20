@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace Koi.Repositories.Repositories
 {
-    public class TransactionRepository : GenericRepository<Transaction>, ITransactionRepository
+    public class TransactionRepository : GenericRepository<WalletTransaction>, ITransactionRepository
     {
         private readonly KoiFarmShopDbContext _dbContext;
         private readonly ICurrentTime _timeService;
@@ -23,9 +23,9 @@ namespace Koi.Repositories.Repositories
             _claimsService = claims;
         }
 
-        public async Task<List<Transaction>> GetTransactionsByOrderId(int orderId)
+        public async Task<List<WalletTransaction>> GetTransactionsByOrderId(int orderId)
         {
-            return await _dbContext.Transactions
+            return await _dbContext.WalletTransactions
                                    .Where(o => o.OrderId == orderId)
                                    .ToListAsync();
         }

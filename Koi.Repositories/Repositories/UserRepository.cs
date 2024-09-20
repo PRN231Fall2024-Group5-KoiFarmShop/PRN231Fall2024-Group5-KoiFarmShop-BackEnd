@@ -312,7 +312,7 @@ namespace Koi.Repositories.Repositories
 
         public async Task<User> GetCurrentUserAsync()
         {
-            var user = await _userManager.Users.FirstOrDefaultAsync(x => x.Id == _claimsService.GetCurrentUserId);
+            var user = await _userManager.Users.Include(x => x.Wallet).FirstOrDefaultAsync(x => x.Id == _claimsService.GetCurrentUserId);
             if (user != null)
             {
                 return user;

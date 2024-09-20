@@ -5,7 +5,7 @@ namespace Koi.Repositories.Interfaces
 {
     public interface IGenericRepository<TEntity> where TEntity : BaseEntity
     {
-        Task<List<TEntity>> GetAllAsync(params Expression<Func<TEntity, object>>[] includes);
+        public Task<List<TEntity>> GetAllAsync(Expression<Func<TEntity, bool>> predicate = null, params Expression<Func<TEntity, object>>[] includes);
 
         Task<TEntity?> GetByIdAsync(int id, params Expression<Func<TEntity, object>>[] includes);
 
