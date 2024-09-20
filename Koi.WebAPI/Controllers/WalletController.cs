@@ -16,11 +16,13 @@ namespace Koi.WebAPI.Controllers
     {
         private readonly IWalletService _walletService;
         private readonly IVnPayService _vnPayService;
+        private readonly IClaimsService _claimsService;
 
-        public WalletController(IWalletService walletService, IVnPayService vnPayService)
+        public WalletController(IWalletService walletService, IVnPayService vnPayService, IClaimsService claimsService)
         {
             _walletService = walletService;
             _vnPayService = vnPayService;
+            _claimsService = claimsService;
         }
 
         [HttpPost("wallets/deposit")]
@@ -76,15 +78,15 @@ namespace Koi.WebAPI.Controllers
         }
 
         // Lấy transaction theo Id
-        [HttpGet("wallets/orders/transaction/{transactionId}")]
-        public async Task<IActionResult> GetTransactionById(int transactionId)
+        [HttpGet("wallets/wallet-transactions/{transactionId}")]
+        public async Task<IActionResult> GetWalletTransactionById(int transactionId)
         {
             try
             {
-                var result = await _walletService.GetTransactionById(transactionId);
+                var result = await _walletService.GetWalletTransactionById(transactionId);
                 if (result != null)
                 {
-                    return Ok(ApiResult<TransactionDTO>.Succeed(result, "Get transaction successfully"));
+                    return Ok(ApiResult<WalletTransactionDTO>.Succeed(result, "Get transaction successfully"));
                 }
                 else
                 {
@@ -97,14 +99,20 @@ namespace Koi.WebAPI.Controllers
             }
         }
 
+        /// <summary>
+        /// Lấy danh sách transaction theo OrderId
+        /// </summary>
+        /// <returns>
+        ///      list wallet transaction
+        /// </returns>
         // Lấy danh sách transaction theo OrderId
-        [HttpGet("wallets/orders/{orderId}/transactions")]
+        [HttpGet("wallets/orders/{orderId}/wallet-transactions")]
         public async Task<IActionResult> GetTransactionsByOrderId(int orderId)
         {
             try
             {
                 var result = await _walletService.GetTransactionsByOrderId(orderId);
-                return Ok(ApiResult<List<TransactionDTO>>.Succeed(result, "Get list successfully"));
+                return Ok(ApiResult<List<WalletTransactionDTO>>.Succeed(result, "Get list wallet transaction successfully"));
             }
             catch (Exception ex)
             {
@@ -112,8 +120,34 @@ namespace Koi.WebAPI.Controllers
             }
         }
 
+        /// <summary>
+        /// Lấy lịch sử tương tác với wallet
+        /// </summary>
+        /// <returns>
+        ///      list wallet transaction
+        /// </returns>
         // Lấy danh sách transaction theo OrderId
-        [HttpGet("users/{id}/wallet")]
+        [HttpGet("users/{id}/wallet-transactions")]
+        public async Task<IActionResult> GetTransactionsByUserId(int id)
+        {
+            try
+            {
+                var result = await _walletService.GetWalletTransactionsByUserId(id);
+                return Ok(ApiResult<List<WalletTransactionDTO>>.Succeed(result, "Get list wallet transaction successfully"));
+            }
+            catch (Exception ex)
+            {
+                return HandleError(ex);
+            }
+        }
+
+        /// <summary>
+        /// Get  wallet of a user
+        /// </summary>
+        /// <returns>
+        ///      user wallet
+        /// </returns>
+        [HttpGet("users/{id}/wallets")]
         public async Task<IActionResult> GetWalletByUserId(int id)
         {
             try
@@ -133,7 +167,7 @@ namespace Koi.WebAPI.Controllers
         /// <returns>
         ///     URL of payment
         /// </returns>
-        [HttpPost("wallets/orders/{orderId}/complete-pending")]
+        [HttpPost("wallets/wallet-transactions/{transactionId}/complete-pending")]
         [ProducesResponseType(200)]
         [ProducesResponseType(404)]
         public async Task<IActionResult> SubmitPendingOrderToPay(int transactionId)
@@ -160,22 +194,22 @@ namespace Koi.WebAPI.Controllers
         /// <summary>
         /// Purchase a order
         /// </summary>
-        [HttpPost("payment/event-orders/{orderId}")]
-        public async Task<IActionResult> PurchaseOrder(Guid orderId)
+        [HttpPost("payment/purchase")]
+        public async Task<IActionResult> PurchaseItems(PurchaseDTO purchaseDTO)
         {
             try
             {
-                //var userId = _claimsService.GetCurrentUserId;
+                var userId = _claimsService.GetCurrentUserId;
 
-                //if (userId == Guid.Empty)
-                //{
-                //    throw new Exception("User Id is invalid");
-                //}
-                //if (orderId == Guid.Empty)
-                //{
-                //    throw new Exception("OrderId is invalid");
-                //}
-                //var result = await _walletService.PurchaseOrder(orderId, userId);
+                if (userId == -1)
+                {
+                    throw new Exception("401 - User Id is invalid");
+                }
+
+                var result = await _walletService.CheckOut(purchaseDTO);
+
+                return Ok(ApiResult<OrderDTO>.Succeed(result, "Purchase successfully, please check your wallet!"));
+
                 //if (result.Status == TransactionStatusEnums.FAILED.ToString())
                 //{
                 //    throw new Exception("Purchase Order Failed!");
@@ -190,12 +224,10 @@ namespace Koi.WebAPI.Controllers
                 //{
                 //    return Ok(ApiResult<TransactionResponsesDTO>.Succeed(result, "Purchase Order Successfully!"));
                 //}
-
-                throw new Exception("Purchase Order Failed! Not Have a Type!");
             }
             catch (Exception ex)
             {
-                return BadRequest(ApiResult<object>.Fail(ex));
+                return HandleError(ex);
             }
         }
 

@@ -7,10 +7,12 @@ using System.Threading.Tasks;
 
 namespace Koi.Repositories.Interfaces
 {
-    public interface ITransactionRepository : IGenericRepository<Transaction>
+    public interface ITransactionRepository : IGenericRepository<WalletTransaction>
     {
         Task<WalletTransaction> AddWalletTransaction(WalletTransaction walletTransaction);
-        Task<List<Transaction>> GetTransactionsByOrderId(int orderId);
+
+        Task<List<WalletTransaction>> GetTransactionsByOrderId(int orderId);
+
         Task<WalletTransaction> GetWalletTransactionsById(int id);
     }
 }

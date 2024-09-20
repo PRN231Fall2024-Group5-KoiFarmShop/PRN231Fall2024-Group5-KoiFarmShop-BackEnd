@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Koi.DTOs.TransactionDTOs;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -16,5 +17,7 @@ namespace Koi.DTOs.PaymentDTOs
         public string? ShippingAddress { get; set; }
         public string? PaymentMethod { get; set; } = "VNPAY";
         public string? Note { get; set; }
+
+        public virtual ICollection<WalletTransactionDTO>? WalletTransactions { get; set; }  // Thêm navigation property cho WalletTransaction
     }
 }

@@ -50,7 +50,7 @@ namespace Koi.Repositories.Repositories
             await _dbSet.AddRangeAsync(entities);
         }
 
-        public Task<List<TEntity>> GetAllAsync(params Expression<Func<TEntity, object>>[] includes)
+        public Task<List<TEntity>> GetAllAsync(Expression<Func<TEntity, bool>> predicate = null, params Expression<Func<TEntity, object>>[] includes)
         {
             IQueryable<TEntity> query = _dbSet;
 
