@@ -71,36 +71,33 @@ namespace Koi.Repositories.Repositories
 
         public async Task<List<OrderDetail>> CreateOrderWithOrderDetails(Order order, List<KoiFish> purchaseFishes)
         {
-            
-                try
+            try
+            {
+                List<OrderDetail> orderDetails = new List<OrderDetail>();
+                foreach (var fish in purchaseFishes)
                 {
-
-                    List<OrderDetail> orderDetails = new List<OrderDetail>();
-                    foreach (var fish in purchaseFishes)
+                    var orderDetail = new OrderDetail
                     {
-                        var orderDetail = new OrderDetail
-                        {
-                            OrderId = order.Id,
-                            KoiFishId = fish.Id,
-                            SubTotal = (int)fish.Price,
-                            Price = fish.Price,
-                        };
-                        order.OrderDetails = [];
-                        order.OrderDetails.Add(orderDetail);
-                        orderDetails.Add(orderDetail);
-                    }
-
-                    _dbContext.Entry(order).State = EntityState.Modified;
-                    await _dbContext.OrderDetails.AddRangeAsync(orderDetails);
-                    await _dbContext.SaveChangesAsync();
-
-                    return orderDetails;
+                        OrderId = order.Id,
+                        KoiFishId = fish.Id,
+                        // SubTotal = (int)fish.Price,
+                        Price = fish.Price,
+                    };
+                    order.OrderDetails = [];
+                    order.OrderDetails.Add(orderDetail);
+                    orderDetails.Add(orderDetail);
                 }
-                catch (Exception ex)
-                {
-                    throw new Exception(ex.Message);
-                }
-            
+
+                _dbContext.Entry(order).State = EntityState.Modified;
+                await _dbContext.OrderDetails.AddRangeAsync(orderDetails);
+                await _dbContext.SaveChangesAsync();
+
+                return orderDetails;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
         }
     }
 }

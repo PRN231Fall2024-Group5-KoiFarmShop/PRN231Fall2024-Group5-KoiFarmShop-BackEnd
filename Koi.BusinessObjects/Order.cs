@@ -7,7 +7,9 @@
         public long TotalAmount { get; set; }
         public string? OrderStatus { get; set; }
         public string? ShippingAddress { get; set; }
+        public bool? IsConsignmentIncluded { get; set; }
         public string? PaymentMethod { get; set; }
+        public string? ShippingMethod { get; set; }
         public string? Note { get; set; }
 
         //navigation

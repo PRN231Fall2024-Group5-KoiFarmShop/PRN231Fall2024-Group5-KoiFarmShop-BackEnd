@@ -11,6 +11,7 @@ namespace Koi.Repositories
             UserManager<User> userManager)
         {
             #region Seed Roles (sử dụng UserManager cho AddToRoleAsync mà không cần RoleManager)
+
             if (!context.Roles.Any())
             {
                 var roles = new List<Role>
@@ -24,9 +25,11 @@ namespace Koi.Repositories
                 await context.AddRangeAsync(roles);
                 await context.SaveChangesAsync();
             }
-            #endregion
+
+            #endregion Seed Roles (sử dụng UserManager cho AddToRoleAsync mà không cần RoleManager)
 
             #region Seed Users
+
             if (!context.Users.Any())
             {
                 var admin = new User
@@ -37,7 +40,7 @@ namespace Koi.Repositories
                     UnsignFullName = "Admin User",
                     Dob = new DateTime(1980, 1, 1),
                     PhoneNumber = "0123456789",
-                    ProfilePictureUrl = "https://example.com/manager.png",
+                    ImageUrl = "https://example.com/manager.png",
                     Address = "Manager Street, City",
                     IsActive = true,
                     CreatedDate = DateTime.UtcNow.AddHours(7)
@@ -52,7 +55,7 @@ namespace Koi.Repositories
                     UnsignFullName = "Manager User",
                     Dob = new DateTime(1980, 1, 1),
                     PhoneNumber = "0123456789",
-                    ProfilePictureUrl = "https://example.com/manager.png",
+                    ImageUrl = "https://example.com/manager.png",
                     Address = "Manager Street, City",
                     IsActive = true,
                     CreatedDate = DateTime.UtcNow.AddHours(7)
@@ -67,7 +70,7 @@ namespace Koi.Repositories
                     UnsignFullName = "Staff User",
                     Dob = new DateTime(1990, 2, 15),
                     PhoneNumber = "0123456789",
-                    ProfilePictureUrl = "https://example.com/staff.png",
+                    ImageUrl = "https://example.com/staff.png",
                     Address = "Staff Street, City",
                     IsActive = true,
                     CreatedDate = DateTime.UtcNow.AddHours(7)
@@ -82,7 +85,7 @@ namespace Koi.Repositories
                     UnsignFullName = "Customer User",
                     Dob = new DateTime(2000, 5, 10),
                     PhoneNumber = "0123456789",
-                    ProfilePictureUrl = "https://example.com/customer.png",
+                    ImageUrl = "https://example.com/customer.png",
                     Address = "Customer Street, City",
                     IsActive = true,
                     CreatedDate = DateTime.UtcNow.AddHours(7)
@@ -99,7 +102,7 @@ namespace Koi.Repositories
                         UnsignFullName = "Le Quoc Uy",
                         Dob = new DateTime(2003, 7, 11),
                         PhoneNumber = "0123456789",
-                        ProfilePictureUrl = "https://scontent.fsgn15-1.fna.fbcdn.net/v/t39.30808-1/430878538_2206677789683723_4464660377243750146_n.jpg",
+                        ImageUrl = "https://scontent.fsgn15-1.fna.fbcdn.net/v/t39.30808-1/430878538_2206677789683723_4464660377243750146_n.jpg",
                         Address = "HCM",
                         IsActive = true,
                         CreatedDate = DateTime.UtcNow.AddHours(7)
@@ -112,7 +115,7 @@ namespace Koi.Repositories
                         UnsignFullName = StringTools.ConvertToUnSign("Trương Hà Hào Nam"),
                         Dob = new DateTime(2003, 1, 1),
                         PhoneNumber = "0123456789",
-                        ProfilePictureUrl = "https://avatar.iran.liara.run/public/boy?username=namthhse172294",
+                        ImageUrl = "https://avatar.iran.liara.run/public/boy?username=namthhse172294",
                         Address = "HCM",
                         IsActive = true,
                         CreatedDate = DateTime.UtcNow.AddHours(7)
@@ -124,7 +127,7 @@ namespace Koi.Repositories
                         FullName = "Nguyễn Vũ",
                         Dob = new DateTime(2003, 2, 15),
                         PhoneNumber = "0123456789",
-                        ProfilePictureUrl = "https://avatar.iran.liara.run/public/boy?username=vunse172437",
+                        ImageUrl = "https://avatar.iran.liara.run/public/boy?username=vunse172437",
                         Address = "HCM",
                         IsActive = true,
                         CreatedDate = DateTime.UtcNow.AddHours(7)
@@ -137,7 +140,7 @@ namespace Koi.Repositories
                         UnsignFullName = StringTools.ConvertToUnSign("Ngô Gia Huấn"),
                         Dob = new DateTime(2003, 3, 20),
                         PhoneNumber = "0123456789",
-                        ProfilePictureUrl = "https://avatar.iran.liara.run/public/boy?username=huanngse171018",
+                        ImageUrl = "https://avatar.iran.liara.run/public/boy?username=huanngse171018",
                         Address = "HCM",
                         IsActive = true,
                         CreatedDate = DateTime.UtcNow.AddHours(7)
@@ -150,7 +153,7 @@ namespace Koi.Repositories
                         UnsignFullName = StringTools.ConvertToUnSign("Hoàng Minh Tiến"),
                         Dob = new DateTime(2003, 4, 5),
                         PhoneNumber = "0123456789",
-                        ProfilePictureUrl = "https://avatar.iran.liara.run/public/boy?username=tienhmse172436",
+                        ImageUrl = "https://avatar.iran.liara.run/public/boy?username=tienhmse172436",
                         Address = "HCM",
                         IsActive = true,
                         CreatedDate = DateTime.UtcNow.AddHours(7)
@@ -164,9 +167,11 @@ namespace Koi.Repositories
                 }
                 await context.SaveChangesAsync();
             }
-            #endregion
+
+            #endregion Seed Users
 
             #region Seed KoiBreeds
+
             if (!context.KoiBreeds.Any())
             {
                 List<KoiBreed> breeds = new(){
@@ -224,9 +229,11 @@ namespace Koi.Repositories
                 await context.KoiBreeds.AddRangeAsync(breeds);
                 await context.SaveChangesAsync();
             }
-            #endregion
+
+            #endregion Seed KoiBreeds
 
             #region Seed KoiFish
+
             if (!context.KoiFishs.Any())
             {
                 // Ensure KoiBreeds are loaded
@@ -904,7 +911,8 @@ namespace Koi.Repositories
                 await context.KoiFishs.AddRangeAsync(fishList);
                 await context.SaveChangesAsync();
             }
-            #endregion
+
+            #endregion Seed KoiFish
         }
 
         private static async Task CreateUserAsync(UserManager<User> userManager, User user, string password, string role)
