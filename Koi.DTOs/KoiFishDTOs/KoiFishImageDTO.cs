@@ -1,6 +1,6 @@
 ﻿namespace Koi.DTOs.KoiFishDTOs
 {
-    public class ImageDTO
+    public class KoiFishImageDTO
     {
         public int Id { get; set; }
         public int KoiFishId { get; set; }

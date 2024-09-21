@@ -13,11 +13,12 @@ namespace Koi.Services.Mapper
     {
         public MapperConfigProfile()
         {
-            CreateMap<KoiBreed, CreateKoiBreedDTO>().ReverseMap();
-
+            CreateMap<KoiFishDiaryCreateDTO, KoiDiary>().ReverseMap();
+            CreateMap<KoiFishDiaryUpdateDTO, KoiDiary>().ReverseMap();
+            CreateMap<KoiBreed, KoiBreedCreateDTO>().ReverseMap();
             CreateMap<KoiBreed, KoiBreedResponseDTO>().ReverseMap();
-            CreateMap<ImageDTO, KoiFishImage>().ReverseMap();
-            CreateMap<KoiFish, CreateKoiFishDTO>()
+            CreateMap<KoiFishImageDTO, KoiFishImage>().ReverseMap();
+            CreateMap<KoiFish, KoiFishCreateDTO>()
                 .ForMember(dest => dest.Gender,
                     opt => opt.MapFrom(src => src.Gender != null && src.Gender == true ? "Male" : "Female"))
                 .ReverseMap().ForMember(dest => dest.Gender, opt => opt.MapFrom(src => src.Gender == "Male" ? true : false));

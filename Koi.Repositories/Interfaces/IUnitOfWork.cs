@@ -7,6 +7,7 @@
         public IKoiFishRepository KoiFishRepository { get; }
         public IKoiBreedRepository KoiBreedRepository { get; }
         public IOrderRepository OrderRepository { get; }
+        public IKoiDiaryRepository KoiDiaryRepository { get; }
         IWalletRepository WalletRepository { get; }
         ITransactionRepository TransactionRepository { get; }
 

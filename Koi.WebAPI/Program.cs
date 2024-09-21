@@ -148,20 +148,12 @@ var app = builder.Build();
 // SCOPE FOR MIGRATION
 // explain: The CreateScope method creates a new scope. The scope is a way to manage the lifetime of objects in the container.var scope = app.Services.CreateScope();
 var scope = app.Services.CreateScope();
-var context = scope.ServiceProvider.GetRequiredService<KoiFarmShopDbContext>();
 var userManager = scope.ServiceProvider.GetRequiredService<UserManager<User>>();
 var logger = scope.ServiceProvider.GetRequiredService<ILogger<Program>>();
 
 
 
-try
-{
-    await DBInitializer.Initialize(context, userManager);
-}
-catch (Exception e)
-{
-    logger.LogError(e, "An problem occurred seed data!");
-}
+
 //CLAIM SERVICE
 builder.Services.AddHttpContextAccessor();
 
@@ -184,6 +176,15 @@ if (app.Environment.IsDevelopment())
     {
         logger.LogError(e, "An problem occurred during migration!");
     }
+}
+var context = scope.ServiceProvider.GetRequiredService<KoiFarmShopDbContext>();
+try
+{
+    await DBInitializer.Initialize(context, userManager);
+}
+catch (Exception e)
+{
+    logger.LogError(e, "An problem occurred seed data!");
 }
 
 // Use CORS policy

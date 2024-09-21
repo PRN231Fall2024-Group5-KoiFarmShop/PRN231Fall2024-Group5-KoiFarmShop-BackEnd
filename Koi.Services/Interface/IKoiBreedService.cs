@@ -9,9 +9,9 @@ namespace Koi.Services.Interface
 
         Task<KoiBreedResponseDTO> GetKoiBreedById(int id);
 
-        Task<KoiBreedResponseDTO> CreateKoiBreed(CreateKoiBreedDTO koiBreedModel);
+        Task<KoiBreedResponseDTO> CreateKoiBreed(KoiBreedCreateDTO koiBreedModel);
 
-        Task<KoiBreedResponseDTO> UpdateKoiBreed(int id, CreateKoiBreedDTO koiBreedModel);
+        Task<KoiBreedResponseDTO> UpdateKoiBreed(int id, KoiBreedCreateDTO koiBreedModel);
 
         Task<bool> DeleteKoiBreed(int id);
     }

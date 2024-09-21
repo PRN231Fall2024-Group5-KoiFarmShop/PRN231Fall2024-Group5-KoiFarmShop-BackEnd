@@ -83,7 +83,7 @@ namespace Koi.Services.Services
             return result;
         }
 
-        public async Task<KoiFishResponseDTO> CreateKoiFish(CreateKoiFishDTO fishModel)
+        public async Task<KoiFishResponseDTO> CreateKoiFish(KoiFishCreateDTO fishModel)
         {
             ////check user
             //Guid userId = _claimsService.GetCurrentUserId;
@@ -121,7 +121,7 @@ namespace Koi.Services.Services
             return _mapper.Map<KoiFishResponseDTO>(result);
         }
 
-        public async Task<KoiFishResponseDTO> UpdateKoiFish(int id, UpdateKoiFishDTO fishModel)
+        public async Task<KoiFishResponseDTO> UpdateKoiFish(int id, KoiFishUpadteDTO fishModel)
         {
             ////check user
             //Guid userId = _claimsService.GetCurrentUserId;

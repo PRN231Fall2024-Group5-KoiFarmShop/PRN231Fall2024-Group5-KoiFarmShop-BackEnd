@@ -23,6 +23,7 @@ namespace Koi.Repositories.Repositories
             var query = _dbContext.KoiFishs
             .Include(x => x.KoiBreeds)
             .Include(x => x.KoiFishImages)
+            .Include(x => x.KoiDiaries)
             .Include(x => x.Consigner);
             return query;
         }

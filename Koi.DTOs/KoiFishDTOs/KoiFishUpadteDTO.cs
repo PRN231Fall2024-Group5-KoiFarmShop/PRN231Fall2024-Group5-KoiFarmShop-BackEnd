@@ -1,6 +1,6 @@
 ﻿namespace Koi.DTOs.KoiFishDTOs
 {
-    public class UpdateKoiFishDTO
+    public class KoiFishUpadteDTO
     {
         public string Name { get; set; }
         public string? Origin { get; set; }

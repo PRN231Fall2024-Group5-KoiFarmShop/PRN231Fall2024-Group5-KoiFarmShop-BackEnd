@@ -10,9 +10,9 @@ namespace Koi.Services.Interface
 
         Task<KoiFishResponseDTO> GetKoiFishById(int id);
 
-        Task<KoiFishResponseDTO> CreateKoiFish(CreateKoiFishDTO koiFishModel);
+        Task<KoiFishResponseDTO> CreateKoiFish(KoiFishCreateDTO koiFishModel);
 
-        Task<KoiFishResponseDTO> UpdateKoiFish(int id, UpdateKoiFishDTO koiFishModel);
+        Task<KoiFishResponseDTO> UpdateKoiFish(int id, KoiFishUpadteDTO koiFishModel);
 
         Task<KoiFishResponseDTO> DeleteKoiFish(int id);
     }

@@ -1,6 +1,6 @@
 ﻿namespace Koi.DTOs.KoiFishDTOs
 {
-    public class CreateKoiFishDTO
+    public class KoiFishCreateDTO
     {
         public string Name { get; set; }
         public string? Origin { get; set; }

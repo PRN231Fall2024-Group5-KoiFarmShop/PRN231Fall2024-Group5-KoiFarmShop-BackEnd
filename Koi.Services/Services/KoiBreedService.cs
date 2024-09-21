@@ -95,7 +95,7 @@ namespace Koi.Services.Services
             return result;
         }
 
-        public async Task<KoiBreedResponseDTO> CreateKoiBreed(CreateKoiBreedDTO koiBreedModel)
+        public async Task<KoiBreedResponseDTO> CreateKoiBreed(KoiBreedCreateDTO koiBreedModel)
         {
             // check if event category already exists
             var existingKoiBreed = await _unitOfWork.KoiBreedRepository
@@ -124,7 +124,7 @@ namespace Koi.Services.Services
             return _mapper.Map<KoiBreedResponseDTO>(newCategory);
         }
 
-        public async Task<KoiBreedResponseDTO> UpdateKoiBreed(int id, CreateKoiBreedDTO koiBreedModel)
+        public async Task<KoiBreedResponseDTO> UpdateKoiBreed(int id, KoiBreedCreateDTO koiBreedModel)
         {
             var koiBreed = _mapper.Map<KoiBreed>(await GetKoiBreedById(id));
 
