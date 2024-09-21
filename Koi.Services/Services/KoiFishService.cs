@@ -80,11 +80,10 @@ namespace Koi.Services.Services
             //var serializedResult = Newtonsoft.Json.JsonConvert.SerializeObject(result);
             //await _redisService.SetStringAsync(CacheKeys.Event(id), serializedResult, TimeSpan.FromMinutes(30));
             // Cache for 30 minutes
-
             return result;
         }
 
-        public async Task<KoiFishResponseDTO> CreateKoiFish(CreateKoiFishDTO fishModel)
+        public async Task<KoiFishResponseDTO> CreateKoiFish(KoiFishCreateDTO fishModel)
         {
             ////check user
             //Guid userId = _claimsService.GetCurrentUserId;
@@ -97,6 +96,7 @@ namespace Koi.Services.Services
             //eventEntity.User = isExistUser;
             //check koiBreed
             KoiFish fish = _mapper.Map<KoiFish>(fishModel);
+            fish.KoiBreeds = [];
             foreach (var breedId in fishModel.KoiBreedIds)
             {
                 var breed = await _unitOfWork.KoiBreedRepository.GetByIdAsync(breedId);
@@ -104,8 +104,15 @@ namespace Koi.Services.Services
                 {
                     throw new Exception("400 - Invalid Koi breed");
                 }
-                fish.KoiBreeds = [];
                 fish.KoiBreeds.Add(_mapper.Map<KoiBreed>(breed));
+            }
+            fish.KoiFishImages = [];
+            foreach (var item in fishModel.ImageUrl)
+            {
+                fish.KoiFishImages.Add(new KoiFishImage
+                {
+                    ImageUrl = item
+                });
             }
 
             var result = await _unitOfWork.KoiFishRepository.AddAsync(fish);
@@ -114,7 +121,7 @@ namespace Koi.Services.Services
             return _mapper.Map<KoiFishResponseDTO>(result);
         }
 
-        public async Task<KoiFishResponseDTO> UpdateKoiFish(int id, UpdateKoiFishDTO fishModel)
+        public async Task<KoiFishResponseDTO> UpdateKoiFish(int id, KoiFishUpadteDTO fishModel)
         {
             ////check user
             //Guid userId = _claimsService.GetCurrentUserId;
@@ -147,7 +154,14 @@ namespace Koi.Services.Services
             fish.LastHealthCheck = fishModel.LastHealthCheck;
             fish.PersonalityTraits = fishModel.PersonalityTraits;
             fish.Name = fishModel.Name;
-
+            fish.KoiFishImages = [];
+            foreach (var item in fishModel.ImageUrl)
+            {
+                fish.KoiFishImages.Add(new KoiFishImage
+                {
+                    ImageUrl = item
+                });
+            }
             if (await _unitOfWork.SaveChangeAsync() <= 0) throw new Exception("400 - Fail saving changes!");
             return _mapper.Map<KoiFishResponseDTO>(fish);
         }

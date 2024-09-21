@@ -1,10 +1,10 @@
-﻿namespace Koi.BusinessObjects
+﻿namespace Koi.DTOs.KoiFishDTOs
 {
-    public class KoiFishImage : BaseEntity
+    public class KoiFishImageDTO
     {
+        public int Id { get; set; }
         public int KoiFishId { get; set; }
         public string? Name { get; set; }
         public string ImageUrl { get; set; }
-        public virtual KoiFish KoiFish { get; set; }
     }
 }

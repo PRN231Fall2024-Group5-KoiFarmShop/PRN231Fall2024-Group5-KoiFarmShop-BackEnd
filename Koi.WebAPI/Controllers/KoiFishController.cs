@@ -73,7 +73,7 @@ namespace Koi.WebAPI.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> Post([FromBody] CreateKoiFishDTO fish)
+        public async Task<IActionResult> Post([FromBody] KoiFishCreateDTO fish)
         {
             try
             {
@@ -96,7 +96,7 @@ namespace Koi.WebAPI.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> Put(int id, [FromBody] UpdateKoiFishDTO data)
+        public async Task<IActionResult> Put(int id, [FromBody] KoiFishUpadteDTO data)
         {
             try
             {
