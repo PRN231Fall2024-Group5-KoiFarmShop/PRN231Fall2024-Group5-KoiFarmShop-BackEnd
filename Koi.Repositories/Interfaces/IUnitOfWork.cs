@@ -10,6 +10,7 @@
         public IKoiDiaryRepository KoiDiaryRepository { get; }
         IWalletRepository WalletRepository { get; }
         ITransactionRepository TransactionRepository { get; }
+        IKoiImageRepository KoiImageRepository { get; }
 
         public IKoiCertificateRepository KoiCertificateRepository { get; }
         Task<int> SaveChangeAsync();

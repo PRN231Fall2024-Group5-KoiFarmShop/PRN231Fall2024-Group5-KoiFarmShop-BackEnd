@@ -21,10 +21,11 @@ namespace Koi.Repositories.Repositories
         public IQueryable<KoiFish> FilterAllField(KoiParams koiParams)
         {
             var query = _dbContext.KoiFishs
-            .Include(x => x.KoiBreeds)
-            .Include(x => x.KoiFishImages)
-            .Include(x => x.KoiDiaries)
-            .Include(x => x.Consigner);
+            .Include(x => x.KoiBreeds.Where(y => y.IsDeleted == false))
+            .Include(x => x.KoiFishImages.Where(y => y.IsDeleted == false))
+            .Include(x => x.KoiDiaries.Where(y => y.IsDeleted == false))
+            .Include(x => x.Consigner)
+            .Where(x => x.IsDeleted == false);
             return query;
         }
     }
