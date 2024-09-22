@@ -65,5 +65,20 @@ namespace Koi.Services.Services
                 throw new Exception("500");
             }
         }
+        public async Task<KoiFishDiaryCreateDTO> DeleteDiary(int id)
+        {
+            try
+            {
+                var item = await _unitOfWork.KoiDiaryRepository.GetByIdAsync(id);
+                if (item.Date.AddDays(3).Date < DateTime.Now.Date) throw new Exception("400 - Update time is over!");
+                var isDeleted = await _unitOfWork.KoiDiaryRepository.SoftRemove(item);
+                if (!isDeleted || await _unitOfWork.SaveChangeAsync() <= 0) throw new Exception("400 - Fail saving changes");
+                return _mapper.Map<KoiFishDiaryCreateDTO>(item);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("500");
+            }
+        }
     }
 }

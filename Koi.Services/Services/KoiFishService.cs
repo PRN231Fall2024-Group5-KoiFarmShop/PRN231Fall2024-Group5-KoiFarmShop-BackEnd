@@ -154,13 +154,22 @@ namespace Koi.Services.Services
             fish.LastHealthCheck = fishModel.LastHealthCheck;
             fish.PersonalityTraits = fishModel.PersonalityTraits;
             fish.Name = fishModel.Name;
-            fish.KoiFishImages = [];
+            foreach (var item in fish.KoiFishImages)
+            {
+                item.IsDeleted = true;
+            }
             foreach (var item in fishModel.ImageUrl)
             {
-                fish.KoiFishImages.Add(new KoiFishImage
+                var tmp = await _unitOfWork.KoiImageRepository.GetByUrl(item);
+                if (tmp == null)
+                    fish.KoiFishImages.Add(new KoiFishImage
+                    {
+                        ImageUrl = item
+                    });
+                else
                 {
-                    ImageUrl = item
-                });
+                    tmp.IsDeleted = false;
+                }
             }
             if (await _unitOfWork.SaveChangeAsync() <= 0) throw new Exception("400 - Fail saving changes!");
             return _mapper.Map<KoiFishResponseDTO>(fish);

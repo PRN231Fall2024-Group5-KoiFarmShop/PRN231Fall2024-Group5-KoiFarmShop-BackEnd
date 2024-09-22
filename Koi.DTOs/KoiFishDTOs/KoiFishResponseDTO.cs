@@ -21,5 +21,6 @@ namespace Koi.DTOs.KoiFishDTOs
         public int? ConsignedBy { get; set; }
         public List<KoiBreedResponseDTO> KoiBreeds { get; set; }
         public List<KoiFishImageDTO> KoiFishImages { get; set; }
+        public List<KoiFishDiaryCreateDTO> KoiDiaries { get; set; }
     }
 }

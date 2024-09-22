@@ -7,5 +7,6 @@ namespace Koi.Services.Interface
         Task<KoiFishDiaryCreateDTO> CreateDiary(KoiFishDiaryCreateDTO koiDiary);
 
         Task<KoiFishDiaryCreateDTO> UpdateDiary(int id, KoiFishDiaryUpdateDTO koiDiary);
+        Task<KoiFishDiaryCreateDTO> DeleteDiary(int id);
     }
 }
