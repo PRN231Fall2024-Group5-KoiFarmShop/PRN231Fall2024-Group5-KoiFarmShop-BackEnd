@@ -241,7 +241,7 @@ namespace Koi.Services.Services
                 {
                     UserId = user.Id,
                     TotalAmount = totalAmount.Value,
-                    OrderStatus = EventOrderStatusEnums.PENDING.ToString(),
+                    OrderStatus = OrderStatusEnums.PENDING.ToString(),
                     ShippingAddress = purchaseDTO.ShippingAddress,
                     PaymentMethod = "VNPAY",
                     Note = purchaseDTO.ShippingAddress,
@@ -320,11 +320,11 @@ namespace Koi.Services.Services
             {
                 throw new Exception("Order not belong to user");
             }
-            if (order.OrderStatus == EventOrderStatusEnums.COMPLETED.ToString())
+            if (order.OrderStatus == OrderStatusEnums.COMPLETED.ToString())
             {
                 throw new Exception("This order has been paid already");
             }
-            if (order.OrderStatus == EventOrderStatusEnums.CANCELLED.ToString())
+            if (order.OrderStatus == OrderStatusEnums.CANCELLED.ToString())
             {
                 throw new Exception("This order has been cancelled");
             }
@@ -366,7 +366,7 @@ namespace Koi.Services.Services
                 }
 
                 //update order status
-                order.OrderStatus = EventOrderStatusEnums.COMPLETED.ToString();
+                order.OrderStatus = OrderStatusEnums.COMPLETED.ToString();
                 await _unitOfWork.WalletRepository.UpdateWallet(existingWallet);
                 await _unitOfWork.OrderRepository.Update(order);
 

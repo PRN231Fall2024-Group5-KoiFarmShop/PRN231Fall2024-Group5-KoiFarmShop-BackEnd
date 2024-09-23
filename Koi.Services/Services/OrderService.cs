@@ -1,14 +1,10 @@
 ﻿using AutoMapper;
 using Koi.BusinessObjects;
+using Koi.DTOs.Enums;
 using Koi.DTOs.PaymentDTOs;
 using Koi.Repositories.Interfaces;
 using Koi.Services.Interface;
 using Microsoft.Extensions.Configuration;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Koi.Services.Services
 {
@@ -74,6 +70,27 @@ namespace Koi.Services.Services
         public async Task<List<OrderDTO>> GetOrdersByUserIdAsync(int userId)
         {
             return _mapper.Map<List<OrderDTO>>(await _unitOfWork.OrderRepository.GetOrdersByUserId(userId)); ;
+        }
+        public async Task<OrderDTO> CancelOrderAsync(int id)
+        {
+            var order = await _unitOfWork.OrderRepository.GetOrdersById(id);
+            if (order == null)
+            {
+                throw new Exception("404 - Order not Found");
+            }
+            if (order.OrderStatus == OrderStatusEnums.PENDING.ToString())
+            {
+                order.OrderStatus = OrderStatusEnums.REFUNDED.ToString();
+                foreach (var item in order.OrderDetails)
+                {
+                    item.Status = OrderDetailStatusEnum.CANCELED.ToString();
+                }
+                //Need works!! Add refund transaction 
+
+                if (await _unitOfWork.SaveChangeAsync() <= 0) throw new Exception("500 - Fail Saving");
+            }
+            else throw new Exception("400 - Invalid Order status");
+            return _mapper.Map<OrderDTO>(order);
         }
     }
 }
