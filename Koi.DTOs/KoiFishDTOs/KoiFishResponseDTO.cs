@@ -1,4 +1,5 @@
 ﻿using Koi.DTOs.KoiBreedDTOs;
+using Koi.DTOs.KoiDiaryDTOs;
 
 namespace Koi.DTOs.KoiFishDTOs
 {

@@ -1,10 +1,7 @@
 ﻿using Koi.BusinessObjects;
+using Koi.DTOs.Enums;
 using Koi.Repositories.Interfaces;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace Koi.Repositories.Repositories
 {
@@ -82,6 +79,7 @@ namespace Koi.Repositories.Repositories
                         KoiFishId = fish.Id,
                         // SubTotal = (int)fish.Price,
                         Price = fish.Price,
+                        Status = OrderStatusEnums.PENDING.ToString(),
                     };
                     order.OrderDetails = [];
                     order.OrderDetails.Add(orderDetail);

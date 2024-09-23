@@ -1,5 +1,5 @@
 ﻿using AutoMapper;
-using Koi.DTOs.KoiFishDTOs;
+using Koi.DTOs.KoiDiaryDTOs;
 using Koi.Repositories.Commons;
 using Koi.Services.Interface;
 using Microsoft.AspNetCore.Mvc;

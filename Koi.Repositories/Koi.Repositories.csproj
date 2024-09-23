@@ -32,6 +32,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Koi.BusinessObjects\Koi.BusinessObjects.csproj" />
+    <ProjectReference Include="..\Koi.DTOs\Koi.DTOs.csproj" />
   </ItemGroup>
 
 </Project>

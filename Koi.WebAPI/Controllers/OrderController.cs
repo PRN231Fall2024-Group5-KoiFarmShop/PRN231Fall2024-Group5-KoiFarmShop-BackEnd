@@ -1,10 +1,7 @@
 ﻿using Koi.DTOs.PaymentDTOs;
 using Koi.Repositories.Commons;
 using Koi.Services.Interface;
-using Koi.Services.Services.VnPayConfig;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using System.Web;
 
 namespace Koi.WebAPI.Controllers
 {
@@ -64,6 +61,35 @@ namespace Koi.WebAPI.Controllers
                 if (result != null)
                 {
                     return Ok(ApiResult<OrderDTO>.Succeed(result, "purchase successfully"));
+                }
+                else
+                {
+                    return BadRequest();
+                }
+            }
+            catch (Exception ex)
+            {
+                if (ex.Message.Contains("400"))
+                    return BadRequest(ApiResult<object>.Fail(ex));
+                if (ex.Message.Contains("404"))
+                    return NotFound(ApiResult<object>.Fail(ex));
+                if (ex.Message.Contains("401"))
+                    return Unauthorized(ApiResult<object>.Fail(ex));
+                if (ex.Message.Contains("403"))
+                    return StatusCode(StatusCodes.Status403Forbidden, ApiResult<object>.Fail(ex));
+
+                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+            }
+        }
+        [HttpPut("CancelOrder/{id}")]
+        public async Task<IActionResult> CancelOrderAsync(int id)
+        {
+            try
+            {
+                var result = await _paymentService.CancelOrderAsync(id);
+                if (result != null)
+                {
+                    return Ok(ApiResult<OrderDTO>.Succeed(result, "Order Canceled"));
                 }
                 else
                 {

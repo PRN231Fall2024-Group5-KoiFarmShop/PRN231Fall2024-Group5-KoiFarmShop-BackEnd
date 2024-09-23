@@ -1,4 +1,4 @@
-﻿using Koi.DTOs.KoiFishDTOs;
+﻿using Koi.DTOs.KoiDiaryDTOs;
 
 namespace Koi.Services.Interface
 {

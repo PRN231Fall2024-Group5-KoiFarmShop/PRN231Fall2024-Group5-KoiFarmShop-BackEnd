@@ -1,4 +1,4 @@
-﻿namespace Koi.DTOs.KoiFishDTOs
+﻿namespace Koi.DTOs.KoiDiaryDTOs
 {
     public class KoiFishDiaryUpdateDTO
     {

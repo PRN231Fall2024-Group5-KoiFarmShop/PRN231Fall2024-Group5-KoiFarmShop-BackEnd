@@ -1,9 +1,4 @@
 ﻿using Koi.DTOs.PaymentDTOs;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Koi.Services.Interface
 {
@@ -13,5 +8,6 @@ namespace Koi.Services.Interface
         Task<List<OrderDTO>> GetOrdersAsync();
         Task<List<OrderDTO>> GetOrdersByUserIdAsync(int userId);
         Task<OrderDTO> NewOrderAsync(VnpayOrderInfo orderInfo);
+        Task<OrderDTO> CancelOrderAsync(int id);
     }
 }

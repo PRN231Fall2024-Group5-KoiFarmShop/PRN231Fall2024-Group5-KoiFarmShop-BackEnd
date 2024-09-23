@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Koi.BusinessObjects;
 using Koi.DTOs.KoiBreedDTOs;
+using Koi.DTOs.KoiDiaryDTOs;
 using Koi.DTOs.KoiFishDTOs;
 using Koi.DTOs.PaymentDTOs;
 using Koi.DTOs.TransactionDTOs;

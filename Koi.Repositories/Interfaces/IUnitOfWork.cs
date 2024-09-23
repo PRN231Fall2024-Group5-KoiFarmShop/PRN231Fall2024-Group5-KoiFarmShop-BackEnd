@@ -8,9 +8,10 @@
         public IKoiBreedRepository KoiBreedRepository { get; }
         public IOrderRepository OrderRepository { get; }
         public IKoiDiaryRepository KoiDiaryRepository { get; }
-        IWalletRepository WalletRepository { get; }
-        ITransactionRepository TransactionRepository { get; }
-        IKoiImageRepository KoiImageRepository { get; }
+        public IWalletRepository WalletRepository { get; }
+        public ITransactionRepository TransactionRepository { get; }
+        public IKoiImageRepository KoiImageRepository { get; }
+        public IOrderDetailRepository OrderDetailRepository { get; }
 
         public IKoiCertificateRepository KoiCertificateRepository { get; }
         Task<int> SaveChangeAsync();
