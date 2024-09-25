@@ -8,6 +8,7 @@ namespace Koi.DTOs.Enums
 {
     public enum RoleEnums
     {
+        ADMIN,
         MANAGER,
         STAFF,
         CUSTOMER

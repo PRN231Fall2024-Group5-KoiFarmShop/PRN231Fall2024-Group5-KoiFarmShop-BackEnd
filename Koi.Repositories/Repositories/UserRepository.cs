@@ -56,7 +56,9 @@ namespace Koi.Repositories.Repositories
                     UserName = newUser.Email,
                     FullName = newUser.FullName,
                     Dob = newUser.Dob,
-                    ImageUrl = newUser.ProfilePictureUrl,
+                    IsActive = false,
+                    PhoneNumber = newUser.PhoneNumber,
+                    ImageUrl = newUser.ImageUrl,
                     Address = newUser.Address,
                     CreatedBy = _claimsService.GetCurrentUserId,
                     CreatedDate = _timeService.GetCurrentTime()

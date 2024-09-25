@@ -5,6 +5,7 @@ using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Koi.DTOs.Enums;
 
 namespace Koi.Repositories.Models.UserModels
 {
@@ -34,7 +35,9 @@ namespace Koi.Repositories.Models.UserModels
         [StringLength(11, MinimumLength = 10, ErrorMessage = "Phone number must 10 digits")]
         public string? PhoneNumber { get; set; }
 
-        public string? ProfilePictureUrl { get; set; }
+        public string? ImageUrl { get; set; }
         public string? Address { get; set; }
+
+        public RoleEnums RoleName { get; set; }
     }
 }

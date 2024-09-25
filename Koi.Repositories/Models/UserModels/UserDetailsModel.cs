@@ -15,7 +15,7 @@ namespace Koi.Repositories.Models.UserModels
         public string? UnsignFullName { get; set; }
         public DateTime? Dob { get; set; }
         public string? PhoneNumber { get; set; }
-        public string? ProfilePictureUrl { get; set; }
+        public string? ImageUrl { get; set; }
         public string? Address { get; set; }
         public bool? IsActive { get; set; }
         public int? LoyaltyPoints { get; set; } = 0;
