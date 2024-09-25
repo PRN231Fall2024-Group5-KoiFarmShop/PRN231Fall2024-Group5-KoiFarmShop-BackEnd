@@ -25,6 +25,6 @@ namespace Koi.Services.Interface
 
         Task<ApiResult<UserDetailsModel>> UpdateUserAsync(int userId, CustomerProfileDTO userUpdateMode);
 
-        Task<ApiResult<UserDetailsModel>> UpdateUserWithRoleAsync(int userId, UserUpdateModel userUpdateMode, string role);
+        Task<ApiResult<UserDetailsModel>> UpdateUserWithRoleAsync(int userId, UserUpdateModel userUpdateMode, string? role);
     }
 }

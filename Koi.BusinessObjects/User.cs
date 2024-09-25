@@ -11,6 +11,7 @@ namespace Koi.BusinessObjects
         public string? ImageUrl { get; set; }
         public string? Address { get; set; }
         public bool? IsActive { get; set; }
+        public string? RoleName { get; set; }
         public int? LoyaltyPoints { get; set; } = 0;
         public string? RefreshToken { get; set; }
         public DateTime? RefreshTokenExpiryTime { get; set; }
@@ -29,7 +30,9 @@ namespace Koi.BusinessObjects
         public virtual ICollection<Blog> Blogs { get; set; }
         public virtual Wallet Wallet { get; set; }
 
-        //    public virtual ICollection<IdentityUserRole<int>> UserRoles { get; set; } // Navigation property to UserRoles
+        // Navigation directly to roles (many-to-many)
+        public virtual ICollection<Role> Roles { get; set; }
+
         public virtual ICollection<WalletTransaction>? WalletTransactions { get; set; }  // Thêm navigation property cho WalletTransaction
     }
 }
