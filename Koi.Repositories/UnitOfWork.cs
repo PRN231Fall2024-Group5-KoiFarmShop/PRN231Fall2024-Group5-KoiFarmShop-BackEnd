@@ -17,6 +17,7 @@ namespace Koi.Repositories
         private readonly IKoiDiaryRepository _koiDiaryRepository;
         private readonly IKoiImageRepository _koiImageRepository;
         private readonly IOrderDetailRepository _orderDetailRepository;
+        private readonly IDietRepository _dietRepository;
         public UnitOfWork(KoiFarmShopDbContext context,
             IKoiBreedRepository koiBreedRepository,
             IKoiFishRepository koiFishRepository,
@@ -27,7 +28,8 @@ namespace Koi.Repositories
             ITransactionRepository transactionRepository,
             IKoiDiaryRepository koiDiaryRepository,
             IKoiImageRepository koiImageRepository,
-            IOrderDetailRepository orderDetailRepository
+            IOrderDetailRepository orderDetailRepository,
+            IDietRepository dietRepository
 
         )
         {
@@ -42,10 +44,11 @@ namespace Koi.Repositories
             _koiDiaryRepository = koiDiaryRepository;
             _koiImageRepository = koiImageRepository;
             _orderDetailRepository = orderDetailRepository;
+            _dietRepository = dietRepository;
         }
 
         public IUserRepository UserRepository => _userRepository;
-
+        public IDietRepository DietRepository => _dietRepository;
         public IKoiFishRepository KoiFishRepository => _koiFishRepository;
         public IKoiBreedRepository KoiBreedRepository => _koiBreedRepository;
         public IKoiDiaryRepository KoiDiaryRepository => _koiDiaryRepository;

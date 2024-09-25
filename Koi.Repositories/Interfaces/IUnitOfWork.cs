@@ -14,6 +14,7 @@
         public IOrderDetailRepository OrderDetailRepository { get; }
 
         public IKoiCertificateRepository KoiCertificateRepository { get; }
+        public IDietRepository DietRepository { get; }
         Task<int> SaveChangeAsync();
     }
 }

@@ -6,7 +6,7 @@ namespace Koi.BusinessObjects
     {
         public int CustomerId { get; set; }  // Foreign key to User
         public int KoiFishId { get; set; }   // Foreign key to KoiFish
-        public int? DietId { get; set; } // Foreign Key to Diet
+        public int DietId { get; set; } // Foreign Key to Diet
 
         public DateTime ConsignmentDate { get; set; }  // Ngày ký gửi
         public DateTime StartDate { get; set; }  // Ngày bắt đầu chăm sóc
@@ -29,5 +29,7 @@ namespace Koi.BusinessObjects
 
         [ForeignKey("PackageCareId")]
         public virtual PackageCare PackageCare { get; set; }
+        public virtual Diet Diet { get; set; }
+
     }
 }

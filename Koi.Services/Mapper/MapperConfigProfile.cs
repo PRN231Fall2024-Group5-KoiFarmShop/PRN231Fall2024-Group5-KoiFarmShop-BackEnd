@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Koi.BusinessObjects;
+using Koi.DTOs.DietDTOs;
 using Koi.DTOs.KoiBreedDTOs;
 using Koi.DTOs.KoiDiaryDTOs;
 using Koi.DTOs.KoiFishDTOs;
@@ -14,6 +15,7 @@ namespace Koi.Services.Mapper
     {
         public MapperConfigProfile()
         {
+            CreateMap<DietCreateDTO, Diet>().ReverseMap();
             CreateMap<KoiFishDiaryCreateDTO, KoiDiary>().ReverseMap();
             CreateMap<KoiFishDiaryUpdateDTO, KoiDiary>().ReverseMap();
             CreateMap<KoiBreed, KoiBreedCreateDTO>().ReverseMap();
