@@ -1,4 +1,5 @@
 ﻿using Koi.BusinessObjects;
+using Koi.Repositories.Migrations;
 using Koi.Repositories.Utils;
 using Microsoft.AspNetCore.Identity;
 
@@ -43,7 +44,8 @@ namespace Koi.Repositories
                     ImageUrl = "https://example.com/manager.png",
                     Address = "Manager Street, City",
                     IsActive = true,
-                    CreatedDate = DateTime.UtcNow.AddHours(7)
+                    CreatedDate = DateTime.UtcNow.AddHours(7),
+                    RoleName = "ADMIN"
                 };
                 await CreateUserAsync(userManager, admin, "123456", "ADMIN");
 
@@ -58,7 +60,8 @@ namespace Koi.Repositories
                     ImageUrl = "https://example.com/manager.png",
                     Address = "Manager Street, City",
                     IsActive = true,
-                    CreatedDate = DateTime.UtcNow.AddHours(7)
+                    CreatedDate = DateTime.UtcNow.AddHours(7),
+                    RoleName = "MANAGER"
                 };
                 await CreateUserAsync(userManager, manager, "123456", "MANAGER");
 
@@ -73,7 +76,8 @@ namespace Koi.Repositories
                     ImageUrl = "https://example.com/staff.png",
                     Address = "Staff Street, City",
                     IsActive = true,
-                    CreatedDate = DateTime.UtcNow.AddHours(7)
+                    CreatedDate = DateTime.UtcNow.AddHours(7),
+                    RoleName = "STAFF"
                 };
                 await CreateUserAsync(userManager, staff, "123456", "STAFF");
 
@@ -88,7 +92,8 @@ namespace Koi.Repositories
                     ImageUrl = "https://example.com/customer.png",
                     Address = "Customer Street, City",
                     IsActive = true,
-                    CreatedDate = DateTime.UtcNow.AddHours(7)
+                    CreatedDate = DateTime.UtcNow.AddHours(7),
+                    RoleName = "CUSTOMER"
                 };
                 await CreateUserAsync(userManager, customer, "123456", "CUSTOMER");
 
@@ -118,7 +123,8 @@ namespace Koi.Repositories
                         ImageUrl = "https://avatar.iran.liara.run/public/boy?username=namthhse172294",
                         Address = "HCM",
                         IsActive = true,
-                        CreatedDate = DateTime.UtcNow.AddHours(7)
+                        CreatedDate = DateTime.UtcNow.AddHours(7),
+                                            RoleName = "CUSTOMER"
                     },
                     new User
                     {
@@ -130,7 +136,8 @@ namespace Koi.Repositories
                         ImageUrl = "https://avatar.iran.liara.run/public/boy?username=vunse172437",
                         Address = "HCM",
                         IsActive = true,
-                        CreatedDate = DateTime.UtcNow.AddHours(7)
+                        CreatedDate = DateTime.UtcNow.AddHours(7),
+                                                                    RoleName = "CUSTOMER"
                     },
                     new User
                     {
@@ -143,7 +150,8 @@ namespace Koi.Repositories
                         ImageUrl = "https://avatar.iran.liara.run/public/boy?username=huanngse171018",
                         Address = "HCM",
                         IsActive = true,
-                        CreatedDate = DateTime.UtcNow.AddHours(7)
+                        CreatedDate = DateTime.UtcNow.AddHours(7),
+                                                                    RoleName = "CUSTOMER"
                     },
                     new User
                     {
@@ -156,7 +164,8 @@ namespace Koi.Repositories
                         ImageUrl = "https://avatar.iran.liara.run/public/boy?username=tienhmse172436",
                         Address = "HCM",
                         IsActive = true,
-                        CreatedDate = DateTime.UtcNow.AddHours(7)
+                        CreatedDate = DateTime.UtcNow.AddHours(7),
+                                                                    RoleName = "CUSTOMER"
                     }
                 };
 
