@@ -1,5 +1,6 @@
 ﻿using Koi.BusinessObjects;
 using Koi.DTOs.Enums;
+using Koi.DTOs.UserDTOs;
 using Koi.Repositories.Commons;
 
 using Koi.Repositories.Models.UserModels;
@@ -88,13 +89,13 @@ namespace Koi.WebAPI.Controllers
         /// <response code="200">Returns a success message with user data if registration is successful.</response>
         /// <response code="400">Returns an error message if registration fails (e.g., email already exists, invalid data).</response>
         [HttpPost()]
-        public async Task<IActionResult> CreateUserAsync(UserSignupModel userSignup, RoleEnums role)
+        public async Task<IActionResult> CreateUserAsync([FromBody] UserSignupModel userSignup)
         {
             try
             {
-                string roleName = string.IsNullOrEmpty(role.ToString()) ? role.ToString() : "CUSTOMER";
+                string roleName = string.IsNullOrEmpty(userSignup.RoleName.ToString()) ? userSignup.RoleName.ToString() : "CUSTOMER";
 
-                var data = await _userService.ResigerAsync(userSignup, role.ToString());
+                var data = await _userService.ResigerAsync(userSignup, userSignup.RoleName.ToString());
                 if (data.IsSuccess)
                 {
                     // var confirmationLink = Url.Action(nameof(ConfirmEmail), "users", new { email = userLogin.Email, token = data.Message }, Request.Scheme);
@@ -133,7 +134,7 @@ namespace Koi.WebAPI.Controllers
         /// <response code="404">If the user with the specified ID is not found.</response>
         /// <response code="400">Returns an error message if the update fails (e.g., invalid data).</response>
         [HttpPut("customers/{id}")]
-        public async Task<IActionResult> UpdateAccount([FromRoute] int id, [FromBody] UserUpdateModel userUpdatemodel)
+        public async Task<IActionResult> UpdateAccount([FromRoute] int id, [FromBody] CustomerProfileDTO userUpdatemodel)
         {
             try
             {
@@ -155,7 +156,6 @@ namespace Koi.WebAPI.Controllers
         /// </summary>
         /// <param name="id">The ID of the user to update.</param>
         /// <param name="userUpdatemodel">The updated user data.</param>
-        /// <param name="role">Optional new role for the user (if applicable).</param>
         /// <returns>A result object indicating success or failure.</returns>
         /// <remarks>
         /// Sample request body:
@@ -172,13 +172,13 @@ namespace Koi.WebAPI.Controllers
         /// <response code="404">If the user with the specified ID is not found.</response>
         /// <response code="400">Returns an error message if the update fails (e.g., invalid data).</response>
         [HttpPut()]
-        public async Task<IActionResult> UpdateAccount([FromRoute] int id, [FromBody] UserUpdateModel userUpdatemodel, RoleEnums role)
+        public async Task<IActionResult> UpdateAccount([FromRoute] int id, [FromBody] UserUpdateModel userUpdatemodel)
         {
             try
             {
-                string roleName = string.IsNullOrEmpty(role.ToString()) ? role.ToString() : "";
+                string roleName = string.IsNullOrEmpty(userUpdatemodel.RoleName.ToString()) ? userUpdatemodel.RoleName.ToString() : "CUSTOMER";
 
-                var result = await _userService.UpdateUserAsync(id, userUpdatemodel);
+                var result = await _userService.UpdateUserWithRoleAsync(id, userUpdatemodel, roleName);
                 if (result.IsSuccess == false)
                 {
                     return NotFound(result);

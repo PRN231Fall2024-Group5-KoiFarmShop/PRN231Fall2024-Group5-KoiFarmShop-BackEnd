@@ -1,13 +1,12 @@
-﻿using Koi.DTOs.Enums;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Koi.Repositories.Models.UserModels
+namespace Koi.DTOs.UserDTOs
 {
-    public class UserUpdateModel
+    public class CustomerProfileDTO
     {
         public string? FullName { get; set; }
         public DateTime? Dob { get; set; }
@@ -15,6 +14,5 @@ namespace Koi.Repositories.Models.UserModels
         public string? ImageUrl { get; set; }
         public string? Address { get; set; }
         public bool? IsActive { get; set; }
-        public RoleEnums RoleName { get; set; }
     }
 }
