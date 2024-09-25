@@ -171,7 +171,7 @@ namespace Koi.WebAPI.Controllers
         /// <response code="200">Returns a success message if the update is successful.</response>
         /// <response code="404">If the user with the specified ID is not found.</response>
         /// <response code="400">Returns an error message if the update fails (e.g., invalid data).</response>
-        [HttpPut()]
+        [HttpPut("{id}")]
         public async Task<IActionResult> UpdateAccount([FromRoute] int id, [FromBody] UserUpdateModel userUpdatemodel)
         {
             try
