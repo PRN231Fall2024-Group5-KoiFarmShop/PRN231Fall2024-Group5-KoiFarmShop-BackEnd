@@ -26,6 +26,7 @@ namespace Koi.Repositories
         public DbSet<Wallet> Wallets { get; set; }
         public DbSet<KoiFishImage> KoiFishImages { get; set; }
         public DbSet<KoiDiary> KoiDiaries { get; set; }
+        public DbSet<Diet> Diets { get; set; }
 
         public KoiFarmShopDbContext(DbContextOptions options) : base(options)
         {
