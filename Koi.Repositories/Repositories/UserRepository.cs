@@ -354,7 +354,9 @@ namespace Koi.Repositories.Repositories
         {
             try
             {
-                var users = await _context.Users.ToListAsync();
+                var users = await _context.Users.Include(x=>x.Roles).ToListAsync();
+                var roles = users.Select(x => x.Roles.First().Name);
+                var rolenames = await _roleManager.Roles.ToListAsync();
 
                 return users;
             }
