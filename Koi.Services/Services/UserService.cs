@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Koi.DTOs.UserDTOs;
 using Koi.Repositories.Commons;
 using Koi.Repositories.Interfaces;
 using Koi.Repositories.Models.UserModels;
@@ -79,7 +80,7 @@ namespace Koi.Services.Services
             };
         }
 
-        public async Task<ApiResult<UserDetailsModel>> UpdateUserAsync(int userId, UserUpdateModel userUpdateMode)
+        public async Task<ApiResult<UserDetailsModel>> UpdateUserAsync(int userId, CustomerProfileDTO userUpdateMode)
         {
             var existingUser = await _unitOfWork.UserRepository.GetAccountDetailsAsync(userId);
             if (existingUser != null)
@@ -105,12 +106,16 @@ namespace Koi.Services.Services
             };
         }
 
-        public async Task<ApiResult<UserDetailsModel>> UpdateUserWithRoleAsync(int userId, UserUpdateModel userUpdateMode, string role)
+        public async Task<ApiResult<UserDetailsModel>> UpdateUserWithRoleAsync(int userId, UserUpdateModel userUpdateMode, string? role)
         {
             var existingUser = await _unitOfWork.UserRepository.GetAccountDetailsAsync(userId);
             if (existingUser != null)
             {
                 existingUser = _mapper.Map(userUpdateMode, existingUser);
+                if (!string.IsNullOrEmpty(role))
+                {
+                    existingUser.RoleName = role;
+                }
                 var updatedAccount = await _unitOfWork.UserRepository.UpdateAccountAsync(existingUser);
 
                 if (!string.IsNullOrEmpty(role))

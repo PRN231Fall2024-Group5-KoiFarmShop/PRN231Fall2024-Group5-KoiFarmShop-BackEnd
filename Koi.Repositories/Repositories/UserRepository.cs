@@ -56,7 +56,10 @@ namespace Koi.Repositories.Repositories
                     UserName = newUser.Email,
                     FullName = newUser.FullName,
                     Dob = newUser.Dob,
-                    ImageUrl = newUser.ProfilePictureUrl,
+                    RoleName = role,
+                    IsActive = false,
+                    PhoneNumber = newUser.PhoneNumber,
+                    ImageUrl = newUser.ImageUrl,
                     Address = newUser.Address,
                     CreatedBy = _claimsService.GetCurrentUserId,
                     CreatedDate = _timeService.GetCurrentTime()
@@ -224,7 +227,7 @@ namespace Koi.Repositories.Repositories
 
         public async Task<User> GetAccountDetailsAsync(int userId)
         {
-            var accounts = await _userManager.FindByIdAsync(userId.ToString());
+            var accounts = await _userManager.Users.ToListAsync();
             var account = await _context.Users.FirstOrDefaultAsync(a => a.Id == userId);
             if (account == null)
             {
@@ -351,7 +354,9 @@ namespace Koi.Repositories.Repositories
         {
             try
             {
-                var users = await _context.Users.ToListAsync();
+                var users = await _context.Users.Include(x=>x.Roles).ToListAsync();
+                var roles = users.Select(x => x.Roles.First().Name);
+                var rolenames = await _roleManager.Roles.ToListAsync();
 
                 return users;
             }
