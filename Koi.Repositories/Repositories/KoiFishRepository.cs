@@ -18,6 +18,7 @@ namespace Koi.Repositories.Repositories
             _timeService = timeService;
             _claimsService = claims;
         }
+
         public IQueryable<KoiFish> FilterAllField(KoiParams koiParams)
         {
             var query = _dbContext.KoiFishs
@@ -25,6 +26,7 @@ namespace Koi.Repositories.Repositories
             .Include(x => x.KoiFishImages.Where(y => y.IsDeleted == false))
             .Include(x => x.KoiDiaries.Where(y => y.IsDeleted == false))
             .Include(x => x.Consigner)
+            .OrderByDescending(y => y.CreatedAt)
             .Where(x => x.IsDeleted == false);
             return query;
         }
