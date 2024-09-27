@@ -22,6 +22,6 @@ services:
       MSSQL_SA_PASSWORD: "YourStrong!Passw0rd"
     ports:
       - "1434:1433"
-    volumes:
-      - ./.containers/koi-database:/var/opt/mssql/data
-      - ./bk:/var/opt/mssql/backup
+    # volumes:
+    #   - ./.containers/koi-database:/var/opt/mssql/data
+    #   - ./bk:/var/opt/mssql/backup

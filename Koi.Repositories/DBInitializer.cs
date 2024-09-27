@@ -1,5 +1,4 @@
 ﻿using Koi.BusinessObjects;
-using Koi.Repositories.Migrations;
 using Koi.Repositories.Utils;
 using Microsoft.AspNetCore.Identity;
 
