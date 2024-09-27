@@ -143,16 +143,16 @@ builder.Services.AddCors(options =>
             // .AllowCredentials() cannot be used with AllowAnyOrigin
         });
 
-    // Policy allowing a specific origin with credentials
-    options.AddPolicy("AllowSpecificOrigin",
-        policyBuilder =>
-        {
-            policyBuilder
-                .WithOrigins("https://koifarmshop.netlify.app") // Specific origin
-                .AllowAnyHeader()
-                .AllowAnyMethod()
-                .AllowCredentials(); // AllowCredentials works with specific origins
-        });
+    //// Policy allowing a specific origin with credentials
+    //options.AddPolicy("AllowSpecificOrigin",
+    //    policyBuilder =>
+    //    {
+    //        policyBuilder
+    //            .WithOrigins("https://koifarmshop.netlify.app") // Specific origin
+    //            .AllowAnyHeader()
+    //            .AllowAnyMethod()
+    //            .AllowCredentials(); // AllowCredentials works with specific origins
+    //    });
 });
 
 var app = builder.Build();
@@ -196,9 +196,9 @@ catch (Exception e)
     logger.LogError(e, "An problem occurred seed data!");
 }
 // USE CORS
-app.UseCors();
+//app.UseCors();
 // Use CORS policy
-app.UseCors("AllowSpecificOrigin");
+//app.UseCors("AllowSpecificOrigin");
 app.UseCors("AllowAnyOrigin"); // To apply globally the "AllowAnyOrigin" policy
 
 // USE AUTHENTICATION, AUTHORIZATION
