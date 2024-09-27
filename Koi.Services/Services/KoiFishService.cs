@@ -69,7 +69,7 @@ namespace Koi.Services.Services
             //}
 
             // If not in cache, query the database
-            var fish = await _unitOfWork.KoiFishRepository.GetByIdAsync(id);
+            var fish = await _unitOfWork.KoiFishRepository.GetByIdAsync(id, x => x.KoiBreeds, x => x.KoiFishImages, x => x.Consigner, x => x.KoiDiaries, x => x.KoiCertificates);
 
             if (fish == null)
             {
