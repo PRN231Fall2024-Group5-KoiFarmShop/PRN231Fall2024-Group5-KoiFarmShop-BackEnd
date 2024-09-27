@@ -7,7 +7,7 @@
         //[BindProperty(Name = "page-number")]
         public int PageNumber { get; set; } = 1;
 
-        public int _pageSize = 6;
+        public int _pageSize = 10;
 
         //[BindProperty(Name = "page-size")]
         public int PageSize
