@@ -112,7 +112,8 @@ namespace Koi.Services.Services
             var koiBreed = new KoiBreed
             {
                 Name = koiBreedModel.Name,
-                Content = koiBreedModel.Content
+                Content = koiBreedModel.Content,
+                ImageUrl = koiBreedModel.ImageUrl,
             };
             var newCategory = await _unitOfWork.KoiBreedRepository.AddAsync(koiBreed);
 
