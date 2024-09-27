@@ -31,7 +31,8 @@ namespace Koi.WebAPI.Controllers
             try
             {
                 var breeds = await _koiFishService.GetKoiFishes(koiFishParams);
-                return Ok(new { isSuccess = true, data = breeds, metadata = breeds.MetaData, message = "Get Fishes Successfully" });
+                var list = breeds.ToList();
+                return Ok(new { isSuccess = true, data = _mapper.Map<List<KoiFishResponseDTO>>(list), metadata = breeds.MetaData, message = "Get Fishes Successfully!" });
             }
             catch (Exception ex)
             {
