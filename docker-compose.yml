@@ -23,5 +23,5 @@ services:
     ports:
       - "1434:1433"
     # volumes:
-      # - ./.containers/koi-database:/var/opt/mssql/data
-      # - ./bk:/var/opt/mssql/backup
+    #   - ./.containers/koi-database:/var/opt/mssql/data
+    #   - ./bk:/var/opt/mssql/backup
