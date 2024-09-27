@@ -195,15 +195,15 @@ catch (Exception e)
 {
     logger.LogError(e, "An problem occurred seed data!");
 }
-
+// USE CORS
+app.UseCors();
 // Use CORS policy
 app.UseCors("AllowSpecificOrigin");
+app.UseCors("AllowAnyOrigin"); // To apply globally the "AllowAnyOrigin" policy
 
 // USE AUTHENTICATION, AUTHORIZATION
 app.UseAuthorization();
 app.UseAuthentication();
-// USE CORS
-app.UseCors();
 
 //OTHERS
 app.UseHttpsRedirection();
