@@ -1,25 +1,13 @@
-﻿using Koi.Repositories.Helper;
-
-namespace Koi.Repositories.Commons
+﻿namespace Koi.Repositories.Commons
 {
     public record ApiResult<T>
     {
         public bool IsSuccess { get; set; }
         public T? Data { get; set; }
         public string? Message { get; set; }
-        public MetaData? MetaData { get; set; }
         public static ApiResult<T> Succeed(T? data, string message)
         {
             return new ApiResult<T> { IsSuccess = true, Data = data, Message = message };
-        }
-
-        public static ApiResult<T> Error(T? data, MetaData? metadata, string Message)
-        {
-            return new ApiResult<T> { IsSuccess = false, Data = data, Message = Message, MetaData = metadata };
-        }
-        public static ApiResult<T> Succeed(T? data, MetaData? metadata, string message)
-        {
-            return new ApiResult<T> { IsSuccess = true, Data = data, Message = message, MetaData = metadata };
         }
 
         public static ApiResult<T> Error(T? data, string Message)
