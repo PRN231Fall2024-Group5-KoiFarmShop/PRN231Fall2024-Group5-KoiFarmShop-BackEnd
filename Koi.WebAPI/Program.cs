@@ -132,14 +132,26 @@ builder.Services.AddControllers()
 //ADD CORS
 builder.Services.AddCors(options =>
 {
+    // Policy allowing any origin, but without AllowCredentials
+    options.AddPolicy("AllowAnyOrigin",
+        policyBuilder =>
+        {
+            policyBuilder
+                .AllowAnyOrigin()
+                .AllowAnyHeader()
+                .AllowAnyMethod();
+            // .AllowCredentials() cannot be used with AllowAnyOrigin
+        });
+
+    // Policy allowing a specific origin with credentials
     options.AddPolicy("AllowSpecificOrigin",
         policyBuilder =>
         {
             policyBuilder
-                .WithOrigins("http://localhost:3000")
+                .WithOrigins("https://koifarmshop.netlify.app") // Specific origin
                 .AllowAnyHeader()
                 .AllowAnyMethod()
-                .AllowCredentials();
+                .AllowCredentials(); // AllowCredentials works with specific origins
         });
 });
 
@@ -150,9 +162,6 @@ var app = builder.Build();
 var scope = app.Services.CreateScope();
 var userManager = scope.ServiceProvider.GetRequiredService<UserManager<User>>();
 var logger = scope.ServiceProvider.GetRequiredService<ILogger<Program>>();
-
-
-
 
 //CLAIM SERVICE
 builder.Services.AddHttpContextAccessor();

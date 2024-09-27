@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Koi.Repositories.Migrations
 {
     [DbContext(typeof(KoiFarmShopDbContext))]
-    [Migration("20240925041155_TienBaoOk")]
-    partial class TienBaoOk
+    [Migration("20240927132418_INITDB")]
+    partial class INITDB
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -882,12 +882,17 @@ namespace Koi.Repositories.Migrations
                         .HasMaxLength(256)
                         .HasColumnType("nvarchar(256)");
 
+                    b.Property<int?>("UserId")
+                        .HasColumnType("int");
+
                     b.HasKey("Id");
 
                     b.HasIndex("NormalizedName")
                         .IsUnique()
                         .HasDatabaseName("RoleNameIndex")
                         .HasFilter("[NormalizedName] IS NOT NULL");
+
+                    b.HasIndex("UserId");
 
                     b.ToTable("AspNetRoles", (string)null);
                 });
@@ -1038,6 +1043,9 @@ namespace Koi.Repositories.Migrations
 
                     b.Property<DateTime?>("RefreshTokenExpiryTime")
                         .HasColumnType("datetime2");
+
+                    b.Property<string>("RoleName")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("SecurityStamp")
                         .HasColumnType("nvarchar(max)");
@@ -1459,6 +1467,13 @@ namespace Koi.Repositories.Migrations
                     b.Navigation("Order");
                 });
 
+            modelBuilder.Entity("Koi.BusinessObjects.Role", b =>
+                {
+                    b.HasOne("Koi.BusinessObjects.User", null)
+                        .WithMany("Roles")
+                        .HasForeignKey("UserId");
+                });
+
             modelBuilder.Entity("Koi.BusinessObjects.Transaction", b =>
                 {
                     b.HasOne("Koi.BusinessObjects.Order", "Order")
@@ -1612,6 +1627,8 @@ namespace Koi.Repositories.Migrations
                     b.Navigation("KoiFishsConsigned");
 
                     b.Navigation("Orders");
+
+                    b.Navigation("Roles");
 
                     b.Navigation("Wallet")
                         .IsRequired();
