@@ -148,7 +148,7 @@ builder.Services.AddCors(options =>
         policyBuilder =>
         {
             policyBuilder
-                .WithOrigins("https://koifarmshop.netlify.app") // Specific origin
+                .WithOrigins("https://koifarmshop.netlify.app", "http://localhost:3000/") // Specific origin
                 .AllowAnyHeader()
                 .AllowAnyMethod()
                 .AllowCredentials(); // AllowCredentials works with specific origins
