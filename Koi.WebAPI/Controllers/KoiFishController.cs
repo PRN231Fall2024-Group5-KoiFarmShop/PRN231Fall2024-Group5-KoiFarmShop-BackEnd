@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Koi.BusinessObjects;
 using Koi.DTOs.KoiFishDTOs;
 using Koi.Repositories.Commons;
 using Koi.Repositories.Helper;
@@ -31,12 +32,7 @@ namespace Koi.WebAPI.Controllers
             try
             {
                 var breeds = await _koiFishService.GetKoiFishes(koiFishParams);
-
-                //Response.AddPaginationHeader(breeds.MetaData);
-
-                var koiFishReponseDTOs = _mapper.Map<List<KoiFishResponseDTO>>(breeds);
-
-                return Ok(ApiResult<List<KoiFishResponseDTO>>.Succeed(koiFishReponseDTOs, "Get list koi fishes successfully"));
+                return Ok(ApiResult<PagedList<KoiFish>>.Succeed(breeds, breeds.MetaData, "Get list koi fishes successfully"));
             }
             catch (Exception ex)
             {
