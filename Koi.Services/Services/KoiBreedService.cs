@@ -127,7 +127,7 @@ namespace Koi.Services.Services
 
         public async Task<KoiBreedResponseDTO> UpdateKoiBreed(int id, KoiBreedCreateDTO koiBreedModel)
         {
-            var koiBreed = _mapper.Map<KoiBreed>(await GetKoiBreedById(id));
+            var koiBreed = await _unitOfWork.KoiBreedRepository.GetByIdAsync(id);
 
             if (koiBreed == null)
             {
@@ -136,6 +136,7 @@ namespace Koi.Services.Services
 
             koiBreed.Name = koiBreedModel.Name;
             koiBreed.Content = koiBreedModel?.Content ?? "None";
+            koiBreed.ImageUrl = koiBreedModel.ImageUrl;
 
             var isUpdated = await _unitOfWork.KoiBreedRepository.Update(koiBreed);
 
