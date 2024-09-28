@@ -1,4 +1,5 @@
 ﻿using Koi.DTOs.KoiBreedDTOs;
+using Koi.DTOs.KoiCertificateDTOs;
 using Koi.DTOs.KoiDiaryDTOs;
 
 namespace Koi.DTOs.KoiFishDTOs
@@ -20,6 +21,7 @@ namespace Koi.DTOs.KoiFishDTOs
         public bool? IsConsigned { get; set; } = false;
         public bool? IsSold { get; set; } = false;
         public int? ConsignedBy { get; set; }
+        public List<KoiCertificateResponseDTO> KoiCertificates { get; set; }
         public List<KoiBreedResponseDTO> KoiBreeds { get; set; }
         public List<KoiFishImageDTO> KoiFishImages { get; set; }
         public List<KoiFishDiaryCreateDTO> KoiDiaries { get; set; }
