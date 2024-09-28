@@ -31,12 +31,8 @@ namespace Koi.WebAPI.Controllers
             try
             {
                 var breeds = await _koiFishService.GetKoiFishes(koiFishParams);
-
-                //Response.AddPaginationHeader(breeds.MetaData);
-
-                var koiFishReponseDTOs = _mapper.Map<List<KoiFishResponseDTO>>(breeds);
-
-                return Ok(ApiResult<List<KoiFishResponseDTO>>.Succeed(koiFishReponseDTOs, "Get list koi fishes successfully"));
+                var list = breeds.ToList();
+                return Ok(new { isSuccess = true, data = _mapper.Map<List<KoiFishResponseDTO>>(list), metadata = breeds.MetaData, message = "Get Fishes Successfully!" });
             }
             catch (Exception ex)
             {

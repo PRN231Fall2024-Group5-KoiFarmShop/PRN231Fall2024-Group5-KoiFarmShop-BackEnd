@@ -130,29 +130,38 @@ builder.Services.AddControllers()
         model: edmModel));
 // END - ADD ODATA
 //ADD CORS
-builder.Services.AddCors(options =>
-{
-    // Policy allowing any origin, but without AllowCredentials
-    options.AddPolicy("AllowAnyOrigin",
-        policyBuilder =>
-        {
-            policyBuilder
-                .AllowAnyOrigin()
-                .AllowAnyHeader()
-                .AllowAnyMethod();
-            // .AllowCredentials() cannot be used with AllowAnyOrigin
-        });
+//builder.Services.AddCors(options =>
+//{
+//    //// Policy allowing any origin, but without AllowCredentials
+//    //options.AddPolicy("AllowAnyOrigin",
+//    //    policyBuilder =>
+//    //    {
+//    //        policyBuilder
+//    //            .AllowAnyOrigin()
+//    //            .AllowAnyHeader()
+//    //            .AllowAnyMethod();
+//    //        // .AllowCredentials() cannot be used with AllowAnyOrigin
+//    //    });
 
-    // Policy allowing a specific origin with credentials
-    options.AddPolicy("AllowSpecificOrigin",
-        policyBuilder =>
-        {
-            policyBuilder
-                .WithOrigins("https://koifarmshop.netlify.app") // Specific origin
-                .AllowAnyHeader()
-                .AllowAnyMethod()
-                .AllowCredentials(); // AllowCredentials works with specific origins
-        });
+//    // Policy allowing a specific origin with credentials
+//    options.AddPolicy("AllowSpecificOrigin",
+//        policyBuilder =>
+//        {
+//            policyBuilder
+//                .WithOrigins("https://koifarmshop.netlify.app", "http://localhost:3000/") // Specific origin
+//                .AllowAnyHeader()
+//                .AllowAnyMethod()
+//                .AllowCredentials(); // AllowCredentials works with specific origins
+//        });
+//});
+
+//CORS - Set Policy
+builder.Services.AddCors(opt =>
+{
+    opt.AddPolicy("CorsPolicyDevelopement", policy =>
+    {
+        policy.AllowAnyHeader().AllowAnyMethod().AllowAnyOrigin();
+    });
 });
 
 var app = builder.Build();
@@ -196,10 +205,10 @@ catch (Exception e)
     logger.LogError(e, "An problem occurred seed data!");
 }
 // USE CORS
-app.UseCors();
+//app.UseCors();
 // Use CORS policy
-app.UseCors("AllowSpecificOrigin");
-app.UseCors("AllowAnyOrigin"); // To apply globally the "AllowAnyOrigin" policy
+//app.UseCors("AllowSpecificOrigin");
+app.UseCors("CorsPolicyDevelopement");
 
 // USE AUTHENTICATION, AUTHORIZATION
 app.UseAuthorization();

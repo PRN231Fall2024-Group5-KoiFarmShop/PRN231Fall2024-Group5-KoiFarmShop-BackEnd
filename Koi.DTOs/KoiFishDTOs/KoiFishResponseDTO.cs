@@ -16,10 +16,10 @@ namespace Koi.DTOs.KoiFishDTOs
         public string? PersonalityTraits { get; set; }
         public int? DailyFeedAmount { get; set; }
         public DateTime? LastHealthCheck { get; set; }
-        public bool? IsAvailableForSale { get; set; }
+        public bool? IsAvailableForSale { get; set; } = false;
         public long Price { get; set; }
-        public bool? IsConsigned { get; set; }
-        public bool? IsSold { get; set; }
+        public bool? IsConsigned { get; set; } = false;
+        public bool? IsSold { get; set; } = false;
         public int? ConsignedBy { get; set; }
         public List<KoiCertificateResponseDTO> KoiCertificates { get; set; }
         public List<KoiBreedResponseDTO> KoiBreeds { get; set; }

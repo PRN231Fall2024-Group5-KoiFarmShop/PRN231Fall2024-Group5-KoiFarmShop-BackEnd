@@ -234,6 +234,14 @@ namespace Koi.Repositories
                         Content = "Doitsu is a unique koi breed characterized by its distinctive mirror-like scale pattern. Unlike traditional koi, Doitsu have a single row of scales along their lateral line, while the rest of their body is covered in a smooth, scaleless skin. This unusual appearance creates a sleek and modern look. Doitsu koi are available in various colors and patterns, including black, white, red, and blue. The quality of a Doitsu is determined by the clarity and symmetry of the scale pattern, as well as the overall health and condition of the fish."
                     }
                 };
+                var defaultUser = context.Users.FirstOrDefault(user => user.UserName == "vunse172437");
+                foreach (var item in breeds)
+                {
+                    item.CreatedAt = DateTime.Now;
+                    item.ModifiedAt = DateTime.Now;
+                    item.CreatedBy = defaultUser.Id;
+                    item.ModifiedBy = defaultUser.Id;
+                }
                 await context.KoiBreeds.AddRangeAsync(breeds);
                 await context.SaveChangesAsync();
             }
@@ -916,6 +924,14 @@ namespace Koi.Repositories
                         }
                     }
                 };
+                var defaultUser = context.Users.FirstOrDefault(user => user.UserName == "vunse172437");
+                foreach (var item in fishList)
+                {
+                    item.CreatedAt = DateTime.Now;
+                    item.ModifiedAt = DateTime.Now;
+                    item.CreatedBy = defaultUser.Id;
+                    item.ModifiedBy = defaultUser.Id;
+                }
                 await context.KoiFishs.AddRangeAsync(fishList);
                 await context.SaveChangesAsync();
             }
