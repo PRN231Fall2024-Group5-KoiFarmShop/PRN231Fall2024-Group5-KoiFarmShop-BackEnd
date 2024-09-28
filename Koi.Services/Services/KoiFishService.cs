@@ -114,6 +114,10 @@ namespace Koi.Services.Services
                     ImageUrl = item
                 });
             }
+            fish.IsAvailableForSale = fishModel.IsAvailableForSale;
+            fish.IsSold = fishModel.IsSold;
+            fish.IsConsigned = fishModel.IsConsigned;
+            fish.IsDeleted = false;
 
             var result = await _unitOfWork.KoiFishRepository.AddAsync(fish);
 
@@ -121,7 +125,7 @@ namespace Koi.Services.Services
             return _mapper.Map<KoiFishResponseDTO>(result);
         }
 
-        public async Task<KoiFishResponseDTO> UpdateKoiFish(int id, KoiFishUpadteDTO fishModel)
+        public async Task<KoiFishResponseDTO> UpdateKoiFish(int id, KoiFishUpdateDTO fishModel)
         {
             ////check user
             //Guid userId = _claimsService.GetCurrentUserId;
@@ -154,6 +158,10 @@ namespace Koi.Services.Services
             fish.LastHealthCheck = fishModel.LastHealthCheck;
             fish.PersonalityTraits = fishModel.PersonalityTraits;
             fish.Name = fishModel.Name;
+            fish.IsAvailableForSale = fishModel.IsAvailableForSale;
+            fish.IsSold = fishModel.IsSold;
+            fish.IsConsigned = fishModel.IsConsigned;
+            fish.IsDeleted = fishModel.IsDeleted;
             foreach (var item in fish.KoiFishImages)
             {
                 item.IsDeleted = true;
