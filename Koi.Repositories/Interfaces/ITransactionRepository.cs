@@ -11,8 +11,10 @@ namespace Koi.Repositories.Interfaces
     {
         Task<WalletTransaction> AddWalletTransaction(WalletTransaction walletTransaction);
 
-        Task<List<WalletTransaction>> GetTransactionsByOrderId(int orderId);
+        Task<List<WalletTransaction>> GetWalletTransactionsByOrderId(int orderId);
 
         Task<WalletTransaction> GetWalletTransactionsById(int id);
+
+        Task<List<WalletTransaction>> GetWalletTransactionsByUserId(int userId);
     }
 }

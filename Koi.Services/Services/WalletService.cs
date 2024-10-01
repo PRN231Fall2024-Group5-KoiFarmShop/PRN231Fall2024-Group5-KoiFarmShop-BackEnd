@@ -65,7 +65,7 @@ namespace Koi.Services.Services
 
             var newWalletTransaction = new WalletTransaction
             {
-                UserId = existingWallet.UserId,
+                // UserId = existingWallet.UserId,
                 TransactionType = "DEPOSIT",
                 PaymentMethod = "VNPAY",
                 Amount = amount,
@@ -139,7 +139,7 @@ namespace Koi.Services.Services
             }
             else
             {
-                var userWallet = await _unitOfWork.WalletRepository.GetWalletByUserId(existingTransaction.UserId);
+                var userWallet = await _unitOfWork.WalletRepository.GetWalletByUserId(2);
                 existingTransaction.TransactionStatus = TransactionStatusEnums.COMPLETED.ToString();
                 userWallet.Balance += existingTransaction.Amount;
             }
@@ -159,14 +159,14 @@ namespace Koi.Services.Services
 
         public async Task<List<WalletTransactionDTO>> GetTransactionsByOrderId(int orderId)
         {
-            var transactions = await _unitOfWork.TransactionRepository.GetTransactionsByOrderId(orderId);
+            var transactions = await _unitOfWork.TransactionRepository.GetWalletTransactionsByOrderId(orderId);
             var result = _mapper.Map<List<WalletTransactionDTO>>(transactions);
             return result;
         }
 
         public async Task<List<WalletTransactionDTO>> GetWalletTransactionsByUserId(int userId)
         {
-            var transactions = await _unitOfWork.TransactionRepository.GetAllAsync(x => x.UserId == userId);
+            var transactions = await _unitOfWork.TransactionRepository.GetWalletTransactionsByUserId(userId);
             var result = _mapper.Map<List<WalletTransactionDTO>>(transactions);
             return result;
         }
@@ -345,7 +345,7 @@ namespace Koi.Services.Services
                 //Create new transaction
                 var newWalletTransaction = new WalletTransaction
                 {
-                    UserId = existingWallet.UserId,
+                    //UserId = existingWallet.UserId,
                     OrderId = order.Id,
                     TransactionType = "PURCHASE",
                     TransactionStatus = TransactionStatusEnums.COMPLETED.ToString(),
