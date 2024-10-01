@@ -15,5 +15,6 @@ namespace Koi.Services.Interface
         Task<KoiCertificateResponseDTO> CreateKoiCertificate(CreateKoiCertificateDTO dto);
         Task<List<KoiCertificateResponseDTO>> GetKoiCertificates(KoiCertificateParams certificateParams);
         Task<KoiCertificateResponseDTO> GetKoiCertificateById(int id);
+        Task<List<KoiCertificateResponseDTO>> GetListCertificateByKoiId(int koiId);
     }
 }

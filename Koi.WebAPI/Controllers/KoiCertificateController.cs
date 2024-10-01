@@ -30,7 +30,25 @@ namespace Koi.WebAPI.Controllers
             {
                 var certificates = await _koiCertificateService.GetKoiCertificates(certificateParams);
 
-                //Response.AddPaginationHeader(breeds.MetaData);
+
+                var koiCertificateReponseDTOs = _mapper.Map<List<KoiCertificateResponseDTO>>(certificates);
+
+                return Ok(ApiResult<List<KoiCertificateResponseDTO>>.Succeed(koiCertificateReponseDTOs, "Get list certificates successfully"));
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+            }
+        }
+        [HttpGet("getList/{koiId}")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> GetList(int koiId)
+        {
+            try
+            {
+                var certificates = await _koiCertificateService.GetListCertificateByKoiId(koiId);
+
 
                 var koiCertificateReponseDTOs = _mapper.Map<List<KoiCertificateResponseDTO>>(certificates);
 

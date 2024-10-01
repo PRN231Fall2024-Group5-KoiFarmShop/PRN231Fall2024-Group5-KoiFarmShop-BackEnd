@@ -24,6 +24,11 @@ namespace Koi.Repositories.Repositories
             _timeService = timeService;
             _claimsService = claims;
         }
-        
+        public async Task<List<KoiCertificate>> GetListCertificateByKoiIdAsync(int koiId)
+        {
+            return await _dbContext.KoiCertificates.Where(x => x.KoiFishId == koiId).ToListAsync();
+        }
+
+
     }
 }
