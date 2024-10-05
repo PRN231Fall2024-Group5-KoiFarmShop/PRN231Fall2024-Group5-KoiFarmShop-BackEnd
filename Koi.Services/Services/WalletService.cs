@@ -40,17 +40,17 @@ namespace Koi.Services.Services
         // Deposit money to wallet
         public async Task<DepositResponseDTO> Deposit(long amount)
         {
-            //var user = await _unitOfWork.UserRepository.GetCurrentUserAsync();
-            //if (user == null)
-            //{
-            //    throw new Exception("401 - User not existing");
-            //}
-            var existingWallet = await _unitOfWork.WalletRepository.GetWalletByUserId(2);
+            var user = await _unitOfWork.UserRepository.GetCurrentUserAsync();
+            if (user == null)
+            {
+                throw new Exception("401 - User not existing");
+            }
+            var existingWallet = await _unitOfWork.WalletRepository.GetWalletByUserId(user.Id);
             if (existingWallet == null)
             {
                 var newWallet = new Wallet
                 {
-                    UserId = 2,
+                    UserId = user.Id,
                     Balance = 0,
                     LoyaltyPoints = 0,
                     Status = ""
@@ -66,6 +66,7 @@ namespace Koi.Services.Services
             var newWalletTransaction = new WalletTransaction
             {
                 // UserId = existingWallet.UserId,
+                WalletId = existingWallet.UserId,
                 TransactionType = "DEPOSIT",
                 PaymentMethod = "VNPAY",
                 Amount = amount,
