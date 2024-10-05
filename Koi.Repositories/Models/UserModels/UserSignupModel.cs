@@ -38,6 +38,6 @@ namespace Koi.Repositories.Models.UserModels
         public string? ImageUrl { get; set; }
         public string? Address { get; set; }
 
-        public RoleEnums? RoleName { get; set; }
+        // public RoleEnums? RoleName { get; set; }
     }
 }
