@@ -40,25 +40,10 @@ namespace Koi.Services.Services
 
             return fishes;
         }
-
-        public async Task<KoiFishResponseDTO> GetKoiFishByIdOld(int id)
+        public IQueryable<KoiFish> GetKoiFishes()
         {
-            var existingFishes = await _unitOfWork.KoiFishRepository.GetByIdAsync(id,
-                x => x.Consigner,
-                x => x.KoiFishImages,
-                x => x.KoiBreeds,
-                x => x.KoiCertificates,
-                x => x.KoiDiaries
-            );
-            if (existingFishes == null)
-            {
-                throw new Exception("404 - Fish not found!");
-            }
-
-            var result = _mapper.Map<KoiFishResponseDTO>(existingFishes);
-            return result;
+            return _unitOfWork.KoiFishRepository.FilterAllField();
         }
-
         public async Task<KoiFishResponseDTO> GetKoiFishById(int id)
         {
             //// Try to get from cache

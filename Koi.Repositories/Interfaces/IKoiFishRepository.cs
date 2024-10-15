@@ -6,5 +6,6 @@ namespace Koi.Repositories.Interfaces
     public interface IKoiFishRepository : IGenericRepository<KoiFish>
     {
         public IQueryable<KoiFish> FilterAllField(KoiParams koiParams);
+        public IQueryable<KoiFish> FilterAllField();
     }
 }
