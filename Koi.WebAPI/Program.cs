@@ -118,9 +118,10 @@ builder.Services.AddSignalR();
 
 // START - ADD ODATA
 var modelBuilder = new ODataConventionModelBuilder();
-modelBuilder.EntityType<OrderTestDTO>();
-modelBuilder.EntitySet<CustomerTestDTO>("Customers");
 var edmModel = modelBuilder.GetEdmModel();
+modelBuilder.EntityType<OrderTestDTO>();
+modelBuilder.EntitySet<KoiFish>("KoiFish");
+modelBuilder.EntitySet<CustomerTestDTO>("Customers");
 
 builder.Services.AddControllers()
     .AddOData(

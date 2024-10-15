@@ -7,6 +7,7 @@ namespace Koi.Services.Interface
     public interface IKoiFishService
     {
         Task<PagedList<KoiFish>> GetKoiFishes(KoiParams koiParams);
+        IQueryable<KoiFish> GetKoiFishes();
 
         Task<KoiFishResponseDTO> GetKoiFishById(int id);
 
@@ -15,5 +16,7 @@ namespace Koi.Services.Interface
         Task<KoiFishResponseDTO> UpdateKoiFish(int id, KoiFishUpdateDTO koiFishModel);
 
         Task<KoiFishResponseDTO> DeleteKoiFish(int id);
+        Task<bool> UpdateConsign(int id, int consignedBy);
+        Task<bool> EndConsigned(int id);
     }
 }
