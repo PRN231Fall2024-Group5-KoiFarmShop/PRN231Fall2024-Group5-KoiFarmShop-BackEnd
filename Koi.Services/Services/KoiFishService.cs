@@ -44,10 +44,12 @@ namespace Koi.Services.Services
         public async Task<KoiFishResponseDTO> GetKoiFishByIdOld(int id)
         {
             var existingFishes = await _unitOfWork.KoiFishRepository.GetByIdAsync(id,
-                //x => x.KoiFishKoiBreeds,
-                x => x.Consigner
+                x => x.Consigner,
+                x => x.KoiFishImages,
+                x => x.KoiBreeds,
+                x => x.KoiCertificates,
+                x => x.KoiDiaries
             );
-
             if (existingFishes == null)
             {
                 throw new Exception("404 - Fish not found!");
@@ -67,7 +69,7 @@ namespace Koi.Services.Services
             //}
 
             // If not in cache, query the database
-            var fish = await _unitOfWork.KoiFishRepository.GetByIdAsync(id);
+            var fish = await _unitOfWork.KoiFishRepository.GetByIdAsync(id, x => x.KoiBreeds, x => x.KoiFishImages, x => x.Consigner, x => x.KoiDiaries, x => x.KoiCertificates);
 
             if (fish == null)
             {
