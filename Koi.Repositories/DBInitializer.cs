@@ -1,6 +1,7 @@
 ﻿using Koi.BusinessObjects;
 using Koi.Repositories.Utils;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 
 namespace Koi.Repositories
 {
@@ -174,6 +175,16 @@ namespace Koi.Repositories
                     await context.Users.AddAsync(customerr);
                 }
                 await context.SaveChangesAsync();
+            }
+
+            var allUsers = await context.Users.ToListAsync();
+            foreach (var user in allUsers)
+            {
+                if (string.IsNullOrEmpty(user.SecurityStamp))
+                {
+                    await userManager.UpdateSecurityStampAsync(user);
+                    Console.WriteLine($"Security stamp updated for user {user.UserName}");
+                }
             }
 
             #endregion Seed Users
