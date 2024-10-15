@@ -71,5 +71,10 @@ namespace Koi.Repositories.Repositories
         {
             return await _dbContext.Wallets.ToListAsync();
         }
+
+        public async Task<Wallet> GetAllWalletByIdAsync(int id)
+        {
+            return await _dbContext.Wallets.FindAsync(id);
+        }
     }
 }

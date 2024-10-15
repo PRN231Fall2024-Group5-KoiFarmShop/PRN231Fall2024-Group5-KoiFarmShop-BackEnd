@@ -15,10 +15,9 @@
         //navigation
         public virtual ICollection<OrderDetail> OrderDetails { get; set; }
 
-        public virtual ICollection<WalletTransaction>? WalletTransactions { get; set; }  // Thêm navigation property cho WalletTransaction
+        public virtual WalletTransaction WalletTransaction { get; set; }  // Thêm navigation property cho WalletTransaction
 
         public virtual ICollection<Transaction> Transactions { get; set; }
-        public virtual Wallet? Wallet { get; set; }
         public virtual User User { get; set; }
     }
 }

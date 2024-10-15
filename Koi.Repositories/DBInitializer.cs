@@ -1,6 +1,7 @@
 ﻿using Koi.BusinessObjects;
 using Koi.Repositories.Utils;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 
 namespace Koi.Repositories
 {
@@ -176,6 +177,16 @@ namespace Koi.Repositories
                 await context.SaveChangesAsync();
             }
 
+            var allUsers = await context.Users.ToListAsync();
+            foreach (var user in allUsers)
+            {
+                if (string.IsNullOrEmpty(user.SecurityStamp))
+                {
+                    await userManager.UpdateSecurityStampAsync(user);
+                    Console.WriteLine($"Security stamp updated for user {user.UserName}");
+                }
+            }
+
             #endregion Seed Users
 
             #region Seed KoiBreeds
@@ -243,6 +254,27 @@ namespace Koi.Repositories
                     item.ModifiedBy = defaultUser.Id;
                 }
                 await context.KoiBreeds.AddRangeAsync(breeds);
+                await context.SaveChangesAsync();
+            }
+
+            if (!context.Diets.Any())
+            {
+                var diet1 = new Diet
+                {
+                    Name = "Diet 1 ",
+                    DietCost = 1000,
+                    Description = ""
+                };
+
+                await context.AddAsync(diet1);
+
+                var diet2 = new Diet
+                {
+                    Name = "Diet 2",
+                    DietCost = 1000,
+                    Description = ""
+                };
+                await context.AddAsync(diet2);
                 await context.SaveChangesAsync();
             }
 

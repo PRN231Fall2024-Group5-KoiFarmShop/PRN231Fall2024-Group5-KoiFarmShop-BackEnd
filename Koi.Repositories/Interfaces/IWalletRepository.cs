@@ -14,6 +14,8 @@ namespace Koi.Repositories.Interfaces
 
         Task<bool> DeleteWallet(int userId);
 
+        Task<Wallet> GetAllWalletByIdAsync(int id);
+
         Task<List<Wallet>> GetAllWalletsAsync();
 
         Task<Wallet> GetWalletByUserId(int userId);

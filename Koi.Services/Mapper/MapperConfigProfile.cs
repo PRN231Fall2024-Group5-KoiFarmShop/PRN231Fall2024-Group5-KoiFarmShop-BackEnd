@@ -7,6 +7,7 @@ using Koi.DTOs.KoiDiaryDTOs;
 using Koi.DTOs.KoiFishDTOs;
 using Koi.DTOs.PaymentDTOs;
 using Koi.DTOs.TransactionDTOs;
+using Koi.DTOs.UserDTOs;
 using Koi.DTOs.WalletDTOs;
 using Koi.Repositories.Models.UserModels;
 
@@ -44,6 +45,8 @@ namespace Koi.Services.Mapper
             CreateMap<User, UserDTO>()
           //   .ForMember(dest => dest.Gender, opt => opt.MapFrom(src => src.Gender != null && src.Gender == true ? "Male" : "Female"))
           .ReverseMap();
+            CreateMap<User, CustomerProfileDTO>().ReverseMap();
+
 
             //ORDER & WALLET
             CreateMap<OrderDTO, Order>().ReverseMap();

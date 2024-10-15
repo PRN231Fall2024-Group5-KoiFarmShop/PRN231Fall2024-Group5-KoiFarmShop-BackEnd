@@ -40,20 +40,20 @@ namespace Koi.Services.Services
         // Deposit money to wallet
         public async Task<DepositResponseDTO> Deposit(long amount)
         {
-            //var user = await _unitOfWork.UserRepository.GetCurrentUserAsync();
-            //if (user == null)
-            //{
-            //    throw new Exception("401 - User not existing");
-            //}
-            var existingWallet = await _unitOfWork.WalletRepository.GetWalletByUserId(2);
+            var user = await _unitOfWork.UserRepository.GetCurrentUserAsync();
+            if (user == null)
+            {
+                throw new Exception("401 - User have been not signed in");
+            }
+            var existingWallet = await _unitOfWork.WalletRepository.GetAllWalletByIdAsync(user.Id);
             if (existingWallet == null)
             {
                 var newWallet = new Wallet
                 {
-                    UserId = 2,
+                    UserId = user.Id,
                     Balance = 0,
                     LoyaltyPoints = 0,
-                    Status = ""
+                    Status = WalletStatusEnums.ACTIVE.ToString()
                 };
 
                 existingWallet = await _unitOfWork.WalletRepository.CreateAsync(newWallet);
@@ -65,7 +65,8 @@ namespace Koi.Services.Services
 
             var newWalletTransaction = new WalletTransaction
             {
-                UserId = existingWallet.UserId,
+                // UserId = existingWallet.UserId,
+                WalletId = existingWallet.UserId,
                 TransactionType = "DEPOSIT",
                 PaymentMethod = "VNPAY",
                 Amount = amount,
@@ -139,8 +140,9 @@ namespace Koi.Services.Services
             }
             else
             {
-                var userWallet = await _unitOfWork.WalletRepository.GetWalletByUserId(existingTransaction.UserId);
+                var userWallet = await _unitOfWork.WalletRepository.GetAllWalletByIdAsync(existingTransaction.WalletId);
                 existingTransaction.TransactionStatus = TransactionStatusEnums.COMPLETED.ToString();
+                userWallet.ModifiedAt = DateTime.UtcNow.AddHours(7);
                 userWallet.Balance += existingTransaction.Amount;
             }
             if (await _unitOfWork.SaveChangeAsync() <= 0)
@@ -159,14 +161,14 @@ namespace Koi.Services.Services
 
         public async Task<List<WalletTransactionDTO>> GetTransactionsByOrderId(int orderId)
         {
-            var transactions = await _unitOfWork.TransactionRepository.GetTransactionsByOrderId(orderId);
+            var transactions = await _unitOfWork.TransactionRepository.GetWalletTransactionsByOrderId(orderId);
             var result = _mapper.Map<List<WalletTransactionDTO>>(transactions);
             return result;
         }
 
         public async Task<List<WalletTransactionDTO>> GetWalletTransactionsByUserId(int userId)
         {
-            var transactions = await _unitOfWork.TransactionRepository.GetAllAsync(x => x.UserId == userId);
+            var transactions = await _unitOfWork.TransactionRepository.GetWalletTransactionsByUserId(userId);
             var result = _mapper.Map<List<WalletTransactionDTO>>(transactions);
             return result;
         }
@@ -222,18 +224,22 @@ namespace Koi.Services.Services
                 }
 
                 var fishes = new List<KoiFish>();
+                var consignments = new List<ConsignmentForNurture>();
                 long? totalAmount = 0;
-                foreach (var fish in purchaseDTO.FishIds)
+                foreach (var purchaseFish in purchaseDTO.PurchaseFishes)
                 {
-                    var koiFish = await _unitOfWork.KoiFishRepository.GetByIdAsync(fish);
+                    var koiFish = await _unitOfWork.KoiFishRepository.GetByIdAsync(purchaseFish.FishId);
                     if (koiFish != null)
                     {
                         fishes.Add(koiFish);
                         totalAmount += koiFish.Price;
+                        if (purchaseFish.IsNuture)
+                        {
+                        }
                     }
                     else
                     {
-                        throw new Exception("404 - This koi fish not found id:" + fish);
+                        throw new Exception("404 - This koi fish not found id:" + purchaseFish.FishId);
                     }
                 }
 
@@ -299,6 +305,7 @@ namespace Koi.Services.Services
                 //await _notificationService.PushNotification(notificationToOrganizer);
 
                 var result = _mapper.Map<OrderDTO>(newOrder);
+                //  result.WalletTransactions = [transation];
                 return result;
             }
             catch (Exception ex)
@@ -308,14 +315,8 @@ namespace Koi.Services.Services
         }
 
         // Purchase item and deduct money from wallet
-        public async Task<WalletTransactionDTO> PurchaseItem(int userId, Order createdOrder)
+        public async Task<WalletTransactionDTO> PurchaseItem(int userId, Order order)
         {
-            //Get order
-            var order = await _unitOfWork.OrderRepository.GetByIdAsync(createdOrder.Id);
-            if (order == null)
-            {
-                throw new Exception("Order not found");
-            }
             if (order.UserId != userId)
             {
                 throw new Exception("Order not belong to user");
@@ -345,9 +346,10 @@ namespace Koi.Services.Services
                 //Create new transaction
                 var newWalletTransaction = new WalletTransaction
                 {
-                    UserId = existingWallet.UserId,
+                    //UserId = existingWallet.UserId,
                     OrderId = order.Id,
-                    TransactionType = "PURCHASE",
+                    WalletId = existingWallet.UserId,
+                    TransactionType = "PURCHASE FISH",
                     TransactionStatus = TransactionStatusEnums.COMPLETED.ToString(),
                     PaymentMethod = "WALLET",
                     Amount = order.TotalAmount,
@@ -367,6 +369,7 @@ namespace Koi.Services.Services
 
                 //update order status
                 order.OrderStatus = OrderStatusEnums.COMPLETED.ToString();
+                order.WalletTransaction = newWalletTransaction;
                 await _unitOfWork.WalletRepository.UpdateWallet(existingWallet);
                 await _unitOfWork.OrderRepository.Update(order);
 
@@ -380,7 +383,7 @@ namespace Koi.Services.Services
             }
             catch (Exception ex)
             {
-                throw ex;
+                throw new Exception(ex.Message);
             }
         }
     }
