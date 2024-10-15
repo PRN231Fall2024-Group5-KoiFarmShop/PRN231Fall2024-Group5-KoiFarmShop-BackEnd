@@ -107,7 +107,7 @@ namespace Koi.Services.Services
                 fish.KoiBreeds.Add(_mapper.Map<KoiBreed>(breed));
             }
             fish.KoiFishImages = [];
-            foreach (var item in fishModel.ImageUrl)
+            foreach (var item in fishModel.ImageUrls)
             {
                 fish.KoiFishImages.Add(new KoiFishImage
                 {
@@ -116,7 +116,6 @@ namespace Koi.Services.Services
             }
             fish.IsAvailableForSale = fishModel.IsAvailableForSale;
             fish.IsSold = fishModel.IsSold;
-            fish.IsConsigned = fishModel.IsConsigned;
             fish.IsDeleted = false;
 
             var result = await _unitOfWork.KoiFishRepository.AddAsync(fish);
@@ -160,13 +159,12 @@ namespace Koi.Services.Services
             fish.Name = fishModel.Name;
             fish.IsAvailableForSale = fishModel.IsAvailableForSale;
             fish.IsSold = fishModel.IsSold;
-            fish.IsConsigned = fishModel.IsConsigned;
             fish.IsDeleted = fishModel.IsDeleted;
             foreach (var item in fish.KoiFishImages)
             {
                 item.IsDeleted = true;
             }
-            foreach (var item in fishModel.ImageUrl)
+            foreach (var item in fishModel.ImageUrls)
             {
                 var tmp = await _unitOfWork.KoiImageRepository.GetByUrl(item);
                 if (tmp == null)
@@ -189,7 +187,7 @@ namespace Koi.Services.Services
 
             if (fish == null)
             {
-                throw new Exception("Fish not found!");
+                throw new Exception("404 - Fish not found!");
             }
 
             var isDeleted = await _unitOfWork.KoiFishRepository.SoftRemove(fish);
@@ -197,15 +195,46 @@ namespace Koi.Services.Services
             {
                 var result = _mapper.Map<KoiFishResponseDTO>(fish);
                 await _unitOfWork.SaveChangeAsync();
-                //// Clear specific cache key
-                //await _redisService.DeleteKeyAsync(CacheKeys.Event(id));
-                //// Clear general list cache
-                //await _redisService.DeleteKeyAsync(CacheKeys.Events);
                 return result;
             }
             else
             {
-                throw new Exception("Failed to delete fish");
+                throw new Exception("500 - Failed to delete fish");
+            }
+        }
+        public async Task<bool> UpdateConsign(int id, int consignedBy)
+        {
+            var item = await _unitOfWork.KoiFishRepository.GetByIdAsync(id, x => x.Consigner);
+            var consigner = await _unitOfWork.UserRepository.GetAccountDetailsAsync(consignedBy);
+            if (consigner == null) throw new Exception("404 - Invalid Account!");
+            if (item == null) throw new Exception("404 - Invalid Fish!");
+            if (item.IsConsigned == false && item.Consigner == null)
+            {
+                item.IsConsigned = true;
+                item.Consigner = consigner;
+
+                if (await _unitOfWork.SaveChangeAsync() <= 0) throw new Exception("500 - Fail Saving!");
+                return true;
+            }
+            else
+            {
+                throw new Exception("400 - Fish already been Consigned!");
+            }
+        }
+        public async Task<bool> EndConsigned(int id)
+        {
+            var item = await _unitOfWork.KoiFishRepository.GetByIdAsync(id, x => x.Consigner);
+            if (item == null) throw new Exception("404 - Invalid Fish");
+            if (item.IsConsigned == true && item.Consigner != null)
+            {
+                item.IsConsigned = false;
+                item.Consigner = null;
+                if (await _unitOfWork.SaveChangeAsync() <= 0) throw new Exception("500 - Fail Saving!");
+                return true;
+            }
+            else
+            {
+                throw new Exception("400 - Fish is not being Consigned!");
             }
         }
     }
