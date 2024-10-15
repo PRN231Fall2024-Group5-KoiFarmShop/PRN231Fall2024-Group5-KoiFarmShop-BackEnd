@@ -32,6 +32,8 @@ namespace Koi.Repositories.Repositories
 
         public async Task<WalletTransaction> AddWalletTransaction(WalletTransaction walletTransaction)
         {
+            walletTransaction.CreatedAt = _timeService.GetCurrentTime();
+            walletTransaction.CreatedBy = _claimsService.GetCurrentUserId;
             var result = await _dbContext.WalletTransactions.AddAsync(walletTransaction);
             return result.Entity;
         }

@@ -88,7 +88,7 @@ namespace Koi.Repositories.Repositories
 
                 _dbContext.Entry(order).State = EntityState.Modified;
                 await _dbContext.OrderDetails.AddRangeAsync(orderDetails);
-                await _dbContext.SaveChangesAsync();
+                // await _dbContext.SaveChangesAsync();
 
                 return orderDetails;
             }

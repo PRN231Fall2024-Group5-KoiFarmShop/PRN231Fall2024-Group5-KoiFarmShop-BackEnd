@@ -257,6 +257,27 @@ namespace Koi.Repositories
                 await context.SaveChangesAsync();
             }
 
+            if (!context.Diets.Any())
+            {
+                var diet1 = new Diet
+                {
+                    Name = "Diet 1 ",
+                    DietCost = 1000,
+                    Description = ""
+                };
+
+                await context.AddAsync(diet1);
+
+                var diet2 = new Diet
+                {
+                    Name = "Diet 2",
+                    DietCost = 1000,
+                    Description = ""
+                };
+                await context.AddAsync(diet2);
+                await context.SaveChangesAsync();
+            }
+
             #endregion Seed KoiBreeds
 
             #region Seed KoiFish
