@@ -2,6 +2,7 @@
 using Koi.BusinessObjects;
 using Koi.DTOs.DietDTOs;
 using Koi.DTOs.KoiBreedDTOs;
+using Koi.DTOs.KoiCertificateDTOs;
 using Koi.DTOs.KoiDiaryDTOs;
 using Koi.DTOs.KoiFishDTOs;
 using Koi.DTOs.PaymentDTOs;
@@ -21,6 +22,7 @@ namespace Koi.Services.Mapper
             CreateMap<KoiFishDiaryUpdateDTO, KoiDiary>().ReverseMap();
             CreateMap<KoiBreed, KoiBreedCreateDTO>().ReverseMap();
             CreateMap<KoiBreed, KoiBreedResponseDTO>().ReverseMap();
+            CreateMap<KoiCertificate, KoiCertificateResponseDTO>().ReverseMap();
             CreateMap<KoiFishImageDTO, KoiFishImage>().ReverseMap();
             CreateMap<KoiFish, KoiFishCreateDTO>()
                 .ForMember(dest => dest.Gender,

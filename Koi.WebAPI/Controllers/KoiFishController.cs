@@ -1,7 +1,6 @@
 ﻿using AutoMapper;
 using Koi.DTOs.KoiFishDTOs;
 using Koi.Repositories.Commons;
-using Koi.Repositories.Helper;
 using Koi.Services.Interface;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.OData.Query;
@@ -9,6 +8,7 @@ using Microsoft.AspNetCore.OData.Query;
 namespace Koi.WebAPI.Controllers
 {
     [Route("api/v1/odata/")]
+
     [ApiController]
     public class KoiFishController : ControllerBase
     {
@@ -45,13 +45,12 @@ namespace Koi.WebAPI.Controllers
         [EnableQuery]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> Get([FromQuery] KoiParams koiFishParams)
+        public IActionResult Get()
         {
             try
             {
-                var breeds = await _koiFishService.GetKoiFishes(koiFishParams);
-                var list = breeds.ToList();
-                return Ok(new { isSuccess = true, data = _mapper.Map<List<KoiFishResponseDTO>>(list), metadata = breeds.MetaData, message = "Get Fishes Successfully!" });
+                var fishes = _koiFishService.GetKoiFishes().AsQueryable();
+                return Ok(_mapper.ProjectTo<KoiFishResponseDTO>(fishes));
             }
             catch (Exception ex)
             {
@@ -77,7 +76,6 @@ namespace Koi.WebAPI.Controllers
                     return BadRequest(ApiResult<object>.Fail(ex));
                 if (ex.Message.Contains("404"))
                     return NotFound(ApiResult<object>.Fail(ex));
-
                 return StatusCode(StatusCodes.Status500InternalServerError, ApiResult<object>.Fail(ex));
             }
         }

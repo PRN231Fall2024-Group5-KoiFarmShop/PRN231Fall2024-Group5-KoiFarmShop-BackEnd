@@ -10,12 +10,11 @@
         public int Weight { get; set; }
         public bool? IsAvailableForSale { get; set; }
         public long Price { get; set; }
-        public bool? IsConsigned { get; set; }
         public bool? IsSold { get; set; }
         public string? PersonalityTraits { get; set; }
         public int? DailyFeedAmount { get; set; }
         public DateTime? LastHealthCheck { get; set; }
         public List<int> KoiBreedIds { get; set; }
-        public List<string> ImageUrl { get; set; }
+        public List<string> ImageUrls { get; set; }
     }
 }
