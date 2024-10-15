@@ -120,14 +120,14 @@ builder.Services.AddSignalR();
 var modelBuilder = new ODataConventionModelBuilder();
 var edmModel = modelBuilder.GetEdmModel();
 modelBuilder.EntityType<OrderTestDTO>();
-modelBuilder.EntitySet<KoiFish>("KoiFish");
+modelBuilder.EntitySet<KoiFish>("koi-fishes");
 modelBuilder.EntitySet<CustomerTestDTO>("Customers");
 
 builder.Services.AddControllers()
     .AddOData(
     options => options.Select().Filter().OrderBy().Expand().Count().SetMaxTop(null)
     .AddRouteComponents(
-        routePrefix: "odata",
+        routePrefix: "api/v1/odata",
         model: edmModel));
 // END - ADD ODATA
 //ADD CORS
