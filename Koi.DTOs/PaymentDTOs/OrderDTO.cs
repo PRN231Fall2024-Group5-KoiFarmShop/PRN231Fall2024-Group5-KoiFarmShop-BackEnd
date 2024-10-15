@@ -18,6 +18,6 @@ namespace Koi.DTOs.PaymentDTOs
         public string? PaymentMethod { get; set; } = "VNPAY";
         public string? Note { get; set; }
 
-        public virtual ICollection<WalletTransactionDTO>? WalletTransactions { get; set; }  // Thêm navigation property cho WalletTransaction
+        public virtual WalletTransactionDTO? WalletTransaction { get; set; }  // Thêm navigation property cho WalletTransaction
     }
 }

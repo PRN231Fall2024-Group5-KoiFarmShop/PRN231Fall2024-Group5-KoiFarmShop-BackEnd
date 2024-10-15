@@ -142,6 +142,32 @@ namespace Koi.WebAPI.Controllers
         }
 
         /// <summary>
+        /// Lấy lịch sử tương tác với wallet người dùng login
+        /// </summary>
+        /// <returns>
+        ///      list wallet transaction
+        /// </returns>
+        // Lấy danh sách transaction theo OrderId
+        [HttpGet("users/me/wallet-transactions")]
+        public async Task<IActionResult> GetTransactionsByUserId()
+        {
+            try
+            {
+                if (_claimsService.GetCurrentUserId == -1)
+                {
+                    throw new Exception("401 - User have been not signed in");
+                }
+
+                var result = await _walletService.GetWalletTransactionsByUserId(_claimsService.GetCurrentUserId);
+                return Ok(ApiResult<List<WalletTransactionDTO>>.Succeed(result, "Get list wallet transaction successfully"));
+            }
+            catch (Exception ex)
+            {
+                return HandleError(ex);
+            }
+        }
+
+        /// <summary>
         /// Get  wallet of a user
         /// </summary>
         /// <returns>
@@ -153,7 +179,31 @@ namespace Koi.WebAPI.Controllers
             try
             {
                 var result = await _walletService.GetWalletByUserId(id);
-                return Ok(ApiResult<WalletDTO>.Succeed(result, "Get list successfully"));
+                return Ok(ApiResult<WalletDTO>.Succeed(result, "Get wallet successfully"));
+            }
+            catch (Exception ex)
+            {
+                return HandleError(ex);
+            }
+        }
+
+        /// <summary>
+        /// Get  wallet of current user
+        /// </summary>
+        /// <returns>
+        ///      user wallet
+        /// </returns>
+        [HttpGet("users/me/wallets")]
+        public async Task<IActionResult> GetWalletByUserId()
+        {
+            try
+            {
+                if (_claimsService.GetCurrentUserId == -1)
+                {
+                    throw new Exception("401 - User have been not signed in");
+                }
+                var result = await _walletService.GetWalletByUserId(_claimsService.GetCurrentUserId);
+                return Ok(ApiResult<WalletDTO>.Succeed(result, "Get wallet successfully"));
             }
             catch (Exception ex)
             {
@@ -203,7 +253,7 @@ namespace Koi.WebAPI.Controllers
 
                 if (userId == -1)
                 {
-                    throw new Exception("401 - User Id is invalid");
+                    throw new Exception("401 - User Id is invalid or not signed in");
                 }
 
                 var result = await _walletService.CheckOut(purchaseDTO);
