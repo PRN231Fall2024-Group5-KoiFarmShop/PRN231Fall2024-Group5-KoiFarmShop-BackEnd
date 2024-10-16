@@ -71,7 +71,7 @@ namespace Koi.WebAPI.Injection
             services.AddScoped<IKoiFishService, KoiFishService>();
             services.AddScoped<IOrderService, OrderService>();
             services.AddScoped<IWalletService, WalletService>();
-            services.AddScoped<IKoiCertificateService, KoiCertificcateService>();
+            services.AddScoped<IKoiCertificateService, KoiCertificateService>();
             services.AddScoped<IOrderDetailServices, OrderDetailServices>();
             services.AddScoped<IDietService, DietService>();
             services.AddScoped<IConsignmentForNurtureService, ConsignmentForNurtureService>();

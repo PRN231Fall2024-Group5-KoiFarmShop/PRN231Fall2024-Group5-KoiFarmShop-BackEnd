@@ -1,14 +1,14 @@
 ﻿using AutoMapper;
 using Koi.DTOs.KoiFishDTOs;
 using Koi.Repositories.Commons;
+using Koi.Repositories.Helper;
 using Koi.Services.Interface;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.OData.Query;
 
 namespace Koi.WebAPI.Controllers
 {
-    [Route("api/v1/odata/")]
 
+    [Route("api/koi-fishes")]
     [ApiController]
     public class KoiFishController : ControllerBase
     {
@@ -24,33 +24,17 @@ namespace Koi.WebAPI.Controllers
             _mapper = mapper;
         }
 
-        //[HttpGet]
-        //[ProducesResponseType(StatusCodes.Status200OK)]
-        //[ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        //public async Task<IActionResult> Get([FromQuery] KoiParams koiFishParams)
-        //{
-        //    try
-        //    {
-        //        var breeds = await _koiFishService.GetKoiFishes(koiFishParams);
-        //        var list = breeds.ToList();
-        //        return Ok(new { isSuccess = true, data = _mapper.Map<List<KoiFishResponseDTO>>(list), metadata = breeds.MetaData, message = "Get Fishes Successfully!" });
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        return StatusCode(StatusCodes.Status500InternalServerError, ApiResult<object>.Fail(ex));
-        //    }
-        //}
 
-        [HttpGet("koi-fishes")]
-        [EnableQuery]
+        [HttpGet]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public IActionResult Get()
+        public async Task<IActionResult> Get([FromQuery] KoiParams koiFishParams)
         {
             try
             {
-                var fishes = _koiFishService.GetKoiFishes().AsQueryable();
-                return Ok(_mapper.ProjectTo<KoiFishResponseDTO>(fishes));
+                var breeds = await _koiFishService.GetKoiFishes(koiFishParams);
+                var list = breeds.ToList();
+                return Ok(new { isSuccess = true, data = _mapper.Map<List<KoiFishResponseDTO>>(list), metadata = breeds.MetaData, message = "Get Fishes Successfully!" });
             }
             catch (Exception ex)
             {
@@ -58,7 +42,7 @@ namespace Koi.WebAPI.Controllers
             }
         }
 
-        [HttpGet("koi-fishes/{id}")]
+        [HttpGet("{id}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -76,12 +60,13 @@ namespace Koi.WebAPI.Controllers
                     return BadRequest(ApiResult<object>.Fail(ex));
                 if (ex.Message.Contains("404"))
                     return NotFound(ApiResult<object>.Fail(ex));
+
                 return StatusCode(StatusCodes.Status500InternalServerError, ApiResult<object>.Fail(ex));
             }
         }
 
         // POST api/<KoiBreedController>
-        [HttpPost("koi-fishes")]
+        [HttpPost()]
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -104,7 +89,7 @@ namespace Koi.WebAPI.Controllers
         }
 
         // PUT api/<KoiBreedController>/5
-        [HttpPut("koi-fishes/{id}")]
+        [HttpPut("{id}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -127,7 +112,7 @@ namespace Koi.WebAPI.Controllers
         }
 
         // DELETE api/<KoiBreedController>/5
-        [HttpDelete("koi-fishes/{id}")]
+        [HttpDelete("{id}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]

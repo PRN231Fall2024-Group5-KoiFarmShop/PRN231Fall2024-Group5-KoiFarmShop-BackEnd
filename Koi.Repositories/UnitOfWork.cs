@@ -68,7 +68,7 @@ namespace Koi.Repositories
 
         public Task<int> SaveChangeAsync()
         {
-            return _context.SaveChangesAsync();
+            return await _context.SaveChangesAsync();
         }
     }
 }

@@ -4,25 +4,18 @@ using Koi.DTOs.KoiCertificateDTOs;
 using Koi.Repositories.Helper;
 using Koi.Repositories.Interfaces;
 using Koi.Services.Interface;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Koi.Services.Services
 {
-    public class KoiCertificcateService : IKoiCertificateService
+    public class KoiCertificateService : IKoiCertificateService
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
-
-        public KoiCertificcateService(IUnitOfWork unitOfWork, IMapper mapper)
+        public KoiCertificateService(IUnitOfWork unitOfWork, IMapper mapper)
         {
             _unitOfWork = unitOfWork;
             _mapper = mapper;
         }
-
         public async Task<KoiCertificateResponseDTO> GetKoiCertificateById(int id)
         {
             try
@@ -83,17 +76,16 @@ namespace Koi.Services.Services
                 throw ex;
             }
         }
-
         public async Task<KoiCertificateResponseDTO> CreateKoiCertificate(CreateKoiCertificateDTO dto)
         {
             try
             {
                 var existingCertificates = await _unitOfWork.KoiCertificateRepository.GetAllAsync();
-                var isExist = existingCertificates.FirstOrDefault(x => x.CertificateUrl.ToLower() == dto.CertificateUrl.ToLower());
-                if (isExist != null)
-                {
-                    throw new Exception("400 - Create failed. Certificate has already existed!");
-                }
+                //var isExist = existingCertificates.FirstOrDefault(x => x.CertificateUrl.ToLower() == dto.CertificateUrl.ToLower());
+                //if(isExist != null)
+                //{
+                //    throw new Exception("400 - Create failed. Certificate has already existed!");
+                //}
                 var koiExist = await _unitOfWork.KoiFishRepository.GetByIdAsync(dto.KoiFishId);
                 if (koiExist == null)
                 {
@@ -107,12 +99,12 @@ namespace Koi.Services.Services
                     KoiFish = koiExist
                 };
                 var newCertificate = await _unitOfWork.KoiCertificateRepository.AddAsync(certificate);
-                var result = _mapper.Map<KoiCertificateResponseDTO>(newCertificate);
                 int check = await _unitOfWork.SaveChangeAsync();
                 if (check < 0)
                 {
                     throw new Exception("400 - Create failed");
                 }
+                var result = _mapper.Map<KoiCertificateResponseDTO>(newCertificate);
                 return result;
             }
             catch (Exception ex)
