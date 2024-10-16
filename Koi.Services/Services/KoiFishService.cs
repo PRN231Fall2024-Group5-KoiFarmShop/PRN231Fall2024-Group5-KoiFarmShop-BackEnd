@@ -128,49 +128,57 @@ namespace Koi.Services.Services
             //eventEntity.UserId = isExistUser.Id;
             //eventEntity.User = isExistUser;
             //check koiBreed
-            KoiFish fish = await _unitOfWork.KoiFishRepository.GetByIdAsync(id);
-            fish.KoiBreeds.Clear();
-            foreach (var breedId in fishModel.KoiBreedIds)
+            try
             {
-                var breed = await _unitOfWork.KoiBreedRepository.GetByIdAsync(breedId);
-                if (breed == null)
+                KoiFish fish = await _unitOfWork.KoiFishRepository.GetByIdAsync(id, x => x.KoiBreeds);
+                foreach (var breedId in fishModel.KoiBreedIds)
                 {
-                    throw new Exception("400 - Invalid Koi breed");
-                }
-                fish.KoiBreeds.Add(_mapper.Map<KoiBreed>(breed));
-            }
-            fish.Length = fishModel.Length;
-            fish.Weight = fishModel.Weight;
-            //fish.KoiCertificates = fishModel.Certificate
-            fish.Age = fishModel.Age;
-            fish.Origin = fishModel.Origin;
-            fish.DailyFeedAmount = fishModel.DailyFeedAmount;
-            fish.Gender = fishModel.Gender;
-            fish.LastHealthCheck = fishModel.LastHealthCheck;
-            fish.PersonalityTraits = fishModel.PersonalityTraits;
-            fish.Name = fishModel.Name;
-            fish.IsAvailableForSale = fishModel.IsAvailableForSale;
-            fish.IsSold = fishModel.IsSold;
-            fish.IsDeleted = fishModel.IsDeleted;
-            foreach (var item in fish.KoiFishImages)
-            {
-                item.IsDeleted = true;
-            }
-            foreach (var item in fishModel.ImageUrls)
-            {
-                var tmp = await _unitOfWork.KoiImageRepository.GetByUrl(item);
-                if (tmp == null)
-                    fish.KoiFishImages.Add(new KoiFishImage
+                    var breed = await _unitOfWork.KoiBreedRepository.GetByIdAsync(breedId);
+                    if (breed == null)
                     {
-                        ImageUrl = item
-                    });
-                else
-                {
-                    tmp.IsDeleted = false;
+                        throw new Exception("400 - Invalid Koi breed");
+                    }
+                    fish.KoiBreeds.Add(breed);
                 }
+                fish.Length = fishModel.Length;
+                fish.Weight = fishModel.Weight;
+                //fish.KoiCertificates = fishModel.Certificate
+                fish.Age = fishModel.Age;
+                fish.Origin = fishModel.Origin;
+                fish.DailyFeedAmount = fishModel.DailyFeedAmount;
+                fish.Gender = fishModel.Gender;
+                fish.LastHealthCheck = fishModel.LastHealthCheck;
+                fish.PersonalityTraits = fishModel.PersonalityTraits;
+                fish.Name = fishModel.Name;
+                fish.IsAvailableForSale = fishModel.IsAvailableForSale;
+                fish.IsSold = fishModel.IsSold;
+                fish.IsDeleted = fishModel.IsDeleted;
+                if (fish.KoiFishImages == null) fish.KoiFishImages = [];
+                foreach (var item in fish.KoiFishImages)
+                {
+                    item.IsDeleted = true;
+                }
+                foreach (var item in fishModel.ImageUrls)
+                {
+                    var tmp = await _unitOfWork.KoiImageRepository.GetByUrl(item);
+                    if (tmp == null)
+                        fish.KoiFishImages.Add(new KoiFishImage
+                        {
+                            ImageUrl = item
+                        });
+                    else
+                    {
+                        tmp.IsDeleted = false;
+                    }
+                }
+                if (await _unitOfWork.SaveChangeAsync() <= 0) throw new Exception("400 - Fail saving changes!");
+                return _mapper.Map<KoiFishResponseDTO>(fish);
             }
-            if (await _unitOfWork.SaveChangeAsync() <= 0) throw new Exception("400 - Fail saving changes!");
-            return _mapper.Map<KoiFishResponseDTO>(fish);
+            catch (Exception ex)
+            {
+                string str = ex.Message;
+                throw;
+            }
         }
 
         public async Task<KoiFishResponseDTO> DeleteKoiFish(int id)

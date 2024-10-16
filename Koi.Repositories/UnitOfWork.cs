@@ -59,9 +59,9 @@ namespace Koi.Repositories
         public ITransactionRepository TransactionRepository => _transactionRepository;
         public IKoiImageRepository KoiImageRepository => _koiImageRepository;
         public IOrderDetailRepository OrderDetailRepository => _orderDetailRepository;
-        public Task<int> SaveChangeAsync()
+        public async Task<int> SaveChangeAsync()
         {
-            return _context.SaveChangesAsync();
+            return await _context.SaveChangesAsync();
         }
     }
 }
