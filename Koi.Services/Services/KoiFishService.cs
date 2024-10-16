@@ -59,7 +59,6 @@ namespace Koi.Services.Services
             var fish = await _unitOfWork.KoiFishRepository.GetByIdAsync(id,
                 x => x.KoiBreeds.Where(x => x.IsDeleted == false),
                 x => x.KoiFishImages.Where(x => x.IsDeleted == false),
-                x => x.Consigner,
                 x => x.KoiDiaries.Where(x => x.IsDeleted == false),
                 x => x.KoiCertificates.Where(x => x.IsDeleted == false));
 
@@ -145,7 +144,7 @@ namespace Koi.Services.Services
                 fish.Length = fishModel.Length;
                 fish.Weight = fishModel.Weight;
                 //fish.KoiCertificates = fishModel.Certificate
-                fish.Age = fishModel.Age;
+                fish.Dob = fishModel.Dob;
                 fish.Origin = fishModel.Origin;
                 fish.DailyFeedAmount = fishModel.DailyFeedAmount;
                 fish.Gender = fishModel.Gender;

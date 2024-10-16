@@ -11,11 +11,13 @@ namespace Koi.Services.Services
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
+
         public KoiCertificateService(IUnitOfWork unitOfWork, IMapper mapper)
         {
             _unitOfWork = unitOfWork;
             _mapper = mapper;
         }
+
         public async Task<KoiCertificateResponseDTO> GetKoiCertificateById(int id)
         {
             try
@@ -76,6 +78,7 @@ namespace Koi.Services.Services
                 throw ex;
             }
         }
+
         public async Task<KoiCertificateResponseDTO> CreateKoiCertificate(CreateKoiCertificateDTO dto)
         {
             try
