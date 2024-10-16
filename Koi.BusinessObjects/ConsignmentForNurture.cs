@@ -11,19 +11,21 @@ namespace Koi.BusinessObjects
         public DateTime ConsignmentDate { get; set; }  // Ngày ký gửi
         public DateTime StartDate { get; set; }  // Ngày bắt đầu chăm sóc
         public DateTime EndDate { get; set; }  // Ngày kết thúc chăm sóc
+        public string? Note { get; set; }
 
-        public Int64? FoodCost { get; set; }
+        public Int64? DietCost { get; set; }
         public Int64? LaborCost { get; set; }
         public int? DailyFeedAmount { get; set; }
-        public long? PriceByDay { get; set; }  // Giá thỏa thuận cho mỗi ngày chăm sóc
+
+        //    public long? PriceByDay { get; set; }  // Giá thỏa thuận cho mỗi ngày chăm sóc
         public int? TotalDays { get; set; }
+
         public Int64? ProjectedCost { get; set; } // gia du tinh
         public Int64? ActualCost { get; set; } // gia thuc te
 
         public bool? InspectionRequired { get; set; }
-        public DateTime InspectionDate { get; set; }  // Ngày kết thúc chăm sóc
+        public DateTime? InspectionDate { get; set; }  // Ngày kết thúc chăm sóc
         public string ConsignmentStatus { get; set; }
-        public string? Note { get; set; }
 
         public int StaffId { get; set; }  // Foreign key to User (nhân viên thực hiện)
 
