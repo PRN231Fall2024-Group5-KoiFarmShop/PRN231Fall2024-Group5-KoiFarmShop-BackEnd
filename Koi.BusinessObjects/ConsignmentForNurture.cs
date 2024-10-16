@@ -15,12 +15,10 @@ namespace Koi.BusinessObjects
         public Int64? FoodCost { get; set; }
         public Int64? LaborCost { get; set; }
         public int? DailyFeedAmount { get; set; }
-
         public long? PriceByDay { get; set; }  // Giá thỏa thuận cho mỗi ngày chăm sóc
         public int? TotalDays { get; set; }
-
-        public Int64? ProjectedCost { get; set; }
-        public Int64? ActualCost { get; set; }
+        public Int64? ProjectedCost { get; set; } // gia du tinh
+        public Int64? ActualCost { get; set; } // gia thuc te
 
         public bool? InspectionRequired { get; set; }
         public DateTime InspectionDate { get; set; }  // Ngày kết thúc chăm sóc

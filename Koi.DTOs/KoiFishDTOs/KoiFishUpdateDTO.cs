@@ -5,7 +5,7 @@
         public string Name { get; set; }
         public string? Origin { get; set; }
         public bool? Gender { get; set; }
-        public int Age { get; set; }
+        public DateTime Dob { get; set; }
         public int Length { get; set; }
         public int Weight { get; set; }
         public bool? IsAvailableForSale { get; set; }
@@ -18,6 +18,7 @@
         public List<int> KoiBreedIds { get; set; }
         public List<string> ImageUrls { get; set; }
     }
+
     public class KoiFishUpdateConsignerDTOs
     {
         public int ConsignedBy { get; set; }
