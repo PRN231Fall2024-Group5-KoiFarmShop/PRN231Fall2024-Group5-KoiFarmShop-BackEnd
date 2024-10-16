@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace Koi.Repositories.Repositories
 {
-    public class ConsignmentForNurtureRepository : GenericRepository<ConsignmentForNurture>
+    public class ConsignmentForNurtureRepository : GenericRepository<ConsignmentForNurture>, IConsignmentForNurtureRepository
     {
         private readonly KoiFarmShopDbContext _dbContext;
         private readonly ICurrentTime _timeService;
@@ -19,6 +19,13 @@ namespace Koi.Repositories.Repositories
             _dbContext = context;
             _timeService = timeService;
             _claimsService = claims;
+        }
+
+        public async Task<ConsignmentForNurture> AddNurtureConsignmentAsync(ConsignmentForNurture body)
+        {
+            body.ConsignmentDate = _timeService.GetCurrentTime();
+            var result = await AddAsync(body);
+            return result;
         }
     }
 }

@@ -11,6 +11,7 @@
         public string? PaymentMethod { get; set; }
         public string? ShippingMethod { get; set; }
         public string? Note { get; set; }
+        public long IncompleteAmount { get; set; } = 0;
 
         //navigation
         public virtual ICollection<OrderDetail> OrderDetails { get; set; }

@@ -40,10 +40,12 @@ namespace Koi.Services.Services
 
             return fishes;
         }
+
         public IQueryable<KoiFish> GetKoiFishes()
         {
             return _unitOfWork.KoiFishRepository.FilterAllField();
         }
+
         public async Task<KoiFishResponseDTO> GetKoiFishById(int id)
         {
             //// Try to get from cache
@@ -57,7 +59,6 @@ namespace Koi.Services.Services
             var fish = await _unitOfWork.KoiFishRepository.GetByIdAsync(id,
                 x => x.KoiBreeds.Where(x => x.IsDeleted == false),
                 x => x.KoiFishImages.Where(x => x.IsDeleted == false),
-                x => x.Consigner,
                 x => x.KoiDiaries.Where(x => x.IsDeleted == false),
                 x => x.KoiCertificates.Where(x => x.IsDeleted == false));
 
@@ -143,7 +144,7 @@ namespace Koi.Services.Services
                 fish.Length = fishModel.Length;
                 fish.Weight = fishModel.Weight;
                 //fish.KoiCertificates = fishModel.Certificate
-                fish.Age = fishModel.Age;
+                fish.Dob = fishModel.Dob;
                 fish.Origin = fishModel.Origin;
                 fish.DailyFeedAmount = fishModel.DailyFeedAmount;
                 fish.Gender = fishModel.Gender;
@@ -202,16 +203,16 @@ namespace Koi.Services.Services
                 throw new Exception("500 - Failed to delete fish");
             }
         }
+
         public async Task<bool> UpdateConsign(int id, int consignedBy)
         {
-            var item = await _unitOfWork.KoiFishRepository.GetByIdAsync(id, x => x.Consigner);
+            var item = await _unitOfWork.KoiFishRepository.GetByIdAsync(id);
             var consigner = await _unitOfWork.UserRepository.GetAccountDetailsAsync(consignedBy);
             if (consigner == null) throw new Exception("404 - Invalid Account!");
             if (item == null) throw new Exception("404 - Invalid Fish!");
-            if (item.IsConsigned == false && item.Consigner == null)
+            if (item.IsConsigned == false)
             {
                 item.IsConsigned = true;
-                item.Consigner = consigner;
 
                 if (await _unitOfWork.SaveChangeAsync() <= 0) throw new Exception("500 - Fail Saving!");
                 return true;
@@ -221,14 +222,14 @@ namespace Koi.Services.Services
                 throw new Exception("400 - Fish already been Consigned!");
             }
         }
+
         public async Task<bool> EndConsigned(int id)
         {
-            var item = await _unitOfWork.KoiFishRepository.GetByIdAsync(id, x => x.Consigner);
+            var item = await _unitOfWork.KoiFishRepository.GetByIdAsync(id);
             if (item == null) throw new Exception("404 - Invalid Fish");
-            if (item.IsConsigned == true && item.Consigner != null)
+            if (item.IsConsigned == true)
             {
                 item.IsConsigned = false;
-                item.Consigner = null;
                 if (await _unitOfWork.SaveChangeAsync() <= 0) throw new Exception("500 - Fail Saving!");
                 return true;
             }
