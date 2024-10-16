@@ -27,5 +27,17 @@ namespace Koi.Repositories.Utils
         {
             return !stripWhitespace ? ReadResource(relativePath, fromAssembly) : ReadResource(relativePath, fromAssembly).StripJsonWhitespace();
         }
+
+        public static int DateTimeValidate(DateTime startDate, DateTime endDate)
+        {
+            if (endDate < startDate)
+            {
+                throw new Exception("Invalid date time input: EndDate cannot be earlier than StartDate.");
+            }
+            TimeSpan duration = endDate - startDate;
+
+            // Trả về số ngày dưới dạng số nguyên
+            return duration.Days;
+        }
     }
 }

@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Koi.BusinessObjects;
+using Koi.DTOs.ConsignmentDTOs;
 using Koi.DTOs.DietDTOs;
 using Koi.DTOs.KoiBreedDTOs;
 using Koi.DTOs.KoiCertificateDTOs;
@@ -18,6 +19,8 @@ namespace Koi.Services.Mapper
         public MapperConfigProfile()
         {
             CreateMap<DietCreateDTO, Diet>().ReverseMap();
+            CreateMap<DietDTO, Diet>().ReverseMap();
+            ///
             CreateMap<KoiFishDiaryCreateDTO, KoiDiary>().ReverseMap();
             CreateMap<KoiFishDiaryUpdateDTO, KoiDiary>().ReverseMap();
             CreateMap<KoiBreed, KoiBreedCreateDTO>().ReverseMap();
@@ -47,12 +50,16 @@ namespace Koi.Services.Mapper
           .ReverseMap();
             CreateMap<User, CustomerProfileDTO>().ReverseMap();
 
-
             //ORDER & WALLET
             CreateMap<OrderDTO, Order>().ReverseMap();
             CreateMap<WalletDTO, Wallet>().ReverseMap();
             CreateMap<TransactionDTO, Transaction>().ReverseMap();
             CreateMap<WalletTransactionDTO, WalletTransaction>().ReverseMap();
+
+            //Consignment
+            CreateMap<ConsignmentForNurtureDetailDTO, ConsignmentForNurture>().ReverseMap();
+            CreateMap<ConsignmentForNurtureDTO, ConsignmentForNurture>().ReverseMap();
+            CreateMap<ConsignmentRequestDTO, ConsignmentForNurture>().ReverseMap();
         }
     }
 }

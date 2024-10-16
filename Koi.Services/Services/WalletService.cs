@@ -8,6 +8,7 @@ using Koi.DTOs.TransactionDTOs;
 using Koi.DTOs.WalletDTOs;
 using Koi.Repositories.Helper;
 using Koi.Repositories.Interfaces;
+using Koi.Repositories.Utils;
 using Koi.Services.Interface;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
@@ -233,8 +234,32 @@ namespace Koi.Services.Services
                     {
                         fishes.Add(koiFish);
                         totalAmount += koiFish.Price;
-                        if (purchaseFish.IsNuture)
+                        if (purchaseFish.IsNuture || (purchaseFish.StartDate.HasValue && purchaseFish.EndDate.HasValue))
                         {
+                            var existingDiet = await _unitOfWork.DietRepository.GetByIdAsync(purchaseFish.DietId);
+                            if (existingDiet == null)
+                            {
+                                throw new Exception($"400-Invalid id diet {purchaseFish.DietId} is not existed");
+                            }
+                            var nurtureDays = ResourceHelper.DateTimeValidate(purchaseFish.StartDate.Value, purchaseFish.EndDate.Value);
+                            var newConsignment = new ConsignmentForNurture
+                            {
+                                KoiFishId = koiFish.Id,
+                                StartDate = purchaseFish.StartDate.Value,
+                                EndDate = purchaseFish.EndDate.Value,
+                                DietId = existingDiet.Id,
+                                DietCost = existingDiet.DietCost,
+                                DailyFeedAmount = koiFish.DailyFeedAmount,
+                                TotalDays = nurtureDays,
+                                ProjectedCost = nurtureDays * existingDiet.DietCost,
+                                ConsignmentStatus = ConsignmentStatusEnums.PENDING.ToString()//PENDING CONSIGNMENT STATUS
+                            };
+
+                            koiFish.IsConsigned = true;
+                            koiFish.ConsignmentForNurtures = [newConsignment];
+
+                            consignments.Add(await _unitOfWork.ConsignmentForNurtureRepository.AddAsync(newConsignment));
+                            totalAmount += newConsignment.ProjectedCost; // thêm tiền nuôi cá
                         }
                     }
                     else
@@ -250,7 +275,7 @@ namespace Koi.Services.Services
                     OrderStatus = OrderStatusEnums.PENDING.ToString(),
                     ShippingAddress = purchaseDTO.ShippingAddress,
                     PaymentMethod = "VNPAY",
-                    Note = purchaseDTO.ShippingAddress,
+                    Note = purchaseDTO.PurchaseFishes.Any(x => x.IsNuture) ? "Order with Nurture attached" : "Normal purchase fish order",
                 };
 
                 var personalWallet = await _unitOfWork.WalletRepository.GetWalletByUserId(user.Id);

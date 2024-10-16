@@ -8,7 +8,6 @@ namespace Koi.DTOs.TransactionDTOs
 {
     public class WalletTransactionDTO
     {
-        public int UserId { get; set; }  // Foreign key to User
         public int? OrderId { get; set; }  // Foreign key to Order (nullable vì  không phải mọi giao dịch đều liên quan đến đơn hàng)
         public string TransactionType { get; set; }  // Loại giao dịch (Deposit, Withdraw, Purchase, etc.)
         public string PaymentMethod { get; set; }  // Phương thức thanh toán (Ví dụ: Credit Card, Bank Transfer)

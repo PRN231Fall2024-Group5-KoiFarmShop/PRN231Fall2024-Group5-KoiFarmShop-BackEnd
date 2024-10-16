@@ -15,7 +15,7 @@ namespace Koi.BusinessObjects
         public DateTime? LastHealthCheck { get; set; }
         public bool? IsAvailableForSale { get; set; }
         public long Price { get; set; }
-        public bool? IsConsigned { get; set; }
+        public bool? IsConsigned { get; set; } = false;
         public bool? IsSold { get; set; }
         public int? OwnerId { get; set; }
 
@@ -31,5 +31,6 @@ namespace Koi.BusinessObjects
 
         public virtual ICollection<KoiCertificate>? KoiCertificates { get; set; }
         public virtual ICollection<KoiFishImage>? KoiFishImages { get; set; }
+        public virtual ICollection<ConsignmentForNurture>? ConsignmentForNurtures { get; set; }
     }
 }
