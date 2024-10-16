@@ -15,6 +15,7 @@
 
         public IKoiCertificateRepository KoiCertificateRepository { get; }
         public IDietRepository DietRepository { get; }
+        public IBlogRepository BlogRepository { get; }
         Task<int> SaveChangeAsync();
     }
 }
