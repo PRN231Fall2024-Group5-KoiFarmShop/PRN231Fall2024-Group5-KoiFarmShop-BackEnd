@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace Koi.Repositories.Repositories
 {
-    public class ConsignmentForNurtureRepository : GenericRepository<ConsignmentForNurture>
+    public class ConsignmentForNurtureRepository : GenericRepository<ConsignmentForNurture>, IConsignmentForNurtureRepository
     {
         private readonly KoiFarmShopDbContext _dbContext;
         private readonly ICurrentTime _timeService;
