@@ -54,7 +54,12 @@ namespace Koi.Services.Services
             //}
 
             // If not in cache, query the database
-            var fish = await _unitOfWork.KoiFishRepository.GetByIdAsync(id, x => x.KoiBreeds, x => x.KoiFishImages, x => x.Consigner, x => x.KoiDiaries, x => x.KoiCertificates);
+            var fish = await _unitOfWork.KoiFishRepository.GetByIdAsync(id,
+                x => x.KoiBreeds.Where(x => x.IsDeleted == false),
+                x => x.KoiFishImages.Where(x => x.IsDeleted == false),
+                x => x.Consigner,
+                x => x.KoiDiaries.Where(x => x.IsDeleted == false),
+                x => x.KoiCertificates.Where(x => x.IsDeleted == false));
 
             if (fish == null)
             {

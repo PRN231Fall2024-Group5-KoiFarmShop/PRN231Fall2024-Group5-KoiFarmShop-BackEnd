@@ -1,11 +1,8 @@
 ﻿using AutoMapper;
 using Koi.DTOs.KoiCertificateDTOs;
-using Koi.DTOs.KoiFishDTOs;
 using Koi.Repositories.Commons;
 using Koi.Repositories.Helper;
 using Koi.Services.Interface;
-using Koi.Services.Services;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Koi.WebAPI.Controllers
@@ -92,7 +89,9 @@ namespace Koi.WebAPI.Controllers
             try
             {
                 var certificateModel = await _koiCertificateService.CreateKoiCertificate(certificate);
-                return Created();
+                var locationUri = $"/api/koiCertificates/{certificateModel.Id}";
+
+                return Created(locationUri, certificateModel);
             }
             catch (Exception ex)
             {

@@ -8,7 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace Koi.WebAPI.Controllers
 {
 
-    [Route("api/[controller]")]
+    [Route("api/koi-fishes")]
     [ApiController]
     public class KoiFishController : ControllerBase
     {
@@ -42,7 +42,7 @@ namespace Koi.WebAPI.Controllers
             }
         }
 
-        [HttpGet("koi-fishes/{id}")]
+        [HttpGet("{id}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -66,7 +66,7 @@ namespace Koi.WebAPI.Controllers
         }
 
         // POST api/<KoiBreedController>
-        [HttpPost("koi-fishes")]
+        [HttpPost()]
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -89,7 +89,7 @@ namespace Koi.WebAPI.Controllers
         }
 
         // PUT api/<KoiBreedController>/5
-        [HttpPut("koi-fishes/{id}")]
+        [HttpPut("{id}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -112,7 +112,7 @@ namespace Koi.WebAPI.Controllers
         }
 
         // DELETE api/<KoiBreedController>/5
-        [HttpDelete("koi-fishes/{id}")]
+        [HttpDelete("{id}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
