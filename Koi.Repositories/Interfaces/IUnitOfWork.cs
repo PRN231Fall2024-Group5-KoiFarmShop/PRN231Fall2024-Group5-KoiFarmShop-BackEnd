@@ -15,6 +15,8 @@
 
         public IKoiCertificateRepository KoiCertificateRepository { get; }
         public IDietRepository DietRepository { get; }
+        IConsignmentForNurtureRepository ConsignmentForNurtureRepository { get; }
+
         Task<int> SaveChangeAsync();
     }
 }

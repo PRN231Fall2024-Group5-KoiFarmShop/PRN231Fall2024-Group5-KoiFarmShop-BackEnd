@@ -20,5 +20,12 @@ namespace Koi.Repositories.Repositories
             _timeService = timeService;
             _claimsService = claims;
         }
+
+        public async Task<ConsignmentForNurture> AddNurtureConsignmentAsync(ConsignmentForNurture body)
+        {
+            body.ConsignmentDate = _timeService.GetCurrentTime();
+            var result = await AddAsync(body);
+            return result;
+        }
     }
 }

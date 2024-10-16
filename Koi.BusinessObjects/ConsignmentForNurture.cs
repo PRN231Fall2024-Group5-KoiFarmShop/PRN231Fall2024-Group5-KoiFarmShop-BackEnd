@@ -12,10 +12,21 @@ namespace Koi.BusinessObjects
         public DateTime StartDate { get; set; }  // Ngày bắt đầu chăm sóc
         public DateTime EndDate { get; set; }  // Ngày kết thúc chăm sóc
 
-        public long PriceByDayDeale { get; set; }  // Giá thỏa thuận cho mỗi ngày chăm sóc
-        public bool InspectionRequired { get; set; }  // Có cần kiểm tra không
-        public DateTime? InspectionDate { get; set; }  // Ngày kiểm tra (có thể null)
-        public string ConsignmentStatus { get; set; }  // Trạng thái của ký gửi
+        public Int64? FoodCost { get; set; }
+        public Int64? LaborCost { get; set; }
+        public int? DailyFeedAmount { get; set; }
+
+        public long? PriceByDay { get; set; }  // Giá thỏa thuận cho mỗi ngày chăm sóc
+        public int? TotalDays { get; set; }
+
+        public Int64? ProjectedCost { get; set; }
+        public Int64? ActualCost { get; set; }
+
+        public bool? InspectionRequired { get; set; }
+        public DateTime InspectionDate { get; set; }  // Ngày kết thúc chăm sóc
+        public string ConsignmentStatus { get; set; }
+        public string? Note { get; set; }
+
         public int StaffId { get; set; }  // Foreign key to User (nhân viên thực hiện)
 
         // Navigation properties
@@ -29,7 +40,7 @@ namespace Koi.BusinessObjects
 
         [ForeignKey("PackageCareId")]
         public virtual PackageCare PackageCare { get; set; }
-        public virtual Diet Diet { get; set; }
 
+        public virtual Diet Diet { get; set; }
     }
 }
