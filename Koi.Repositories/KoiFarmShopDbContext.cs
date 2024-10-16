@@ -21,7 +21,6 @@ namespace Koi.Repositories
         public DbSet<ConsignmentForNurture> ConsignmentForNurtures { get; set; }
         public DbSet<Notification> Notifications { get; set; }
         public DbSet<KoiCertificate> KoiCertificates { get; set; }
-        public DbSet<PackageCare> PackageCares { get; set; } // Add DbSet for PackageCare
         public DbSet<WalletTransaction> WalletTransactions { get; set; }  // Add DbSet for WalletTransaction
         public DbSet<Wallet> Wallets { get; set; }
         public DbSet<KoiFishImage> KoiFishImages { get; set; }

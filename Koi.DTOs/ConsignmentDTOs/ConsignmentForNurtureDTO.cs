@@ -1,13 +1,19 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
-namespace Koi.BusinessObjects
+namespace Koi.DTOs.ConsignmentDTOs
 {
-    public class ConsignmentForNurture : BaseEntity
+    public class ConsignmentForNurtureDTO
     {
-        public int? CustomerId { get; set; }  // Foreign key to User
-        public int KoiFishId { get; set; }   // Foreign key to KoiFish
-        public int? DietId { get; set; } // Foreign Key to Diet
+        public int Id { get; set; }
 
+        public int? CustomerId { get; set; }  // Foreign key to User
+        public int? KoiFishId { get; set; }   // Foreign key to KoiFish
+        public int? DietId { get; set; } // Foreign Key to Diet
+        public int? StaffId { get; set; }
         public DateTime ConsignmentDate { get; set; }  // Ngày ký gửi
         public DateTime StartDate { get; set; }  // Ngày bắt đầu chăm sóc
         public DateTime EndDate { get; set; }  // Ngày kết thúc chăm sóc
@@ -25,19 +31,6 @@ namespace Koi.BusinessObjects
 
         public bool? InspectionRequired { get; set; }
         public DateTime? InspectionDate { get; set; }  // Ngày kết thúc chăm sóc
-        public string ConsignmentStatus { get; set; }
-
-        public int? StaffId { get; set; }  // Foreign key to User (nhân viên thực hiện)
-
-        // Navigation properties
-        [ForeignKey("CustomerId")]
-        public virtual User? Customer { get; set; }  // Người khách hàng
-
-        [ForeignKey("StaffId")]
-        public virtual User? Staff { get; set; }  // Nhân viên phụ trách
-
-        public virtual KoiFish KoiFish { get; set; }  // Thông tin KoiFish liên quan
-
-        public virtual Diet? Diet { get; set; }
+        public string ConsignmentStatus { get; set; } = string.Empty;
     }
 }
