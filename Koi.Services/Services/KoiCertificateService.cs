@@ -89,24 +89,7 @@ namespace Koi.Services.Services
             }
         }
 
-        public async Task<List<KoiCertificateResponseDTO>> GetListCertificateByKoiId(int koiId)
-        {
-            try
-            {
-                var list = await _unitOfWork.KoiCertificateRepository.GetListCertificateByKoiIdAsync(koiId);
-                if (list == null)
-                {
-                    throw new Exception("404 - Certificate not found!");
-                }
-                var result = _mapper.Map<List<KoiCertificateResponseDTO>>(list);
-                result = result.ToList();
-                return result;
-            }
-            catch (Exception ex)
-            {
-                throw ex;
-            }
-        }
+
 
         public async Task<KoiCertificateResponseDTO> CreateKoiCertificate(CreateKoiCertificateDTO dto)
         {
