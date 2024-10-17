@@ -6,9 +6,8 @@ namespace Koi.Services.Interface
 {
     public interface IKoiFishService
     {
-        Task<PagedList<KoiFish>> GetKoiFishes(KoiParams koiParams);
         IQueryable<KoiFish> GetKoiFishes();
-
+        Task<PagedList<KoiFish>> GetKoiFishes(KoiParams koiParams);
         Task<KoiFishResponseDTO> GetKoiFishById(int id);
 
         Task<KoiFishResponseDTO> CreateKoiFish(KoiFishCreateDTO koiFishModel);

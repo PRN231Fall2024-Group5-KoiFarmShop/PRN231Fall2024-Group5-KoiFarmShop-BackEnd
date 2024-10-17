@@ -4,13 +4,14 @@ using Koi.Repositories.Commons;
 using Koi.Repositories.Helper;
 using Koi.Services.Interface;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.OData.Query;
+using Microsoft.AspNetCore.OData.Routing.Controllers;
 
 namespace Koi.WebAPI.Controllers
 {
 
-    [Route("api/koi-fishes")]
-    [ApiController]
-    public class KoiFishController : ControllerBase
+    [Route("api/v1/odata/koi-fishes")]
+    public class KoiFishController : ODataController
     {
         private readonly IKoiFishService _koiFishService;
         private readonly IMapper _mapper;
@@ -26,6 +27,24 @@ namespace Koi.WebAPI.Controllers
 
 
         [HttpGet]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        [EnableQuery]
+        public IActionResult Get()
+        {
+            try
+            {
+                var fishes = _koiFishService.GetKoiFishes().AsQueryable();
+                return Ok(fishes);
+
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, ApiResult<object>.Fail(ex));
+            }
+        }
+
+        [HttpGet("old")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> Get([FromQuery] KoiParams koiFishParams)
@@ -65,6 +84,7 @@ namespace Koi.WebAPI.Controllers
             }
         }
 
+
         // POST api/<KoiBreedController>
         [HttpPost()]
         [ProducesResponseType(StatusCodes.Status201Created)]
@@ -87,6 +107,7 @@ namespace Koi.WebAPI.Controllers
                 return StatusCode(StatusCodes.Status500InternalServerError, ApiResult<object>.Fail(ex));
             }
         }
+
 
         // PUT api/<KoiBreedController>/5
         [HttpPut("{id}")]

@@ -34,6 +34,7 @@ namespace Koi.Services.Services
             {
                 throw ex;
             }
+
         }
 
         public async Task<List<KoiCertificateResponseDTO>> GetListCertificateByKoiId(int koiId)
@@ -55,6 +56,8 @@ namespace Koi.Services.Services
             }
         }
 
+        public IQueryable<KoiCertificate> GetKoiCertificates() => _unitOfWork.KoiCertificateRepository.GetQueryable();
+
         public async Task<List<KoiCertificateResponseDTO>> GetKoiCertificates(KoiCertificateParams certificateParams)
         {
             try
@@ -68,8 +71,34 @@ namespace Koi.Services.Services
                         .ToList();
                 }
 
+                if (!string.IsNullOrEmpty(certificateParams.UserName))
+                {
+                    list = list
+                        .Where(x => x.KoiFish.Owner.FullName.ToLower().Contains(certificateParams.UserName.ToLower()))
+                        .ToList();
+                }
+
                 var result = _mapper.Map<List<KoiCertificateResponseDTO>>(list);
 
+                result = result.ToList();
+                return result;
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
+        public async Task<List<KoiCertificateResponseDTO>> GetListCertificateByKoiId(int koiId)
+        {
+            try
+            {
+                var list = await _unitOfWork.KoiCertificateRepository.GetListCertificateByKoiIdAsync(koiId);
+                if (list == null)
+                {
+                    throw new Exception("404 - Certificate not found!");
+                }
+                var result = _mapper.Map<List<KoiCertificateResponseDTO>>(list);
                 result = result.ToList();
                 return result;
             }
