@@ -3,12 +3,14 @@ using Koi.DTOs.DietDTOs;
 using Koi.Repositories.Commons;
 using Koi.Services.Interface;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.OData.Query;
+using Microsoft.AspNetCore.OData.Routing.Controllers;
 
 namespace Koi.WebAPI.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/v1/odata/diets")]
     [ApiController]
-    public class DietController : ControllerBase
+    public class DietController : ODataController
     {
         private readonly IDietService _dietService;
         private readonly IMapper _mapper;
@@ -32,7 +34,28 @@ namespace Koi.WebAPI.Controllers
         ///     GET /KoiBreeds
         ///
         /// </remarks>
-        [HttpGet]
+        [HttpGet()]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        [EnableQuery]
+        public IActionResult Get()
+        {
+            try
+            {
+                var diets = _dietService.GetDiets();
+                return Ok(diets);
+            }
+            catch (Exception ex)
+            {
+                if (ex.Message.Contains("400"))
+                    return BadRequest(ApiResult<object>.Fail(ex));
+                if (ex.Message.Contains("404"))
+                    return NotFound(ApiResult<object>.Fail(ex));
+                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+            }
+        }
+        [HttpGet("old")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]

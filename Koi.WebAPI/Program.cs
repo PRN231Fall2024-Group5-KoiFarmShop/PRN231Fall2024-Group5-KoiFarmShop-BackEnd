@@ -1,6 +1,5 @@
 ﻿using Koi.BusinessObjects;
 using Koi.Repositories;
-using Koi.Repositories.Models.TestDTO;
 using Koi.Services.Hubs;
 using Koi.WebAPI.Injection;
 using Koi.WebAPI.MiddleWares;
@@ -8,9 +7,9 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.OData;
 using Microsoft.IdentityModel.Tokens;
+using Microsoft.OData.Edm;
 using Microsoft.OData.ModelBuilder;
 using Microsoft.OpenApi.Models;
-using Newtonsoft.Json.Converters;
 using System.Reflection;
 using System.Text;
 using System.Text.Json;
@@ -119,18 +118,24 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddSignalR();
 
 // START - ADD ODATA
-var modelBuilder = new ODataConventionModelBuilder();
-var edmModel = modelBuilder.GetEdmModel();
-modelBuilder.EntityType<OrderTestDTO>();
-modelBuilder.EntitySet<KoiFish>("koi-fishes");
-modelBuilder.EntitySet<CustomerTestDTO>("Customers");
+IEdmModel GetEdmModel()
+{
+    var modelBuilder = new ODataConventionModelBuilder();
+    modelBuilder.EntitySet<KoiFish>("koi-fishes");
+    modelBuilder.EntitySet<KoiBreed>("koi-breeds");
+    modelBuilder.EntitySet<KoiCertificate>("koi-certificates");
+    modelBuilder.EntitySet<KoiDiary>("koi-diaries");
+    modelBuilder.EntitySet<Diet>("diets");
 
-builder.Services.AddControllers()
-    .AddOData(
-    options => options.Select().Filter().OrderBy().Expand().Count().SetMaxTop(null)
-    .AddRouteComponents(
-        routePrefix: "api/v1/odata",
-        model: edmModel));
+    return modelBuilder.GetEdmModel();
+}
+
+
+builder.Services.AddControllers().AddOData(opt =>
+    opt.Select().Filter().OrderBy().Expand().Count().SetMaxTop(100).AddRouteComponents("api/v1/odata", GetEdmModel()));
+
+
+
 // END - ADD ODATA
 //ADD CORS
 //builder.Services.AddCors(options =>

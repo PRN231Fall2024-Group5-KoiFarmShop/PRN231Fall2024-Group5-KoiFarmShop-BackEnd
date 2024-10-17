@@ -48,10 +48,16 @@ namespace Koi.Services.Services
 
         public async Task<DietCreateDTO> GetDietById(int id)
         {
-            var tar = await _unitOfWork.DietRepository.GetByIdAsync(id);
+            var tar = await _unitOfWork.DietRepository.GetByIdAsync(id, x => x.IsDeleted == false);
             if (tar == null) throw new Exception("404 - Diet not Found!");
             return _mapper.Map<DietCreateDTO>(tar);
         }
+
+        public IQueryable<Diet> GetDiets()
+        {
+            return _unitOfWork.DietRepository.GetQueryable();
+        }
+
 
         public async Task<List<DietCreateDTO>> GetDiets(string? searchTerm)
         {
