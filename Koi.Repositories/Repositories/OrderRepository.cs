@@ -81,6 +81,10 @@ namespace Koi.Repositories.Repositories
                         Price = fish.Price,
                         Status = OrderStatusEnums.PENDING.ToString(),
                     };
+                    if (fish.IsConsigned.Value)
+                    {
+                        orderDetail.ConsignmentForNurtureId = fish.ConsignmentForNurtures.OrderByDescending(x => x.CreatedAt).First().Id;
+                    }
                     order.OrderDetails = [];
                     order.OrderDetails.Add(orderDetail);
                     orderDetails.Add(orderDetail);

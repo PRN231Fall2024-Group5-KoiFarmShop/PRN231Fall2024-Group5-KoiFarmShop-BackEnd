@@ -21,12 +21,12 @@ namespace Koi.Repositories
         public DbSet<ConsignmentForNurture> ConsignmentForNurtures { get; set; }
         public DbSet<Notification> Notifications { get; set; }
         public DbSet<KoiCertificate> KoiCertificates { get; set; }
-        public DbSet<PackageCare> PackageCares { get; set; } // Add DbSet for PackageCare
         public DbSet<WalletTransaction> WalletTransactions { get; set; }  // Add DbSet for WalletTransaction
         public DbSet<Wallet> Wallets { get; set; }
         public DbSet<KoiFishImage> KoiFishImages { get; set; }
         public DbSet<KoiDiary> KoiDiaries { get; set; }
         public DbSet<Diet> Diets { get; set; }
+        public DbSet<RequestForSale> RequestForSales { get; set; }
 
         public KoiFarmShopDbContext(DbContextOptions options) : base(options)
         {

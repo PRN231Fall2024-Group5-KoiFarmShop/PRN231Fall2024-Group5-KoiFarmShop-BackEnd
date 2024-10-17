@@ -294,7 +294,7 @@ namespace Koi.Repositories
                         Name = "Hikari",
                         Origin = "Japan",
                         Gender = true,
-                        Age = 3,
+                        Dob = new DateTime(2024, 01, 01),
                         Length = 25,
                         Weight = 1500,
                         PersonalityTraits = "Playful, curious",
@@ -304,7 +304,7 @@ namespace Koi.Repositories
                         Price = 500000,
                         IsConsigned = false,
                         IsSold = false,
-                        Consigner = null,
+
                         KoiBreeds = new List<KoiBreed>
                         {
                             koiBreeds.FirstOrDefault(b => b.Name == "Kohaku"),
@@ -316,7 +316,7 @@ namespace Koi.Repositories
                         Name = "Sakura",
                         Origin = "Japan",
                         Gender = false,
-                        Age = 4,
+                        Dob = new DateTime(2024, 01, 01),
                         Length = 30,
                         Weight = 2000,
                         PersonalityTraits = "Gentle, shy",
@@ -326,7 +326,7 @@ namespace Koi.Repositories
                         Price = 800000,
                         IsConsigned = true,
                         IsSold = false,
-                        Consigner = null,
+
                         KoiBreeds = new List<KoiBreed>
                         {
                             koiBreeds.FirstOrDefault(b => b.Name == "Showa"),
@@ -338,7 +338,7 @@ namespace Koi.Repositories
                         Name = "Ryu",
                         Origin = "China",
                         Gender = true,
-                        Age = 2,
+                        Dob = new DateTime(2024, 01, 01),
                         Length = 22,
                         Weight = 1200,
                         PersonalityTraits = "Aggressive, active",
@@ -348,7 +348,7 @@ namespace Koi.Repositories
                         Price = 600000,
                         IsConsigned = false,
                         IsSold = false,
-                        Consigner = null,
+
                         KoiBreeds = new List<KoiBreed>
                         {
                             koiBreeds.FirstOrDefault(b => b.Name == "Utsurimono")
@@ -359,7 +359,7 @@ namespace Koi.Repositories
                         Name = "Kumo",
                         Origin = "Japan",
                         Gender = false,
-                        Age = 5,
+                        Dob = new DateTime(2024, 01, 01),
                         Length = 35,
                         Weight = 2500,
                         PersonalityTraits = "Calm, friendly",
@@ -369,7 +369,7 @@ namespace Koi.Repositories
                         Price = 700000,
                         IsConsigned = true,
                         IsSold = false,
-                        Consigner = null,
+
                         KoiBreeds = new List<KoiBreed>
                         {
                             koiBreeds.FirstOrDefault(b => b.Name == "Tancho")
@@ -380,7 +380,7 @@ namespace Koi.Repositories
                         Name = "Aoi",
                         Origin = "Japan",
                         Gender = true,
-                        Age = 1,
+                        Dob = new DateTime(2024, 01, 01),
                         Length = 20,
                         Weight = 800,
                         PersonalityTraits = "Energetic, playful",
@@ -390,7 +390,7 @@ namespace Koi.Repositories
                         Price = 400000,
                         IsConsigned = false,
                         IsSold = true,
-                        Consigner = null,
+
                         KoiBreeds = new List<KoiBreed>
                         {
                             koiBreeds.FirstOrDefault(b => b.Name == "Goshiki")
@@ -401,7 +401,7 @@ namespace Koi.Repositories
                         Name = "Mizu",
                         Origin = "China",
                         Gender = false,
-                        Age = 6,
+                        Dob = new DateTime(2024,01,01),
                         Length = 28,
                         Weight = 1800,
                         PersonalityTraits = "Gentle, curious",
@@ -411,7 +411,7 @@ namespace Koi.Repositories
                         Price = 650000,
                         IsConsigned = false,
                         IsSold = false,
-                        Consigner = null,
+
                         KoiBreeds = new List<KoiBreed>
                         {
                             koiBreeds.FirstOrDefault(b => b.Name == "Bekko")
@@ -422,7 +422,7 @@ namespace Koi.Repositories
                         Name = "Taro",
                         Origin = "Japan",
                         Gender = true,
-                        Age = 7,
+                        Dob = new DateTime(2024, 01, 01),
                         Length = 32,
                         Weight = 2200,
                         PersonalityTraits = "Strong, dominant",
@@ -432,7 +432,7 @@ namespace Koi.Repositories
                         Price = 750000,
                         IsConsigned = false,
                         IsSold = false,
-                        Consigner = null,
+
                         KoiBreeds = new List<KoiBreed>
                         {
                             koiBreeds.FirstOrDefault(b => b.Name == "Yamabuki")
@@ -443,7 +443,7 @@ namespace Koi.Repositories
                         Name = "Kira",
                         Origin = "Japan",
                         Gender = false,
-                        Age = 2,
+                        Dob = new DateTime(2024, 01, 01),
                         Length = 24,
                         Weight = 1400,
                         PersonalityTraits = "Active, friendly",
@@ -453,7 +453,7 @@ namespace Koi.Repositories
                         Price = 550000,
                         IsConsigned = true,
                         IsSold = false,
-                        Consigner = null,
+
                         KoiBreeds = new List<KoiBreed>
                         {
                             koiBreeds.FirstOrDefault(b => b.Name == "Doitsu")
@@ -464,7 +464,7 @@ namespace Koi.Repositories
                         Name = "Haruka",
                         Origin = "China",
                         Gender = true,
-                        Age = 4,
+                        Dob = new DateTime(2024, 01, 01),
                         Length = 27,
                         Weight = 1600,
                         PersonalityTraits = "Playful, shy",
@@ -474,7 +474,7 @@ namespace Koi.Repositories
                         Price = 620000,
                         IsConsigned = false,
                         IsSold = false,
-                        Consigner = null,
+
                         KoiBreeds = new List<KoiBreed>
                         {
                             koiBreeds.FirstOrDefault(b => b.Name == "Kohaku"),
@@ -486,7 +486,7 @@ namespace Koi.Repositories
                         Name = "Nami",
                         Origin = "Japan",
                         Gender = false,
-                        Age = 3,
+                        Dob = new DateTime(2024, 01, 01),
                         Length = 29,
                         Weight = 1700,
                         PersonalityTraits = "Calm, intelligent",
@@ -496,7 +496,7 @@ namespace Koi.Repositories
                         Price = 680000,
                         IsConsigned = true,
                         IsSold = false,
-                        Consigner = null,
+
                         KoiBreeds = new List<KoiBreed>
                         {
                             koiBreeds.FirstOrDefault(b => b.Name == "Goshiki"),
@@ -508,7 +508,7 @@ namespace Koi.Repositories
                         Name = "Yuki",
                         Origin = "Japan",
                         Gender = true,
-                        Age = 5,
+                        Dob = new DateTime(2024, 01, 01),
                         Length = 31,
                         Weight = 1900,
                         PersonalityTraits = "Energetic, friendly",
@@ -518,7 +518,7 @@ namespace Koi.Repositories
                         Price = 720000,
                         IsConsigned = false,
                         IsSold = false,
-                        Consigner = null,
+
                         KoiBreeds = new List<KoiBreed>
                         {
                             koiBreeds.FirstOrDefault(b => b.Name == "Utsurimono"),
@@ -531,7 +531,7 @@ namespace Koi.Repositories
                         Name = "Sora",
                         Origin = "Japan",
                         Gender = false,
-                        Age = 4,
+                                Dob = new DateTime(2024, 01, 01),
                         Length = 26,
                         Weight = 1550,
                         PersonalityTraits = "Playful, curious",
@@ -541,7 +541,7 @@ namespace Koi.Repositories
                         Price = 560000,
                         IsConsigned = false,
                         IsSold = false,
-                        Consigner = null,
+
                         KoiBreeds = new List<KoiBreed>
                         {
                             koiBreeds.FirstOrDefault(b => b.Name == "Kohaku")
@@ -552,7 +552,7 @@ namespace Koi.Repositories
                         Name = "Akira",
                         Origin = "China",
                         Gender = true,
-                        Age = 2,
+                        Dob = new DateTime(2024, 01, 01),
                         Length = 23,
                         Weight = 1300,
                         PersonalityTraits = "Aggressive, strong",
@@ -562,7 +562,7 @@ namespace Koi.Repositories
                         Price = 620000,
                         IsConsigned = true,
                         IsSold = false,
-                        Consigner = null,
+
                         KoiBreeds = new List<KoiBreed>
                         {
                             koiBreeds.FirstOrDefault(b => b.Name == "Sanke")
@@ -573,7 +573,7 @@ namespace Koi.Repositories
                         Name = "Momo",
                         Origin = "Japan",
                         Gender = false,
-                        Age = 6,
+                        Dob = new DateTime(2024, 01, 01),
                         Length = 29,
                         Weight = 1800,
                         PersonalityTraits = "Gentle, intelligent",
@@ -583,7 +583,7 @@ namespace Koi.Repositories
                         Price = 700000,
                         IsConsigned = false,
                         IsSold = true,
-                        Consigner = null,
+
                         KoiBreeds = new List<KoiBreed>
                         {
                             koiBreeds.FirstOrDefault(b => b.Name == "Showa")
@@ -594,7 +594,7 @@ namespace Koi.Repositories
                         Name = "Hana",
                         Origin = "China",
                         Gender = true,
-                        Age = 3,
+                        Dob = new DateTime(2024, 01, 01),
                         Length = 24,
                         Weight = 1450,
                         PersonalityTraits = "Energetic, playful",
@@ -604,7 +604,7 @@ namespace Koi.Repositories
                         Price = 650000,
                         IsConsigned = true,
                         IsSold = false,
-                        Consigner = null,
+
                         KoiBreeds = new List<KoiBreed>
                         {
                             koiBreeds.FirstOrDefault(b => b.Name == "Asagi")
@@ -615,7 +615,7 @@ namespace Koi.Repositories
                         Name = "Kaze",
                         Origin = "Japan",
                         Gender = false,
-                        Age = 5,
+                        Dob = new DateTime(2024, 01, 01),
                         Length = 30,
                         Weight = 2000,
                         PersonalityTraits = "Calm, friendly",
@@ -625,7 +625,7 @@ namespace Koi.Repositories
                         Price = 700000,
                         IsConsigned = false,
                         IsSold = false,
-                        Consigner = null,
+
                         KoiBreeds = new List<KoiBreed>
                         {
                             koiBreeds.FirstOrDefault(b => b.Name == "Tancho"),
@@ -637,7 +637,7 @@ namespace Koi.Repositories
                         Name = "Riko",
                         Origin = "China",
                         Gender = true,
-                        Age = 2,
+                        Dob = new DateTime(2024, 01, 01),
                         Length = 21,
                         Weight = 1200,
                         PersonalityTraits = "Playful, active",
@@ -647,7 +647,7 @@ namespace Koi.Repositories
                         Price = 550000,
                         IsConsigned = false,
                         IsSold = false,
-                        Consigner = null,
+
                         KoiBreeds = new List<KoiBreed>
                         {
                             koiBreeds.FirstOrDefault(b => b.Name == "Goshiki")
@@ -658,7 +658,7 @@ namespace Koi.Repositories
                         Name = "Miki",
                         Origin = "Japan",
                         Gender = false,
-                        Age = 4,
+                        Dob = new DateTime(2024, 01, 01),
                         Length = 28,
                         Weight = 1600,
                         PersonalityTraits = "Calm, gentle",
@@ -668,7 +668,7 @@ namespace Koi.Repositories
                         Price = 680000,
                         IsConsigned = true,
                         IsSold = false,
-                        Consigner = null,
+
                         KoiBreeds = new List<KoiBreed>
                         {
                             koiBreeds.FirstOrDefault(b => b.Name == "Doitsu")
@@ -679,7 +679,7 @@ namespace Koi.Repositories
                         Name = "Tsubasa",
                         Origin = "China",
                         Gender = true,
-                        Age = 6,
+                        Dob = new DateTime(2024, 01, 01),
                         Length = 33,
                         Weight = 2200,
                         PersonalityTraits = "Strong, dominant",
@@ -689,7 +689,7 @@ namespace Koi.Repositories
                         Price = 750000,
                         IsConsigned = false,
                         IsSold = false,
-                        Consigner = null,
+
                         KoiBreeds = new List<KoiBreed>
                         {
                             koiBreeds.FirstOrDefault(b => b.Name == "Kohaku"),
@@ -701,7 +701,7 @@ namespace Koi.Repositories
                         Name = "Niko",
                         Origin = "Japan",
                         Gender = false,
-                        Age = 5,
+                        Dob = new DateTime(2024, 01, 01),
                         Length = 26,
                         Weight = 1700,
                         PersonalityTraits = "Energetic, curious",
@@ -711,7 +711,7 @@ namespace Koi.Repositories
                         Price = 690000,
                         IsConsigned = true,
                         IsSold = false,
-                        Consigner = null,
+
                         KoiBreeds = new List<KoiBreed>
                         {
                             koiBreeds.FirstOrDefault(b => b.Name == "Bekko"),
@@ -723,7 +723,7 @@ namespace Koi.Repositories
                         Name = "Sumi",
                         Origin = "China",
                         Gender = true,
-                        Age = 3,
+                        Dob = new DateTime(2024, 01, 01) ,
                         Length = 23,
                         Weight = 1400,
                         PersonalityTraits = "Playful, shy",
@@ -733,7 +733,7 @@ namespace Koi.Repositories
                         Price = 640000,
                         IsConsigned = false,
                         IsSold = false,
-                        Consigner = null,
+
                         KoiBreeds = new List<KoiBreed>
                         {
                             koiBreeds.FirstOrDefault(b => b.Name == "Yamabuki")
@@ -744,7 +744,7 @@ namespace Koi.Repositories
                         Name = "Aika",
                         Origin = "Japan",
                         Gender = false,
-                        Age = 2,
+                        Dob = new DateTime(2024, 01, 01)                ,
                         Length = 20,
                         Weight = 1150,
                         PersonalityTraits = "Gentle, playful",
@@ -765,7 +765,7 @@ namespace Koi.Repositories
                         Name = "Kaito",
                         Origin = "China",
                         Gender = true,
-                        Age = 5,
+                        Dob = new DateTime(2024, 01, 01),
                         Length = 30,
                         Weight = 2000,
                         PersonalityTraits = "Strong, dominant",
@@ -775,7 +775,7 @@ namespace Koi.Repositories
                         Price = 720000,
                         IsConsigned = false,
                         IsSold = false,
-                        Consigner = null,
+
                         KoiBreeds = new List<KoiBreed>
                         {
                             koiBreeds.FirstOrDefault(b => b.Name == "Tancho"),
@@ -787,7 +787,7 @@ namespace Koi.Repositories
                         Name = "Kokoro",
                         Origin = "Japan",
                         Gender = false,
-                        Age = 4,
+                        Dob = new DateTime(2024,01,01),
                         Length = 27,
                         Weight = 1550,
                         PersonalityTraits = "Calm, friendly",
@@ -797,7 +797,7 @@ namespace Koi.Repositories
                         Price = 670000,
                         IsConsigned = true,
                         IsSold = false,
-                        Consigner = null,
+
                         KoiBreeds = new List<KoiBreed>
                         {
                             koiBreeds.FirstOrDefault(b => b.Name == "Kohaku"),
@@ -809,7 +809,7 @@ namespace Koi.Repositories
                         Name = "Hoshi",
                         Origin = "China",
                         Gender = true,
-                        Age = 3,
+                        Dob = new DateTime(2024,01,01),
                         Length = 25,
                         Weight = 1450,
                         PersonalityTraits = "Playful, energetic",
@@ -819,7 +819,7 @@ namespace Koi.Repositories
                         Price = 610000,
                         IsConsigned = false,
                         IsSold = false,
-                        Consigner = null,
+
                         KoiBreeds = new List<KoiBreed>
                         {
                             koiBreeds.FirstOrDefault(b => b.Name == "Sanke"),
@@ -831,7 +831,7 @@ namespace Koi.Repositories
                         Name = "Mika",
                         Origin = "Japan",
                         Gender = false,
-                        Age = 6,
+                        Dob = new DateTime(2024,01,01),
                         Length = 31,
                         Weight = 1750,
                         PersonalityTraits = "Gentle, shy",
@@ -841,7 +841,7 @@ namespace Koi.Repositories
                         Price = 690000,
                         IsConsigned = true,
                         IsSold = false,
-                        Consigner = null,
+
                         KoiBreeds = new List<KoiBreed>
                         {
                             koiBreeds.FirstOrDefault(b => b.Name == "Doitsu"),
@@ -853,7 +853,7 @@ namespace Koi.Repositories
                         Name = "Tomo",
                         Origin = "China",
                         Gender = true,
-                        Age = 4,
+                        Dob = new DateTime(2024,01,01),
                         Length = 29,
                         Weight = 1900,
                         PersonalityTraits = "Strong, dominant",
@@ -863,7 +863,7 @@ namespace Koi.Repositories
                         Price = 710000,
                         IsConsigned = false,
                         IsSold = false,
-                        Consigner = null,
+
                         KoiBreeds = new List<KoiBreed>
                         {
                             koiBreeds.FirstOrDefault(b => b.Name == "Kohaku"),
@@ -875,7 +875,7 @@ namespace Koi.Repositories
                         Name = "Luna",
                         Origin = "Japan",
                         Gender = false,
-                        Age = 3,
+                        Dob = new DateTime(2024,01,01),
                         Length = 22,
                         Weight = 1200,
                         PersonalityTraits = "Curious, playful",
@@ -885,7 +885,7 @@ namespace Koi.Repositories
                         Price = 560000,
                         IsConsigned = true,
                         IsSold = false,
-                        Consigner = null,
+
                         KoiBreeds = new List<KoiBreed>
                         {
                             koiBreeds.FirstOrDefault(b => b.Name == "Asagi")
@@ -896,7 +896,7 @@ namespace Koi.Repositories
                         Name = "Harumi",
                         Origin = "China",
                         Gender = true,
-                        Age = 2,
+                        Dob = new DateTime(2024,01,01),
                         Length = 21,
                         Weight = 1100,
                         PersonalityTraits = "Energetic, active",
@@ -906,7 +906,7 @@ namespace Koi.Repositories
                         Price = 550000,
                         IsConsigned = false,
                         IsSold = false,
-                        Consigner = null,
+
                         KoiBreeds = new List<KoiBreed>
                         {
                             koiBreeds.FirstOrDefault(b => b.Name == "Showa")
@@ -917,7 +917,7 @@ namespace Koi.Repositories
                         Name = "Rin",
                         Origin = "Japan",
                         Gender = false,
-                        Age = 5,
+                        Dob = new DateTime(2024,01,01),
                         Length = 28,
                         Weight = 1600,
                         PersonalityTraits = "Calm, gentle",
@@ -927,7 +927,7 @@ namespace Koi.Repositories
                         Price = 670000,
                         IsConsigned = true,
                         IsSold = false,
-                        Consigner = null,
+
                         KoiBreeds = new List<KoiBreed>
                         {
                             koiBreeds.FirstOrDefault(b => b.Name == "Yamabuki")
@@ -938,7 +938,7 @@ namespace Koi.Repositories
                         Name = "Ryo",
                         Origin = "China",
                         Gender = true,
-                        Age = 6,
+                        Dob = new DateTime(2024,01,01),
                         Length = 32,
                         Weight = 2100,
                         PersonalityTraits = "Strong, dominant",
@@ -948,7 +948,7 @@ namespace Koi.Repositories
                         Price = 740000,
                         IsConsigned = false,
                         IsSold = false,
-                        Consigner = null,
+
                         KoiBreeds = new List<KoiBreed>
                         {
                             koiBreeds.FirstOrDefault(b => b.Name == "Goshiki"),

@@ -26,7 +26,7 @@ namespace Koi.BusinessObjects
         // Navigation property
         public virtual ICollection<Order> Orders { get; set; }
 
-        public virtual ICollection<KoiFish> KoiFishsConsigned { get; set; }
+        public virtual ICollection<KoiFish> OwnerKoiFishes { get; set; }
         public virtual ICollection<Blog> Blogs { get; set; }
         public virtual Wallet Wallet { get; set; }
 

@@ -117,6 +117,7 @@ namespace Koi.Services.Services
                 }
                 fish.Length = fishModel.Length;
                 fish.Weight = fishModel.Weight;
+
                 fish.Dob = fishModel.Dob;
                 fish.Origin = fishModel.Origin;
                 fish.DailyFeedAmount = fishModel.DailyFeedAmount;
