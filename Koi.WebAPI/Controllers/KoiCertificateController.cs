@@ -4,12 +4,14 @@ using Koi.Repositories.Commons;
 using Koi.Repositories.Helper;
 using Koi.Services.Interface;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.OData.Query;
+using Microsoft.AspNetCore.OData.Routing.Controllers;
 
 namespace Koi.WebAPI.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/v1/odata/koi-certificates")]
     [ApiController]
-    public class KoiCertificateController : ControllerBase
+    public class KoiCertificateController : ODataController
     {
         private readonly IKoiCertificateService _koiCertificateService;
         private readonly IMapper _mapper;
@@ -21,11 +23,28 @@ namespace Koi.WebAPI.Controllers
         [HttpGet]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> Get([FromQuery] KoiCertificateParams certificateParams)
+        [EnableQuery]
+        public IActionResult Get()
         {
             try
             {
-                var certificates = await _koiCertificateService.GetKoiCertificates(certificateParams);
+                var certificates = _koiCertificateService.GetKoiCertificates();
+                return Ok(certificates);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+            }
+        }
+
+        [HttpGet("getList/{koiId}")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> GetList(int koiId)
+        {
+            try
+            {
+                var certificates = await _koiCertificateService.GetListCertificateByKoiId(koiId);
 
 
                 var koiCertificateReponseDTOs = _mapper.Map<List<KoiCertificateResponseDTO>>(certificates);
@@ -37,14 +56,14 @@ namespace Koi.WebAPI.Controllers
                 return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
             }
         }
-        [HttpGet("getList/{koiId}")]
+        [HttpGet("old")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> GetList(int koiId)
+        public async Task<IActionResult> Get([FromQuery] KoiCertificateParams certificateParams)
         {
             try
             {
-                var certificates = await _koiCertificateService.GetListCertificateByKoiId(koiId);
+                var certificates = await _koiCertificateService.GetKoiCertificates(certificateParams);
 
 
                 var koiCertificateReponseDTOs = _mapper.Map<List<KoiCertificateResponseDTO>>(certificates);

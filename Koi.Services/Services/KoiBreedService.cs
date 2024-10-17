@@ -35,38 +35,19 @@ namespace Koi.Services.Services
         public async Task<List<KoiBreedResponseDTO>> GetKoiBreeds(KoiBreedParams koiBreedParams)
         {
             List<KoiBreedResponseDTO> result;
-
-            //// Bước 1: Kiểm tra cache
-            //var cachedCategories = await _redisService.GetStringAsync(CacheKeys.EventCategories);
-            //if (!string.IsNullOrEmpty(cachedCategories))
-            //{
-            //    // Nếu cache tồn tại, giải mã và sử dụng dữ liệu từ cache
-            //    result = Newtonsoft.Json.JsonConvert.DeserializeObject<List<EventCategoryResponseDTO>>(cachedCategories);
-            //}
-            //else
-            //{
-            // Nếu cache không tồn tại, truy vấn từ cơ sở dữ liệu
             var eventCategories = await _unitOfWork.KoiBreedRepository.GetAllAsync();
-
             result = _mapper.Map<List<KoiBreedResponseDTO>>(eventCategories);
-
-            //    // Lưu kết quả vào cache
-            //    var serializedResult = Newtonsoft.Json.JsonConvert.SerializeObject(result);
-            //    await _redisService.SetStringAsync(CacheKeys.EventCategories, serializedResult, TimeSpan.FromMinutes(30)); // Cache for 30 minutes
-            //}
-
-            // Bước 2: Áp dụng tìm kiếm và sắp xếp trên kết quả
             if (!string.IsNullOrEmpty(koiBreedParams.SearchTerm))
             {
                 result = result
                     .Where(x => x.Name.ToLower().Contains(koiBreedParams.SearchTerm.ToLower()))
                     .ToList();
             }
-
             result = result.ToList();
 
             return result;
         }
+        public IQueryable<KoiBreed> GetKoiBreeds() => _unitOfWork.KoiBreedRepository.GetQueryable();
 
         public async Task<KoiBreedResponseDTO> GetKoiBreedById(int id)
         {
@@ -97,7 +78,6 @@ namespace Koi.Services.Services
 
         public async Task<KoiBreedResponseDTO> CreateKoiBreed(KoiBreedCreateDTO koiBreedModel)
         {
-            // check if event category already exists
             var existingKoiBreed = await _unitOfWork.KoiBreedRepository
                 .GetAllAsync();
 
@@ -108,7 +88,6 @@ namespace Koi.Services.Services
                 throw new Exception("400 - Create failed. Breed has already existed!");
             }
 
-            // create new event category
             var koiBreed = new KoiBreed
             {
                 Name = koiBreedModel.Name,
@@ -117,10 +96,6 @@ namespace Koi.Services.Services
             };
             var newCategory = await _unitOfWork.KoiBreedRepository.AddAsync(koiBreed);
 
-            //// Clear cache as new category is added
-            //await _redisService.DeleteKeyAsync(CacheKeys.EventCategories);
-
-            // mapper
             if (await _unitOfWork.SaveChangeAsync() <= 0) throw new Exception("500 - Adding process failed");
             return _mapper.Map<KoiBreedResponseDTO>(newCategory);
         }

@@ -3,23 +3,44 @@ using Koi.DTOs.KoiDiaryDTOs;
 using Koi.Repositories.Commons;
 using Koi.Services.Interface;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.OData.Query;
+using Microsoft.AspNetCore.OData.Routing.Controllers;
 
 namespace Koi.WebAPI.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/v1/odata/koi-diaries")]
     [ApiController]
-    public class KoiFishDiaryController : ControllerBase
+    public class KoiFishDiaryController : ODataController
     {
         private readonly IKoiDiaryService _koiDiaryService;
         private readonly IMapper _mapper;
 
         public KoiFishDiaryController(
-            IKoiDiaryService _koiDiaryService,
+            IKoiDiaryService koiDiaryService,
             IMapper mapper
         )
         {
-            _koiDiaryService = _koiDiaryService;
+            _koiDiaryService = koiDiaryService;
             _mapper = mapper;
+        }
+
+
+        [HttpGet]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        [EnableQuery]
+        public IActionResult Get()
+        {
+            try
+            {
+                var diaries = _koiDiaryService.GetDiaryList();
+                return Ok(diaries);
+
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, ApiResult<object>.Fail(ex));
+            }
         }
         [HttpPost]
         [ProducesResponseType(StatusCodes.Status201Created)]

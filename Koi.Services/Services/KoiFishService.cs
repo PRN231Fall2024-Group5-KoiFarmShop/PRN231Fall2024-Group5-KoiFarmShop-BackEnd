@@ -12,24 +12,18 @@ namespace Koi.Services.Services
         private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
 
-        //private readonly INotificationService _notificationService;
         private readonly IClaimsService _claimsService;
 
-        //private readonly IRedisService _redisService;
 
         public KoiFishService(
             IUnitOfWork unitOfWork,
             IMapper mapper,
-            //INotificationService notificationService,
             IClaimsService claimsService
-        //IRedisService redisService
         )
         {
             _unitOfWork = unitOfWork;
             _mapper = mapper;
-            //_notificationService = notificationService;
             _claimsService = claimsService;
-            //_redisService = redisService;
         }
 
         public async Task<PagedList<KoiFish>> GetKoiFishes(KoiParams koiParams)
@@ -40,26 +34,20 @@ namespace Koi.Services.Services
 
             return fishes;
         }
+
         public IQueryable<KoiFish> GetKoiFishes()
         {
             return _unitOfWork.KoiFishRepository.FilterAllField();
         }
+
         public async Task<KoiFishResponseDTO> GetKoiFishById(int id)
         {
-            //// Try to get from cache
-            //var cachedOrder = await _redisService.GetStringAsync(CacheKeys.Event(id));
-            //if (!string.IsNullOrEmpty(cachedOrder))
-            //{
-            //    return Newtonsoft.Json.JsonConvert.DeserializeObject<EventResponseDTO>(cachedOrder);
-            //}
-
-            // If not in cache, query the database
             var fish = await _unitOfWork.KoiFishRepository.GetByIdAsync(id,
                 x => x.KoiBreeds.Where(x => x.IsDeleted == false),
                 x => x.KoiFishImages.Where(x => x.IsDeleted == false),
-                x => x.Consigner,
                 x => x.KoiDiaries.Where(x => x.IsDeleted == false),
-                x => x.KoiCertificates.Where(x => x.IsDeleted == false));
+                x => x.KoiCertificates.Where(x => x.IsDeleted == false),
+                x => x.Owner);
 
             if (fish == null)
             {
@@ -68,25 +56,13 @@ namespace Koi.Services.Services
 
             var result = _mapper.Map<KoiFishResponseDTO>(fish);
 
-            //// Cache the result
-            //var serializedResult = Newtonsoft.Json.JsonConvert.SerializeObject(result);
-            //await _redisService.SetStringAsync(CacheKeys.Event(id), serializedResult, TimeSpan.FromMinutes(30));
-            // Cache for 30 minutes
+
             return result;
         }
 
         public async Task<KoiFishResponseDTO> CreateKoiFish(KoiFishCreateDTO fishModel)
         {
-            ////check user
-            //Guid userId = _claimsService.GetCurrentUserId;
-            //var isExistUser = await _unitOfWork.UserRepository.GetUserByIdAsync(userId);
-            //if (isExistUser == null)
-            //{
-            //    throw new Exception("User does not exist!");
-            //}
-            //eventEntity.UserId = isExistUser.Id;
-            //eventEntity.User = isExistUser;
-            //check koiBreed
+            var user = await _unitOfWork.UserRepository.GetAccountDetailsAsync(_claimsService.GetCurrentUserId);
             KoiFish fish = _mapper.Map<KoiFish>(fishModel);
             fish.KoiBreeds = [];
             foreach (var breedId in fishModel.KoiBreedIds)
@@ -106,6 +82,13 @@ namespace Koi.Services.Services
                     ImageUrl = item
                 });
             }
+            if (user.RoleName == "CUSTOMER")
+            {
+                fish.IsAvailableForSale = false;
+                fish.IsSold = false;
+                fish.IsDeleted = false;
+                fish.Price = 0;
+            }
             fish.IsAvailableForSale = fishModel.IsAvailableForSale;
             fish.IsSold = fishModel.IsSold;
             fish.IsDeleted = false;
@@ -118,19 +101,11 @@ namespace Koi.Services.Services
 
         public async Task<KoiFishResponseDTO> UpdateKoiFish(int id, KoiFishUpdateDTO fishModel)
         {
-            ////check user
-            //Guid userId = _claimsService.GetCurrentUserId;
-            //var isExistUser = await _unitOfWork.UserRepository.GetUserByIdAsync(userId);
-            //if (isExistUser == null)
-            //{
-            //    throw new Exception("User does not exist!");
-            //}
-            //eventEntity.UserId = isExistUser.Id;
-            //eventEntity.User = isExistUser;
-            //check koiBreed
+
             try
             {
                 KoiFish fish = await _unitOfWork.KoiFishRepository.GetByIdAsync(id, x => x.KoiBreeds);
+                var user = await _unitOfWork.UserRepository.GetAccountDetailsAsync(_claimsService.GetCurrentUserId);
                 foreach (var breedId in fishModel.KoiBreedIds)
                 {
                     var breed = await _unitOfWork.KoiBreedRepository.GetByIdAsync(breedId);
@@ -142,17 +117,20 @@ namespace Koi.Services.Services
                 }
                 fish.Length = fishModel.Length;
                 fish.Weight = fishModel.Weight;
-                //fish.KoiCertificates = fishModel.Certificate
-                fish.Age = fishModel.Age;
+                fish.Dob = fishModel.Dob;
                 fish.Origin = fishModel.Origin;
                 fish.DailyFeedAmount = fishModel.DailyFeedAmount;
                 fish.Gender = fishModel.Gender;
                 fish.LastHealthCheck = fishModel.LastHealthCheck;
                 fish.PersonalityTraits = fishModel.PersonalityTraits;
                 fish.Name = fishModel.Name;
-                fish.IsAvailableForSale = fishModel.IsAvailableForSale;
-                fish.IsSold = fishModel.IsSold;
-                fish.IsDeleted = fishModel.IsDeleted;
+                if (user.RoleName == "MANAGER")
+                {
+                    fish.IsAvailableForSale = fishModel.IsAvailableForSale;
+                    fish.IsSold = fishModel.IsSold;
+                    fish.IsDeleted = fishModel.IsDeleted;
+
+                }
                 if (fish.KoiFishImages == null) fish.KoiFishImages = [];
                 foreach (var item in fish.KoiFishImages)
                 {
@@ -202,16 +180,16 @@ namespace Koi.Services.Services
                 throw new Exception("500 - Failed to delete fish");
             }
         }
+
         public async Task<bool> UpdateConsign(int id, int consignedBy)
         {
-            var item = await _unitOfWork.KoiFishRepository.GetByIdAsync(id, x => x.Consigner);
+            var item = await _unitOfWork.KoiFishRepository.GetByIdAsync(id);
             var consigner = await _unitOfWork.UserRepository.GetAccountDetailsAsync(consignedBy);
             if (consigner == null) throw new Exception("404 - Invalid Account!");
             if (item == null) throw new Exception("404 - Invalid Fish!");
-            if (item.IsConsigned == false && item.Consigner == null)
+            if (item.IsConsigned == false)
             {
                 item.IsConsigned = true;
-                item.Consigner = consigner;
 
                 if (await _unitOfWork.SaveChangeAsync() <= 0) throw new Exception("500 - Fail Saving!");
                 return true;
@@ -221,14 +199,14 @@ namespace Koi.Services.Services
                 throw new Exception("400 - Fish already been Consigned!");
             }
         }
+
         public async Task<bool> EndConsigned(int id)
         {
-            var item = await _unitOfWork.KoiFishRepository.GetByIdAsync(id, x => x.Consigner);
+            var item = await _unitOfWork.KoiFishRepository.GetByIdAsync(id);
             if (item == null) throw new Exception("404 - Invalid Fish");
-            if (item.IsConsigned == true && item.Consigner != null)
+            if (item.IsConsigned == true)
             {
                 item.IsConsigned = false;
-                item.Consigner = null;
                 if (await _unitOfWork.SaveChangeAsync() <= 0) throw new Exception("500 - Fail Saving!");
                 return true;
             }

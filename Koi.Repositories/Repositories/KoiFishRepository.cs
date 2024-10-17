@@ -24,20 +24,16 @@ namespace Koi.Repositories.Repositories
             var query = _dbContext.KoiFishs
             .Include(x => x.KoiBreeds.Where(y => y.IsDeleted == false))
             .Include(x => x.KoiFishImages.Where(y => y.IsDeleted == false))
+            .Include(x => x.Owner)
             .Include(x => x.KoiDiaries.Where(y => y.IsDeleted == false))
-            .Include(x => x.Consigner)
             .Include(x => x.KoiCertificates.Where(y => y.IsDeleted == false))
             .Where(x => x.IsDeleted == false);
             return query;
         }
+
         public IQueryable<KoiFish> FilterAllField()
         {
-            var query = _dbContext.KoiFishs
-            .Include(x => x.KoiBreeds.Where(y => y.IsDeleted == false))
-            .Include(x => x.KoiFishImages.Where(y => y.IsDeleted == false))
-            .Include(x => x.KoiDiaries.Where(y => y.IsDeleted == false))
-            .Include(x => x.Consigner)
-            .Where(x => x.IsDeleted == false);
+            var query = _dbContext.KoiFishs;
             return query;
         }
     }
