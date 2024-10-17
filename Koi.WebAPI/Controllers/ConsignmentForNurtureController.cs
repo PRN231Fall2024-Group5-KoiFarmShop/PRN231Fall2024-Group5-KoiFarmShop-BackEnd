@@ -7,7 +7,7 @@ using Koi.Repositories.Interfaces;
 
 namespace Koi.WebAPI.Controllers
 {
-    [Route("api/v1/consignments")]
+    [Route("api/v1/")]
     [ApiController]
     public class ConsignmentForNurtureController : ControllerBase
     {
@@ -28,7 +28,7 @@ namespace Koi.WebAPI.Controllers
         /// <response code="200">Returns the newly created consignment.</response>
         /// <response code="400">If input validation fails or the consignment creation fails.</response>
         /// <response code="401">If the user is not authenticated.</response>
-        [HttpPost]
+        [HttpPost("nurture-consignments")]
         public async Task<IActionResult> CreateConsignment([FromBody] ConsignmentRequestDTO consignmentRequestDTO)
         {
             try
@@ -45,16 +45,16 @@ namespace Koi.WebAPI.Controllers
         /// <summary>
         /// Get a consignment by its ID.
         /// </summary>
-        /// <param name="consignmentId">The ID of the consignment.</param>
+        /// <param name="id">The ID of the consignment.</param>
         /// <returns>The consignment if found.</returns>
         /// <response code="200">Returns the consignment if found.</response>
         /// <response code="404">If the consignment is not found.</response>
-        [HttpGet("{consignmentId}")]
-        public async Task<IActionResult> GetConsignmentById(int consignmentId)
+        [HttpGet("nurture-consignments/{id}")]
+        public async Task<IActionResult> GetConsignmentById(int id)
         {
             try
             {
-                var result = await _consignmentService.GetConsignmentByIdAsync(consignmentId);
+                var result = await _consignmentService.GetConsignmentByIdAsync(id);
                 return Ok(ApiResult<ConsignmentForNurtureDTO>.Succeed(result, "Consignment retrieved successfully."));
             }
             catch (Exception ex)
@@ -68,7 +68,7 @@ namespace Koi.WebAPI.Controllers
         /// </summary>
         /// <returns>A list of consignments.</returns>
         /// <response code="200">Returns a list of consignments.</response>
-        [HttpGet]
+        [HttpGet("nurture-consignments")]
         public async Task<IActionResult> GetAllConsignments()
         {
             try
@@ -85,18 +85,40 @@ namespace Koi.WebAPI.Controllers
         /// <summary>
         /// Update the status of a consignment.
         /// </summary>
-        /// <param name="consignmentId">The ID of the consignment to update.</param>
+        /// <param name="id">The ID of the consignment to update.</param>
         /// <param name="newStatus">The new status to set for the consignment.</param>
         /// <returns>Success message if the update was successful.</returns>
         /// <response code="200">If the status update was successful.</response>
         /// <response code="404">If the consignment was not found.</response>
-        [HttpPut("{consignmentId}/status")]
-        public async Task<IActionResult> UpdateConsignmentStatus(int consignmentId, [FromQuery] string newStatus)
+        [HttpPut("nurture-consignments/{id}/status")]
+        public async Task<IActionResult> UpdateConsignmentStatus(int id, [FromQuery] string newStatus)
         {
             try
             {
-                await _consignmentService.UpdateConsignmentStatusAsync(consignmentId, newStatus);
+                await _consignmentService.UpdateConsignmentStatusAsync(id, newStatus);
                 return Ok(ApiResult<object>.Succeed(null, "Consignment status updated successfully."));
+            }
+            catch (Exception ex)
+            {
+                return HandleError(ex);
+            }
+        }
+
+        /// <summary>
+        /// Update an existing consignment by ID and return the updated consignment.
+        /// </summary>
+        /// <param name="id">The ID of the consignment to update.</param>
+        /// <param name="consignmentUpdateDTO">Fields to update (only the fields provided will be updated).</param>
+        /// <returns>The updated consignment object if the update was successful.</returns>
+        /// <response code="200">If the consignment update was successful and returns the updated object.</response>
+        /// <response code="404">If the consignment was not found.</response>
+        [HttpPut("nurture-consignments/{id}")]
+        public async Task<IActionResult> UpdateConsignment(int id, [FromBody] ConsignmentUpdateDTO consignmentUpdateDTO)
+        {
+            try
+            {
+                var updatedConsignment = await _consignmentService.UpdateConsignmentAsync(id, consignmentUpdateDTO);
+                return Ok(ApiResult<ConsignmentForNurtureDTO>.Succeed(updatedConsignment, "Consignment updated successfully."));
             }
             catch (Exception ex)
             {
