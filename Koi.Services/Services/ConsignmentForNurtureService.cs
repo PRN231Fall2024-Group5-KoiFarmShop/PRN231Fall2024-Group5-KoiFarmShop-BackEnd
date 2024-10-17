@@ -118,5 +118,73 @@ namespace Koi.Services.Services
                 throw new Exception(ex.Message);
             }
         }
+
+        public async Task<ConsignmentForNurtureDTO> UpdateConsignmentAsync(int consignmentId, ConsignmentUpdateDTO consignmentUpdateDTO)
+        {
+            try
+            {
+                // Retrieve the existing consignment
+                var existingConsignment = await _unitOfWork.ConsignmentForNurtureRepository.GetByIdAsync(consignmentId);
+                if (existingConsignment == null)
+                {
+                    throw new Exception($"404 - Consignment with id {consignmentId} not found");
+                }
+
+                // Update fields if they are provided
+                if (consignmentUpdateDTO.DietId.HasValue)
+                {
+                    var diet = await _unitOfWork.DietRepository.GetByIdAsync(consignmentUpdateDTO.DietId.Value);
+                    if (diet == null)
+                    {
+                        throw new Exception($"400 - Invalid Diet Id: {consignmentUpdateDTO.DietId.Value}");
+                    }
+                    existingConsignment.DietId = consignmentUpdateDTO.DietId;
+                    existingConsignment.DietCost = diet.DietCost; // Update diet cost based on the new diet
+                }
+
+                if (consignmentUpdateDTO.StaffId.HasValue)
+                {
+                    existingConsignment.StaffId = consignmentUpdateDTO.StaffId;
+                }
+
+                existingConsignment.StartDate = consignmentUpdateDTO.StartDate != DateTime.MinValue
+                    ? consignmentUpdateDTO.StartDate
+                    : existingConsignment.StartDate;
+
+                existingConsignment.EndDate = consignmentUpdateDTO.EndDate != DateTime.MinValue
+                    ? consignmentUpdateDTO.EndDate
+                    : existingConsignment.EndDate;
+
+                // Recalculate projected cost if dates are changed
+                if (consignmentUpdateDTO.StartDate != DateTime.MinValue || consignmentUpdateDTO.EndDate != DateTime.MinValue)
+                {
+                    var totalDays = ResourceHelper.DateTimeValidate(existingConsignment.StartDate, existingConsignment.EndDate);
+                    existingConsignment.TotalDays = totalDays;
+                    existingConsignment.ProjectedCost = totalDays * existingConsignment.DietCost;
+                }
+
+                existingConsignment.LaborCost = consignmentUpdateDTO.LaborCost ?? existingConsignment.LaborCost;
+                existingConsignment.ActualCost = consignmentUpdateDTO.ActualCost ?? existingConsignment.ActualCost;
+                existingConsignment.ConsignmentStatus = consignmentUpdateDTO.ConsignmentStatus.ToString();
+                existingConsignment.Note = consignmentUpdateDTO.Note ?? existingConsignment.Note;
+                existingConsignment.InspectionRequired = consignmentUpdateDTO.InspectionRequired ?? existingConsignment.InspectionRequired;
+                existingConsignment.InspectionDate = consignmentUpdateDTO.InspectionDate ?? existingConsignment.InspectionDate;
+                existingConsignment.ModifiedAt = _currentTime.GetCurrentTime();
+
+                // Update the consignment
+                await _unitOfWork.ConsignmentForNurtureRepository.Update(existingConsignment);
+                if (await _unitOfWork.SaveChangeAsync() <= 0)
+                {
+                    throw new Exception("400 - Saving process failed");
+                }
+
+                // Return the updated consignment as DTO
+                return _mapper.Map<ConsignmentForNurtureDTO>(existingConsignment);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        }
     }
 }

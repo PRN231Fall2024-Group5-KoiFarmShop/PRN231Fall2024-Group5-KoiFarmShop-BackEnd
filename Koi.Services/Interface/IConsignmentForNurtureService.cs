@@ -12,6 +12,7 @@ namespace Koi.Services.Interface
         Task<ConsignmentForNurtureDTO> CreateConsignmentAsync(ConsignmentRequestDTO consignmentRequestDTO);
         Task<List<ConsignmentForNurtureDTO>> GetAllConsignmentsAsync();
         Task<ConsignmentForNurtureDTO> GetConsignmentByIdAsync(int consignmentId);
+        Task<ConsignmentForNurtureDTO> UpdateConsignmentAsync(int consignmentId, ConsignmentUpdateDTO consignmentUpdateDTO);
         Task UpdateConsignmentStatusAsync(int consignmentId, string newStatus);
     }
 }
