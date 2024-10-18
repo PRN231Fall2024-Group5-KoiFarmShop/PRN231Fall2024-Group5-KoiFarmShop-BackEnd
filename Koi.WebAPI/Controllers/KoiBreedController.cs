@@ -4,16 +4,14 @@ using Koi.Repositories.Commons;
 using Koi.Repositories.Helper;
 using Koi.Services.Interface;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.OData.Query;
-using Microsoft.AspNetCore.OData.Routing.Controllers;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
 namespace Koi.WebAPI.Controllers
 {
-    [Route("api/v1/odata/koi-breeds")]
+    [Route("api/v1/koi-breeds")]
     [ApiController]
-    public class KoiBreedController : ODataController
+    public class KoiBreedController : ControllerBase
     {
         private readonly IKoiBreedService _koiBreedService;
         private readonly IMapper _mapper;
@@ -27,40 +25,8 @@ namespace Koi.WebAPI.Controllers
             _mapper = mapper;
         }
 
-        // GET: api/<KoiBreedController>
-        /// <summary>
-        /// Get list koi breeds
-        /// </summary>
-        /// <returns>A list of Koi Breeds</returns>
-        /// <remarks>
-        /// Sample request:
-        ///
-        ///     GET /KoiBreeds
-        ///
-        /// </remarks>
-        [HttpGet]
-        [ProducesResponseType(StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        [EnableQuery]
-        public IActionResult Get()
-        {
-            try
-            {
-                var breeds = _koiBreedService.GetKoiBreeds();
-                return Ok(breeds);
-            }
-            catch (Exception ex)
-            {
-                if (ex.Message.Contains("400"))
-                    return BadRequest(ApiResult<object>.Fail(ex));
-                if (ex.Message.Contains("404"))
-                    return NotFound(ApiResult<object>.Fail(ex));
-                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
-            }
-        }
 
-        [HttpGet("old")]
+        [HttpGet()]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
