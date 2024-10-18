@@ -4,14 +4,12 @@ using Koi.Repositories.Commons;
 using Koi.Repositories.Helper;
 using Koi.Services.Interface;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.OData.Query;
-using Microsoft.AspNetCore.OData.Routing.Controllers;
 
 namespace Koi.WebAPI.Controllers
 {
-    [Route("api/v1/odata/koi-certificates")]
+    [Route("api/v1/koi-certificates")]
     [ApiController]
-    public class KoiCertificateController : ODataController
+    public class KoiCertificateController : ControllerBase
     {
         private readonly IKoiCertificateService _koiCertificateService;
         private readonly IMapper _mapper;
@@ -20,22 +18,7 @@ namespace Koi.WebAPI.Controllers
             _koiCertificateService = koiCertificateService;
             _mapper = mapper;
         }
-        [HttpGet]
-        [ProducesResponseType(StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        [EnableQuery]
-        public IActionResult Get()
-        {
-            try
-            {
-                var certificates = _koiCertificateService.GetKoiCertificates();
-                return Ok(certificates);
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
-            }
-        }
+
 
         [HttpGet("getList/{koiId}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
@@ -56,7 +39,7 @@ namespace Koi.WebAPI.Controllers
                 return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
             }
         }
-        [HttpGet("old")]
+        [HttpGet()]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> Get([FromQuery] KoiCertificateParams certificateParams)

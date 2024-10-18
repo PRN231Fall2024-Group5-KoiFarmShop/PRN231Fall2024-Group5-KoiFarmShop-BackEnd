@@ -10,7 +10,6 @@ using Microsoft.IdentityModel.Tokens;
 using Microsoft.OData.Edm;
 using Microsoft.OData.ModelBuilder;
 using Microsoft.OpenApi.Models;
-using Newtonsoft.Json.Converters;
 using System.Reflection;
 using System.Text;
 using System.Text.Json;
