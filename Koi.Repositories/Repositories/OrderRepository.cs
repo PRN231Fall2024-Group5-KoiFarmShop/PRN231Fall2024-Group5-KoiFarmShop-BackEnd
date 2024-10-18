@@ -81,13 +81,15 @@ namespace Koi.Repositories.Repositories
                         Price = fish.Price,
                         Status = OrderStatusEnums.PENDING.ToString(),
                     };
-                    if (fish.IsConsigned.Value)
+                    if (fish.IsConsigned.Value && fish.ConsignmentForNurtures.Any())
                     {
-                        orderDetail.ConsignmentForNurtureId = fish.ConsignmentForNurtures.OrderByDescending(x => x.CreatedAt).First().Id;
+                        var existingConsignment = fish.ConsignmentForNurtures.ToList();
+                        orderDetail.ConsignmentForNurtureId = existingConsignment.First().Id;
                     }
                     order.OrderDetails = [];
                     order.OrderDetails.Add(orderDetail);
                     orderDetails.Add(orderDetail);
+                    fish.OwnerId = _claimsService.GetCurrentUserId;
                 }
 
                 _dbContext.Entry(order).State = EntityState.Modified;
