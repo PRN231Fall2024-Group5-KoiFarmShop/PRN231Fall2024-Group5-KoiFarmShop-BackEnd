@@ -104,6 +104,27 @@ namespace Koi.Services.Services
         public async Task<WalletDTO> GetWalletByUserId(int userId)
         {
             var wallet = await _unitOfWork.WalletRepository.GetWalletByUserId(userId);
+            if (wallet == null)
+            {
+                var existingUser = await _unitOfWork.UserRepository.GetAccountDetailsAsync(userId);
+                if (existingUser == null)
+                {
+                    throw new Exception("404 - This user is not existed");
+                }
+                var newWallet = new Wallet
+                {
+                    UserId = existingUser.Id,
+                    Balance = 0,
+                    LoyaltyPoints = 0,
+                    Status = WalletStatusEnums.ACTIVE.ToString()
+                };
+
+                wallet = await _unitOfWork.WalletRepository.CreateAsync(newWallet);
+                if (await _unitOfWork.SaveChangeAsync() <= 0)
+                {
+                    throw new Exception("400 - Adding proccess has been failed");
+                }
+            }
             var result = _mapper.Map<WalletDTO>(wallet);
             return result;
         }

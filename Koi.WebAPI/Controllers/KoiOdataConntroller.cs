@@ -12,7 +12,6 @@ namespace Koi.WebAPI.Controllers
     public class KoiOdataConntroller : ODataController
     {
         private readonly IDietService _dietService;
-        private readonly IMapper _mapper;
         private readonly IKoiBreedService _koiBreedService;
         private readonly IKoiCertificateService _koiCertificateService;
         private readonly IKoiFishService _koiFishService;
@@ -28,7 +27,6 @@ namespace Koi.WebAPI.Controllers
         )
         {
             _dietService = dietService;
-            _mapper = mapper;
             _koiBreedService = koiBreedService;
             _koiCertificateService = koiCertificateService;
             _koiDiaryService = koiDiaryService;
