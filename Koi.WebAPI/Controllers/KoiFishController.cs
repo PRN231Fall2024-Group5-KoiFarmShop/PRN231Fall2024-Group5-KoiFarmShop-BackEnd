@@ -110,6 +110,8 @@ namespace Koi.WebAPI.Controllers
                     return BadRequest(ApiResult<object>.Fail(ex));
                 if (ex.Message.Contains("404"))
                     return NotFound(ApiResult<object>.Fail(ex));
+                if (ex.Message.Contains("403"))
+                    return Forbid();
                 return StatusCode(StatusCodes.Status500InternalServerError, ApiResult<object>.Fail(ex));
             }
         }
@@ -133,6 +135,8 @@ namespace Koi.WebAPI.Controllers
                     return BadRequest(ApiResult<object>.Fail(ex));
                 if (ex.Message.Contains("404"))
                     return NotFound(ApiResult<object>.Fail(ex));
+                if (ex.Message.Contains("403"))
+                    return Forbid();
                 return StatusCode(StatusCodes.Status500InternalServerError, ApiResult<object>.Fail(ex));
             }
         }
