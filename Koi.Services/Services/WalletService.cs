@@ -250,12 +250,12 @@ namespace Koi.Services.Services
                 long? totalAmount = 0;
                 foreach (var purchaseFish in purchaseDTO.PurchaseFishes)
                 {
-                    var koiFish = await _unitOfWork.KoiFishRepository.GetByIdAsync(purchaseFish.FishId);
+                    var koiFish = await _unitOfWork.KoiFishRepository.GetByIdAsync(purchaseFish.FishId, x=>x.ConsignmentForNurtures);
                     if (koiFish != null)
                     {
                         fishes.Add(koiFish);
                         totalAmount += koiFish.Price;
-                        if (purchaseFish.IsNuture || (purchaseFish.StartDate.HasValue && purchaseFish.EndDate.HasValue))
+                        if (purchaseFish.IsNuture && (purchaseFish.StartDate.HasValue && purchaseFish.EndDate.HasValue))
                         {
                             var existingDiet = await _unitOfWork.DietRepository.GetByIdAsync(purchaseFish.DietId);
                             if (existingDiet == null)
@@ -317,8 +317,9 @@ namespace Koi.Services.Services
                 {
                     throw new Exception("400 - Adding order proccess has been failed");
                 }
-
+                // create order details and update owner id
                 var orderDetails = await _unitOfWork.OrderRepository.CreateOrderWithOrderDetails(newOrder, fishes);
+
                 //if (await _unitOfWork.SaveChangeAsync() <= 0)
                 //{
                 //    throw new Exception("400 - Adding order details proccess has been failed");

@@ -282,7 +282,24 @@ namespace Koi.Repositories
 
             #region Seed KoiFish
 
-            if (!context.KoiFishs.Any())
+            var koifishes = await context.KoiFishs.Include(x => x.ConsignmentForNurtures).ToListAsync();
+            var errorFishes = koifishes.Where(x => x.IsConsigned == true).ToList();
+            if (errorFishes.Any())
+            {
+                var flag = false;
+                foreach (var fish in errorFishes)
+                {
+                    //var check = context.ConsignmentForNurtures.Where(x => x.KoiFishId == fish.Id).ToListAsync();
+                    if (!fish.ConsignmentForNurtures.Any())
+                    {
+                        fish.IsConsigned = false;
+                        flag = true;
+                    }
+
+                    if (flag) await context.SaveChangesAsync();
+                }
+            }
+            if (koifishes.Count == 0)
             {
                 // Ensure KoiBreeds are loaded
                 var koiBreeds = context.KoiBreeds.ToList();
