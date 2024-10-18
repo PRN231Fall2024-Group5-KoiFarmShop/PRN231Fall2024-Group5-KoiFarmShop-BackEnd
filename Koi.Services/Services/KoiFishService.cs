@@ -29,7 +29,6 @@ namespace Koi.Services.Services
         public async Task<PagedList<KoiFish>> GetKoiFishes(KoiParams koiParams)
         {
             var query = _unitOfWork.KoiFishRepository.FilterAllField(koiParams).AsQueryable();
-
             var fishes = await PagedList<KoiFish>.ToPagedList(query, koiParams.PageNumber, koiParams.PageSize);
 
             return fishes;
@@ -62,7 +61,7 @@ namespace Koi.Services.Services
 
         public async Task<KoiFishResponseDTO> CreateKoiFish(KoiFishCreateDTO fishModel)
         {
-            var user = await _unitOfWork.UserRepository.GetAccountDetailsAsync(_claimsService.GetCurrentUserId);
+            var user = await _unitOfWork.UserRepository.GetCurrentUserAsync();
             KoiFish fish = _mapper.Map<KoiFish>(fishModel);
             fish.KoiBreeds = [];
             foreach (var breedId in fishModel.KoiBreedIds)
@@ -104,8 +103,9 @@ namespace Koi.Services.Services
 
             try
             {
+                var user = await _unitOfWork.UserRepository.GetCurrentUserAsync();
                 KoiFish fish = await _unitOfWork.KoiFishRepository.GetByIdAsync(id, x => x.KoiBreeds);
-                var user = await _unitOfWork.UserRepository.GetAccountDetailsAsync(_claimsService.GetCurrentUserId);
+                if (user.RoleName == "CUSTOMER" && fish.OwnerId != null && user.Id != fish.OwnerId) throw new Exception("403 - Forbiden");
                 foreach (var breedId in fishModel.KoiBreedIds)
                 {
                     var breed = await _unitOfWork.KoiBreedRepository.GetByIdAsync(breedId);
@@ -163,7 +163,8 @@ namespace Koi.Services.Services
         public async Task<KoiFishResponseDTO> DeleteKoiFish(int id)
         {
             var fish = await _unitOfWork.KoiFishRepository.GetByIdAsync(id);
-
+            var user = await _unitOfWork.UserRepository.GetCurrentUserAsync();
+            if (user.RoleName == "CUSTOMER" && fish.OwnerId != null && user.Id != fish.OwnerId) throw new Exception("403 - Forbiden");
             if (fish == null)
             {
                 throw new Exception("404 - Fish not found!");
