@@ -67,6 +67,23 @@ namespace Koi.WebAPI.Controllers
                 return StatusCode(StatusCodes.Status500InternalServerError, ApiResult<object>.Fail(ex));
             }
         }
+        [HttpGet("my-koi-fishes")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        [EnableQuery]
+        public IActionResult GetMyFishes()
+        {
+            try
+            {
+                var fishes = _koiFishService.GetMyKoiFishes().AsQueryable();
+                return Ok(fishes);
+
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, ApiResult<object>.Fail(ex));
+            }
+        }
         [HttpGet("koi-certificates")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
