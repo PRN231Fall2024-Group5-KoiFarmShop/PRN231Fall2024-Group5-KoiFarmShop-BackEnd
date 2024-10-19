@@ -38,7 +38,11 @@ namespace Koi.Services.Services
         {
             return _unitOfWork.KoiFishRepository.FilterAllField();
         }
-
+        public IQueryable<KoiFish> GetMyKoiFishes()
+        {
+            var id = _claimsService.GetCurrentUserId;
+            return _unitOfWork.KoiFishRepository.FilterAllField().Where(x => x.OwnerId == id).AsQueryable();
+        }
         public async Task<KoiFishResponseDTO> GetKoiFishById(int id)
         {
             var fish = await _unitOfWork.KoiFishRepository.GetByIdAsync(id,
