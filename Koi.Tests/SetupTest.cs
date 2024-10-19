@@ -26,6 +26,7 @@ namespace Koi.Tests
         protected readonly Mock<IUserService> _userServiceMock;
         protected readonly Mock<IClaimsService> _claimsServiceMock;
         protected readonly Mock<ICurrentTime> _currentTimeMock;
+        protected readonly Mock<IKoiCertificateService> _certificateService;
         
         public SetupTest()
         {
@@ -41,6 +42,7 @@ namespace Koi.Tests
             _claimsServiceMock = new Mock<IClaimsService>();
             _koiBreedServiceMock = new Mock<IKoiBreedService>();
             _koiFishServiceMock = new Mock<IKoiFishService>();
+            _certificateService = new Mock<IKoiCertificateService>();
 
             var options = new DbContextOptionsBuilder<KoiFarmShopDbContext>()
                 .UseSqlServer("Server=localhost;Database=koi-farm-shop-db;Integrated Security=True;")

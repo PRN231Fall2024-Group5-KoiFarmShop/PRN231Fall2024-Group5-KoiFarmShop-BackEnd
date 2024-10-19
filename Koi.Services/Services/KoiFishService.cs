@@ -68,6 +68,7 @@ namespace Koi.Services.Services
             var user = await _unitOfWork.UserRepository.GetCurrentUserAsync();
             KoiFish fish = _mapper.Map<KoiFish>(fishModel);
             fish.KoiBreeds = [];
+            if (fishModel.KoiBreedIds == null || fishModel.KoiBreedIds.Count() == 0) throw new Exception("400 - Fish must have at least 1 Koi Breeds!");
             foreach (var breedId in fishModel.KoiBreedIds)
             {
                 var breed = await _unitOfWork.KoiBreedRepository.GetByIdAsync(breedId);
