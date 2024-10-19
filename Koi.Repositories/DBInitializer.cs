@@ -283,23 +283,17 @@ namespace Koi.Repositories
             #region Seed KoiFish
 
             var koifishes = await context.KoiFishs.Include(x => x.ConsignmentForNurtures).ToListAsync();
-            var errorFishes = koifishes.Where(x => x.IsConsigned == true).ToList();
+            // Identify any KoiFish that are marked as consigned but do not have related consignments
+            var errorFishes = koifishes.Where(x => x.IsConsigned == true && !x.ConsignmentForNurtures.Any()).ToList();
             if (errorFishes.Any())
             {
-                var flag = false;
                 foreach (var fish in errorFishes)
                 {
-                    //var check = context.ConsignmentForNurtures.Where(x => x.KoiFishId == fish.Id).ToListAsync();
-                    if (!fish.ConsignmentForNurtures.Any())
-                    {
-                        fish.IsConsigned = false;
-                        flag = true;
-                    }
-
-                    if (flag) await context.SaveChangesAsync();
+                    fish.IsConsigned = false;
                 }
+                await context.SaveChangesAsync(); // Save any updates made to orphaned KoiFish
             }
-            if (koifishes.Count == 0)
+            if (!koifishes.Any())
             {
                 // Ensure KoiBreeds are loaded
                 var koiBreeds = context.KoiBreeds.ToList();
@@ -973,7 +967,7 @@ namespace Koi.Repositories
                         }
                     }
                 };
-                var defaultUser = context.Users.FirstOrDefault(user => user.UserName == "vunse172437");
+                var defaultUser = await context.Users.FirstOrDefaultAsync(user => user.UserName == "vunse172437");
                 foreach (var item in fishList)
                 {
                     item.CreatedAt = DateTime.Now;

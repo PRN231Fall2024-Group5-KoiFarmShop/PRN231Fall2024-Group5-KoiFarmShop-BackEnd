@@ -19,5 +19,6 @@ namespace Koi.DTOs.PaymentDTOs
         public string? Note { get; set; }
 
         public virtual WalletTransactionDTO? WalletTransaction { get; set; }  // Thêm navigation property cho WalletTransaction
+        public virtual List<OrderDetailDTO>? OrderDetails { get; set; }
     }
 }
