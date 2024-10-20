@@ -1,11 +1,9 @@
-﻿using Koi.DTOs.Enums;
-using Koi.DTOs.PaymentDTOs;
+﻿using Koi.DTOs.PaymentDTOs;
 using Koi.DTOs.TransactionDTOs;
 using Koi.DTOs.WalletDTOs;
 using Koi.Repositories.Commons;
 using Koi.Repositories.Interfaces;
 using Koi.Services.Interface;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Koi.WebAPI.Controllers
@@ -42,16 +40,7 @@ namespace Koi.WebAPI.Controllers
             }
             catch (Exception ex)
             {
-                if (ex.Message.Contains("400"))
-                    return BadRequest(ApiResult<object>.Fail(ex));
-                if (ex.Message.Contains("404"))
-                    return NotFound(ApiResult<object>.Fail(ex));
-                if (ex.Message.Contains("401"))
-                    return Unauthorized(ApiResult<object>.Fail(ex));
-                if (ex.Message.Contains("403"))
-                    return StatusCode(StatusCodes.Status403Forbidden, ApiResult<object>.Fail(ex));
-
-                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+                return HandleError(ex);
             }
         }
 

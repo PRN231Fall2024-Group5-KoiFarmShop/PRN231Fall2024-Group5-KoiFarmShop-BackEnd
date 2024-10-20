@@ -173,6 +173,15 @@ builder.Services.AddCors(opt =>
     });
 });
 
+//ADD CONFIGURATION
+IConfiguration configuration = new ConfigurationBuilder()
+                .SetBasePath(Directory.GetCurrentDirectory())
+                .AddJsonFile("appsettings.json", true, true).Build();
+//Inject Configuration
+builder.Services.AddSingleton<IConfiguration>(configuration);
+//CLAIM SERVICE
+builder.Services.AddHttpContextAccessor();
+
 var app = builder.Build();
 
 // SCOPE FOR MIGRATION
@@ -181,8 +190,7 @@ var scope = app.Services.CreateScope();
 var userManager = scope.ServiceProvider.GetRequiredService<UserManager<User>>();
 var logger = scope.ServiceProvider.GetRequiredService<ILogger<Program>>();
 
-//CLAIM SERVICE
-builder.Services.AddHttpContextAccessor();
+
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
@@ -231,6 +239,9 @@ app.UseRouting();
 app.MapControllers();
 
 app.UseStaticFiles();
+
+
+
 
 // USE MIDDLEWARE
 app.UseMiddleware<GlobalExceptionMiddleware>();
