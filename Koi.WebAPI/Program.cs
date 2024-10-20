@@ -173,12 +173,7 @@ builder.Services.AddCors(opt =>
     });
 });
 
-//ADD CONFIGURATION
-IConfiguration configuration = new ConfigurationBuilder()
-                .SetBasePath(Directory.GetCurrentDirectory())
-                .AddJsonFile("appsettings.json", true, true).Build();
-//Inject Configuration
-builder.Services.AddSingleton<IConfiguration>(configuration);
+builder.Services.AddSingleton<IConfiguration>(builder.Configuration);
 //CLAIM SERVICE
 builder.Services.AddHttpContextAccessor();
 

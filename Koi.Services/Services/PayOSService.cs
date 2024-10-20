@@ -1,4 +1,5 @@
-﻿using Koi.Repositories.Interfaces;
+﻿using Koi.DTOs.Enums;
+using Koi.Repositories.Interfaces;
 using Koi.Services.Interface;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
@@ -18,7 +19,7 @@ namespace Koi.Services.Services
         private readonly PayOS _payOS;
         private readonly IConfiguration _configuration;
 
-        public PayOSService(ILogger<PayOSService> logger, IConfiguration configuration)
+        public PayOSService(ILogger<PayOSService> logger, IConfiguration configuration, IUnitOfWork unitOfWork)
         {
             _logger = logger;
             _configuration = configuration;
@@ -27,14 +28,15 @@ namespace Koi.Services.Services
             var ChecksumKey = _configuration["PayOS:ChecksumKey"];
             var ApiKey = _configuration["PayOS:ApiKey"];
             _payOS = new PayOS(ClientId, ApiKey, ChecksumKey);
+            _unitOfWork = unitOfWork;
         }
 
-        public async Task<string> CreateLink(int depositMoney, Guid txnRef)
+        public async Task<string> CreateLink(int depositMoney, int txnRef)
         {
             var domain = "https://koifarmshop.netlify.app/payment";
 
             var paymentLinkRequest = new PaymentData(
-                orderCode: long.Parse(txnRef.ToString().Substring(5)),
+                orderCode: txnRef,
                 amount: depositMoney,
                 description: "Nạp tiền: " + depositMoney,
                 items: [new("Nạp tiền " + depositMoney, 1, depositMoney)],
@@ -46,19 +48,24 @@ namespace Koi.Services.Services
             return response.checkoutUrl;
         }
 
-        public async Task<PayOSWebhookResponse> ReturnWebhook(PayOSWebhookRequest payOSWebhookRequest)
+        public async Task<PayOSWebhookResponse> ReturnWebhook(WebhookType webhookType)
         {
             // Log the receipt of the webhook
             //Seriablize the object to log
-            _logger.LogInformation(JsonConvert.SerializeObject(payOSWebhookRequest));
-            _logger.LogInformation("Received webhook with Code: {Code}, Success: {Success}", payOSWebhookRequest.Code, payOSWebhookRequest.Success);
+            _logger.LogInformation(JsonConvert.SerializeObject(webhookType));
 
             var ChecksumKey = _configuration["PayOS:ChecksumKey"];
 
+
+            WebhookData verifiedData = _payOS.verifyPaymentWebhookData(webhookType); //xác thực data from webhook
+            string responseCode = verifiedData.code;
+            string orderCode = verifiedData.orderCode.ToString();
+            string transactionId = "TRANS" + orderCode;
+
             // Validate the webhook signature
-            if (!PayOSUtils.IsValidData(payOSWebhookRequest, payOSWebhookRequest.Signature, ChecksumKey))
+            if (!PayOSUtils.IsValidData(webhookType, webhookType.signature, ChecksumKey))
             {
-                _logger.LogWarning("Invalid webhook signature for OrderCode: {OrderCode}", payOSWebhookRequest.Data.OrderCode);
+                _logger.LogWarning("Invalid webhook signature for OrderCode: {OrderCode}", webhookType.data);
                 return new PayOSWebhookResponse
                 {
                     Success = false,
@@ -66,20 +73,17 @@ namespace Koi.Services.Services
                 };
             }
 
-            // Log the validated data
-            _logger.LogInformation("Valid webhook data: OrderCode: {OrderCode}, Amount: {Amount}, Status: {Code}",
-                payOSWebhookRequest.Data.OrderCode,
-                payOSWebhookRequest.Data.Amount,
-                payOSWebhookRequest.Code);
+            var transaction = await _unitOfWork.TransactionRepository.GetByIdAsync(int.Parse(orderCode));
 
             // Handle the webhook based on the transaction status
-            switch (payOSWebhookRequest.Code)
+            switch (webhookType.code)
             {
                 case "00":
-                    _logger.LogInformation("Payment successful for OrderCode: {OrderCode}", payOSWebhookRequest.Data.OrderCode);
-
-                    // Example: Update the order in the system, mark it as paid
-                    //var order = await _unitOfWork.WalletRepository.ConfirmTransaction(payOSWebhookRequest.Data.OrderCode);
+                    // Update the transaction status
+                    transaction.TransactionStatus = TransactionStatusEnums.COMPLETED.ToString();
+                    transaction.Note = "Payment processed successfully";
+                    await _unitOfWork.TransactionRepository.Update(transaction);
+                    await _unitOfWork.SaveChangeAsync();
 
                     return new PayOSWebhookResponse
                     {
@@ -88,7 +92,12 @@ namespace Koi.Services.Services
                     };
 
                 case "01":
-                    _logger.LogError("Invalid parameters in the webhook for OrderCode: {OrderCode}", payOSWebhookRequest.Data.OrderCode);
+                    // Update the transaction status
+                    transaction.TransactionStatus = TransactionStatusEnums.FAILED.ToString();
+                    transaction.Note = "Payment failed: Invalid parameters";
+                    await _unitOfWork.TransactionRepository.Update(transaction);
+                    await _unitOfWork.SaveChangeAsync();
+
                     return new PayOSWebhookResponse
                     {
                         Success = false,
@@ -96,7 +105,6 @@ namespace Koi.Services.Services
                     };
 
                 default:
-                    _logger.LogWarning("Unhandled webhook code: {Code} for OrderCode: {OrderCode}", payOSWebhookRequest.Code, payOSWebhookRequest.Data.OrderCode);
                     return new PayOSWebhookResponse
                     {
                         Success = false,
@@ -108,11 +116,11 @@ namespace Koi.Services.Services
 
     public static class PayOSUtils
     {
-        public static bool IsValidData(PayOSWebhookRequest payOSWebhook, string transactionSignature, string ChecksumKey)
+        public static bool IsValidData(WebhookType payOSWebhook, string transactionSignature, string ChecksumKey)
         {
             try
             {
-                JObject jsonObject = JObject.Parse(payOSWebhook.Data.ToString().Replace("'", "\""));
+                JObject jsonObject = JObject.Parse(payOSWebhook.data.ToString().Replace("'", "\""));
                 var sortedKeys = jsonObject.Properties().Select(p => p.Name).OrderBy(k => k).ToList();
 
                 StringBuilder transactionStr = new StringBuilder();
@@ -145,19 +153,16 @@ namespace Koi.Services.Services
             }
         }
     }
+
+    public class DepositRequest
+    {
+        public int Amount { get; set; }
+    }
     public class PayOSWebhookResponse
     {
         public bool Success { get; set; }
         public PayOSData Data { get; set; }
         public string Note { get; set; }
-    }
-    public class PayOSWebhookRequest
-    {
-        public string Code { get; set; }
-        public string Desc { get; set; }
-        public bool Success { get; set; }
-        public PayOSData Data { get; set; }
-        public string Signature { get; set; }
     }
 
     public class PayOSData

@@ -4,7 +4,9 @@ using Koi.DTOs.WalletDTOs;
 using Koi.Repositories.Commons;
 using Koi.Repositories.Interfaces;
 using Koi.Services.Interface;
+using Koi.Services.Services;
 using Microsoft.AspNetCore.Mvc;
+using Net.payOS.Types;
 
 namespace Koi.WebAPI.Controllers
 {
@@ -15,12 +17,14 @@ namespace Koi.WebAPI.Controllers
         private readonly IWalletService _walletService;
         private readonly IVnPayService _vnPayService;
         private readonly IClaimsService _claimsService;
+        private readonly IPayOSService _payOSService;
 
-        public WalletController(IWalletService walletService, IVnPayService vnPayService, IClaimsService claimsService)
+        public WalletController(IWalletService walletService, IVnPayService vnPayService, IClaimsService claimsService, IPayOSService payOSService)
         {
             _walletService = walletService;
             _vnPayService = vnPayService;
             _claimsService = claimsService;
+            _payOSService = payOSService;
         }
 
         [HttpPost("wallets/deposit")]
@@ -269,6 +273,54 @@ namespace Koi.WebAPI.Controllers
                 return HandleError(ex);
             }
         }
+
+        /// <summary>
+        /// Create Payment URL For PayOs
+        /// </summary>
+        [Route("create-payment-link-payos")]
+        [HttpPost]
+        public async Task<IActionResult> Create([FromBody] DepositRequest depositRequest)
+        {
+            try
+            {
+                var result = await _walletService.DepositByPayOS(depositRequest.Amount);
+                if (result != null)
+                {
+                    return Ok(ApiResult<DepositResponseDTO>.Succeed(result, "Create deposit with payos order successfully"));
+                }
+                else
+                {
+                    return BadRequest();
+                }
+            }
+            catch (Exception ex)
+            {
+                return HandleError(ex);
+            }
+        }
+
+        [HttpPost("hook")]
+        public async Task<IActionResult> ReceiveWebhook([FromBody] WebhookType webhookBody)
+        {
+            try
+            {
+                var result = await _payOSService.ReturnWebhook(webhookBody);
+
+                if (result.Success)
+                {
+                    return Ok(new { Message = "Webhook processed successfully" });
+                }
+
+                return BadRequest(new { Message = "Webhook processing failed." });
+
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { Message = ex.Message });
+            }
+        }
+
+
 
         // Hàm xử lý lỗi chung
         private IActionResult HandleError(Exception ex)
