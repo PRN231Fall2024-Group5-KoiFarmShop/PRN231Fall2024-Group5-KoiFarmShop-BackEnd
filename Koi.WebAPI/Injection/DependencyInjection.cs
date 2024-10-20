@@ -37,6 +37,7 @@ namespace Koi.WebAPI.Injection
             services.AddAutoMapper(typeof(MapperConfigProfile).Assembly);
             services.AddScoped<IClaimsService, ClaimsService>();
             services.AddScoped<IVnPayService, VnPayService>();
+            services.AddScoped<IPayOSService, PayOSService>();
 
             // add repositories
             services.AddScoped<IUserRepository, UserRepository>();

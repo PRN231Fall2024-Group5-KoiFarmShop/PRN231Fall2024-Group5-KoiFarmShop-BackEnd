@@ -1,23 +1,13 @@
 ﻿using AutoMapper;
-using Azure.Core;
-using Google.Apis.Drive.v3.Data;
 using Koi.BusinessObjects;
 using Koi.DTOs.Enums;
 using Koi.DTOs.PaymentDTOs;
 using Koi.DTOs.TransactionDTOs;
 using Koi.DTOs.WalletDTOs;
-using Koi.Repositories.Helper;
 using Koi.Repositories.Interfaces;
 using Koi.Repositories.Utils;
 using Koi.Services.Interface;
 using Microsoft.AspNetCore.Http;
-using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net.WebSockets;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Koi.Services.Services
 {
@@ -28,14 +18,16 @@ namespace Koi.Services.Services
         private readonly IOrderService _orderService;
         private readonly IVnPayService _vnPayService;
         private readonly ICurrentTime _currentTime;
+        private readonly IPayOSService _payOSService;
 
-        public WalletService(IUnitOfWork unitOfWork, IMapper mapper, IOrderService orderService, IVnPayService vnPayService, ICurrentTime currentTime)
+        public WalletService(IUnitOfWork unitOfWork, IMapper mapper, IOrderService orderService, IVnPayService vnPayService, ICurrentTime currentTime, IPayOSService payOSService)
         {
             _unitOfWork = unitOfWork;
             _mapper = mapper;
             _orderService = orderService;
             _vnPayService = vnPayService;
             _currentTime = currentTime;
+            _payOSService = payOSService;
         }
 
         // Deposit money to wallet
@@ -92,6 +84,62 @@ namespace Koi.Services.Services
 
             vnpayOrderInfo.CommonId = newWalletTransaction.Id;
             var payUrl = _vnPayService.CreateLink(vnpayOrderInfo);
+            var result = new DepositResponseDTO
+            {
+                Transaction = _mapper.Map<WalletTransactionDTO>(newWalletTransaction),
+                PayUrl = payUrl
+            };
+
+            return result;
+        }
+
+        public async Task<DepositResponseDTO> DepositByPayOS(int amount)
+        {
+            var user = await _unitOfWork.UserRepository.GetCurrentUserAsync();
+            if (user == null)
+            {
+                throw new Exception("401 - User have been not signed in");
+            }
+            var existingWallet = await _unitOfWork.WalletRepository.GetAllWalletByIdAsync(user.Id);
+            if (existingWallet == null)
+            {
+                var newWallet = new Wallet
+                {
+                    UserId = user.Id,
+                    Balance = 0,
+                    LoyaltyPoints = 0,
+                    Status = WalletStatusEnums.ACTIVE.ToString()
+                };
+
+                existingWallet = await _unitOfWork.WalletRepository.CreateAsync(newWallet);
+                if (await _unitOfWork.SaveChangeAsync() <= 0)
+                {
+                    throw new Exception("400 - Adding proccess has been failed");
+                }
+            }
+
+            var newWalletTransaction = new WalletTransaction
+            {
+                // UserId = existingWallet.UserId,
+                WalletId = existingWallet.UserId,
+                TransactionType = "DEPOSIT",
+                PaymentMethod = "PAYOS",
+                Amount = amount,
+                BalanceBefore = existingWallet.Balance,
+                BalanceAfter = existingWallet.Balance + amount,
+                TransactionDate = _currentTime.GetCurrentTime(),
+                TransactionStatus = TransactionStatusEnums.PENDING.ToString(),
+                Note = "Nạp Tiền " + amount
+            };
+
+            newWalletTransaction = await _unitOfWork.TransactionRepository.AddWalletTransaction(newWalletTransaction);
+            if (await _unitOfWork.SaveChangeAsync() <= 0)
+            {
+                throw new Exception("400 - Adding proccess has been failed");
+            }
+
+            var payUrl = await _payOSService.CreateLink(amount, newWalletTransaction.Id);
+
             var result = new DepositResponseDTO
             {
                 Transaction = _mapper.Map<WalletTransactionDTO>(newWalletTransaction),
@@ -250,7 +298,7 @@ namespace Koi.Services.Services
                 long? totalAmount = 0;
                 foreach (var purchaseFish in purchaseDTO.PurchaseFishes)
                 {
-                    var koiFish = await _unitOfWork.KoiFishRepository.GetByIdAsync(purchaseFish.FishId, x=>x.ConsignmentForNurtures);
+                    var koiFish = await _unitOfWork.KoiFishRepository.GetByIdAsync(purchaseFish.FishId, x => x.ConsignmentForNurtures);
                     if (koiFish != null)
                     {
                         fishes.Add(koiFish);
