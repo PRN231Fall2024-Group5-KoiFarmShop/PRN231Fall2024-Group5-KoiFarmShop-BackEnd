@@ -6,6 +6,6 @@ namespace Koi.Services.Interface
     public interface IPayOSService
     {
         Task<string> CreateLink(int depositMoney, int txnRef);
-        Task<PayOSWebhookResponse> ReturnWebhook(WebhookType webhookType);
+        Task<WebhookResponse> ReturnWebhook(WebhookType webhookType);
     }
 }
