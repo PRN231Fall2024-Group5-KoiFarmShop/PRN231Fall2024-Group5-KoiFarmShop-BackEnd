@@ -63,15 +63,15 @@ namespace Koi.Services.Services
             string transactionId = "TRANS" + orderCode;
 
             // Validate the webhook signature
-            if (!PayOSUtils.IsValidData(webhookType, webhookType.signature, ChecksumKey))
-            {
-                _logger.LogWarning("Invalid webhook signature for OrderCode: {OrderCode}", webhookType.data);
-                return new PayOSWebhookResponse
-                {
-                    Success = false,
-                    Note = "Invalid signature"
-                };
-            }
+            //if (!PayOSUtils.IsValidData(webhookType, webhookType.signature, ChecksumKey))
+            //{
+            //    _logger.LogWarning("Invalid webhook signature for OrderCode: {OrderCode}", webhookType.data);
+            //    return new PayOSWebhookResponse
+            //    {
+            //        Success = false,
+            //        Note = "Invalid signature"
+            //    };
+            //}
 
             var transaction = await _unitOfWork.TransactionRepository.GetByIdAsync(int.Parse(orderCode));
 
