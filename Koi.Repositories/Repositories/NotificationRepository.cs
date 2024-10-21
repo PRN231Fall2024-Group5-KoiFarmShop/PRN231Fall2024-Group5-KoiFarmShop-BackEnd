@@ -48,7 +48,7 @@ namespace Koi.Repositories.Repositories
             return result;
         }
 
-        public async Task<List<Notification>> GetListByUserIdAsync()
+        public async Task<List<Notification>> GetListByUserId()
         {
             // Get the current user ID from the claims service
             var userId = _claimsService.GetCurrentUserId;
