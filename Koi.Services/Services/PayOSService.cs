@@ -68,10 +68,10 @@ namespace Koi.Services.Services
                 {
                     case "00":
                         // Update the transaction status
-                        //transaction.TransactionStatus = TransactionStatusEnums.COMPLETED.ToString();
-                        //transaction.Note = "Payment processed successfully";
-                        //await _unitOfWork.TransactionRepository.Update(transaction);
-                        //await _unitOfWork.SaveChangeAsync();
+                        transaction.TransactionStatus = TransactionStatusEnums.COMPLETED.ToString();
+                        transaction.Note = "Nạp tiền thành công";
+                        await _unitOfWork.TransactionRepository.Update(transaction);
+                        await _unitOfWork.SaveChangeAsync();
 
                         return new WebhookResponse
                         {
