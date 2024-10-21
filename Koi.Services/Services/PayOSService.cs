@@ -48,68 +48,62 @@ namespace Koi.Services.Services
             return response.checkoutUrl;
         }
 
-        public async Task<PayOSWebhookResponse> ReturnWebhook(WebhookType webhookType)
+        public async Task<WebhookResponse> ReturnWebhook(WebhookType webhookType)
         {
-            // Log the receipt of the webhook
-            //Seriablize the object to log
-            _logger.LogInformation(JsonConvert.SerializeObject(webhookType));
-
-            var ChecksumKey = _configuration["PayOS:ChecksumKey"];
-
-
-            WebhookData verifiedData = _payOS.verifyPaymentWebhookData(webhookType); //xác thực data from webhook
-            string responseCode = verifiedData.code;
-            string orderCode = verifiedData.orderCode.ToString();
-            string transactionId = "TRANS" + orderCode;
-
-            // Validate the webhook signature
-            //if (!PayOSUtils.IsValidData(webhookType, webhookType.signature, ChecksumKey))
-            //{
-            //    _logger.LogWarning("Invalid webhook signature for OrderCode: {OrderCode}", webhookType.data);
-            //    return new PayOSWebhookResponse
-            //    {
-            //        Success = false,
-            //        Note = "Invalid signature"
-            //    };
-            //}
-
-            var transaction = await _unitOfWork.TransactionRepository.GetByIdAsync(int.Parse(orderCode));
-
-            // Handle the webhook based on the transaction status
-            switch (webhookType.code)
+            try
             {
-                case "00":
-                    // Update the transaction status
-                    transaction.TransactionStatus = TransactionStatusEnums.COMPLETED.ToString();
-                    transaction.Note = "Payment processed successfully";
-                    await _unitOfWork.TransactionRepository.Update(transaction);
-                    await _unitOfWork.SaveChangeAsync();
+                // Log the receipt of the webhook
+                //Seriablize the object to log
+                _logger.LogInformation(JsonConvert.SerializeObject(webhookType));
 
-                    return new PayOSWebhookResponse
-                    {
-                        Success = true,
-                        Note = "Payment processed successfully"
-                    };
+                //WebhookData verifiedData = _payOS.verifyPaymentWebhookData(webhookType); //xác thực data from webhook
+                //string responseCode = verifiedData.code;
+                //string orderCode = verifiedData.orderCode.ToString();
+                //string transactionId = "TRANS" + orderCode;
 
-                case "01":
-                    // Update the transaction status
-                    transaction.TransactionStatus = TransactionStatusEnums.FAILED.ToString();
-                    transaction.Note = "Payment failed: Invalid parameters";
-                    await _unitOfWork.TransactionRepository.Update(transaction);
-                    await _unitOfWork.SaveChangeAsync();
+                var transaction = await _unitOfWork.TransactionRepository.GetByIdAsync(int.Parse(webhookType.data.orderCode.ToString()));
 
-                    return new PayOSWebhookResponse
-                    {
-                        Success = false,
-                        Note = "Invalid parameters"
-                    };
+                // Handle the webhook based on the transaction status
+                switch (webhookType.data.code)
+                {
+                    case "00":
+                        // Update the transaction status
+                        //transaction.TransactionStatus = TransactionStatusEnums.COMPLETED.ToString();
+                        //transaction.Note = "Payment processed successfully";
+                        //await _unitOfWork.TransactionRepository.Update(transaction);
+                        //await _unitOfWork.SaveChangeAsync();
 
-                default:
-                    return new PayOSWebhookResponse
-                    {
-                        Success = false,
-                        Note = "Unhandled code"
-                    };
+                        return new WebhookResponse
+                        {
+                            Success = true,
+                            Note = "Payment processed successfully"
+                        };
+
+                    case "01":
+                        // Update the transaction status
+                        transaction.TransactionStatus = TransactionStatusEnums.FAILED.ToString();
+                        transaction.Note = "Payment failed: Invalid parameters";
+                        await _unitOfWork.TransactionRepository.Update(transaction);
+                        await _unitOfWork.SaveChangeAsync();
+
+                        return new WebhookResponse
+                        {
+                            Success = false,
+                            Note = "Invalid parameters"
+                        };
+
+                    default:
+                        return new WebhookResponse
+                        {
+                            Success = false,
+                            Note = "Unhandled code"
+                        };
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex.Message);
+                throw ex;
             }
         }
     }
@@ -158,30 +152,11 @@ namespace Koi.Services.Services
     {
         public int Amount { get; set; }
     }
-    public class PayOSWebhookResponse
+
+    public class WebhookResponse
     {
         public bool Success { get; set; }
-        public PayOSData Data { get; set; }
         public string Note { get; set; }
     }
 
-    public class PayOSData
-    {
-        public int OrderCode { get; set; }
-        public decimal Amount { get; set; }
-        public string Description { get; set; }
-        public string AccountNumber { get; set; }
-        public string Reference { get; set; }
-        public string TransactionDateTime { get; set; }
-        public string Currency { get; set; }
-        public string PaymentLinkId { get; set; }
-        public string Code { get; set; }
-        public string Desc { get; set; }
-        public string CounterAccountBankId { get; set; }
-        public string CounterAccountBankName { get; set; }
-        public string CounterAccountName { get; set; }
-        public string CounterAccountNumber { get; set; }
-        public string VirtualAccountName { get; set; }
-        public string VirtualAccountNumber { get; set; }
-    }
 }
