@@ -48,25 +48,33 @@ namespace Koi.Repositories.Repositories
             return result;
         }
 
-        public async Task<List<Notification>> GetListByUserId()
+        public async Task<List<Notification>> GetListByUserIdAsync()
         {
-            var notifications = new List<Notification>();
-            //check role of user to get notification
+            // Get the current user ID from the claims service
             var userId = _claimsService.GetCurrentUserId;
             if (userId == null)
             {
-                throw new Exception("UserId are invalid or you are not login");
+                throw new UnauthorizedAccessException("User is not logged in or the user ID is invalid.");
             }
+
+            // Find the user in the database
             var user = await _userManager.FindByIdAsync(userId.ToString());
             if (user == null)
             {
-                throw new Exception("User not found");
+                throw new ArgumentException("User not found.");
             }
 
-            notifications.AddRange(await _context.Notifications.Where(x => x.Type == "ALL" || x.ReceiverId == user.Id).ToListAsync());
+            // Get user roles
+            var roles = await _userManager.GetRolesAsync(user);
 
-            //sort created date
-            notifications = notifications.OrderByDescending(x => x.CreatedAt).ToList();
+            // Retrieve notifications for the user (global, user-specific, and role-based)
+            var notifications = await _context.Notifications
+                .Where(n => n.Type == "ALL"
+                            || n.ReceiverId == user.Id
+                            || (n.Type == "ROLE" && roles.Contains(n.Type)))
+                .OrderByDescending(n => n.CreatedAt)
+                .ToListAsync();
+
             return notifications;
         }
     }
