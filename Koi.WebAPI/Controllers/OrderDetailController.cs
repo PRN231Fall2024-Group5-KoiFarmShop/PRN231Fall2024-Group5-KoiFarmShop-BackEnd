@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Koi.WebAPI.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/order-detail")]
     [ApiController]
     public class OrderDetailController : ControllerBase
     {
@@ -21,7 +21,7 @@ namespace Koi.WebAPI.Controllers
             _orderDetailServices = orderDetailServices;
             _mapper = mapper;
         }
-        [HttpPut("ChangeToConsigned/{id}")]
+        [HttpPut("change-to-consigned/{id}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -43,7 +43,7 @@ namespace Koi.WebAPI.Controllers
             }
         }
 
-        [HttpPut("ChangeToCompleted/{id}")]
+        [HttpPut("change-to-completed/{id}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -65,7 +65,7 @@ namespace Koi.WebAPI.Controllers
             }
         }
 
-        [HttpPut("ChangeToShipping/{id}")]
+        [HttpPut("change-to-shipping/{id}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
