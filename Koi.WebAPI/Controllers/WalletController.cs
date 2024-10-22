@@ -1,12 +1,16 @@
-﻿using Koi.DTOs.PaymentDTOs;
+﻿using Koi.DTOs.Enums;
+using Koi.DTOs.PaymentDTOs;
 using Koi.DTOs.TransactionDTOs;
 using Koi.DTOs.WalletDTOs;
 using Koi.Repositories.Commons;
 using Koi.Repositories.Interfaces;
 using Koi.Services.Interface;
 using Koi.Services.Services;
+using Koi.Services.Services.VnPayConfig;
 using Microsoft.AspNetCore.Mvc;
 using Net.payOS.Types;
+using System.Reflection;
+using System.Web;
 
 namespace Koi.WebAPI.Controllers
 {
@@ -52,13 +56,68 @@ namespace Koi.WebAPI.Controllers
         /// [DONT'T TOUCH] VnPay IPN Receiver [FromQuery] VnpayResponseModel vnpayResponseModel
         /// </summary>
         [HttpGet("payment/vnpay-ipn-receive")]
-        public async Task<IActionResult> PaymentReturn()
+        public async Task<IActionResult> PaymentReturn([FromQuery] VnpayResponseDTO vnpayResponseModel)
         {
             try
             {
-                var result = await _walletService.UpdateBalanceWallet(Request.Query);
+                var htmlString = string.Empty;
+                var requestNameValue = HttpUtility.ParseQueryString(HttpContext.Request.QueryString.ToString());
 
-                return Ok(ApiResult<WalletTransactionDTO>.Succeed(result, "Deposit paid successfully"));
+                IPNReponse iPNReponse = await _vnPayService.IPNReceiver(
+                    vnpayResponseModel.vnp_TmnCode,
+                    vnpayResponseModel.vnp_SecureHash,
+                    vnpayResponseModel.vnp_TxnRef,
+                    vnpayResponseModel.vnp_TransactionStatus,
+                    vnpayResponseModel.vnp_ResponseCode,
+                    vnpayResponseModel.vnp_TransactionNo,
+                    vnpayResponseModel.vnp_BankCode,
+                    vnpayResponseModel.vnp_Amount,
+                    vnpayResponseModel.vnp_PayDate,
+                    vnpayResponseModel.vnp_BankTranNo,
+                    vnpayResponseModel.vnp_CardType, requestNameValue);
+
+
+                //Get root path and read index.html
+                var path = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "Data", "index.html");
+
+                using (FileStream fs = System.IO.File.Open(path, FileMode.Open, FileAccess.Read))
+                {
+                    using (StreamReader sr = new StreamReader(fs))
+                    {
+                        htmlString = sr.ReadToEnd();
+                    }
+                }
+                string orderInfo = vnpayResponseModel.vnp_OrderInfo ?? "Không có thông tin";
+                //format html
+                var isSuccess = iPNReponse.status.ToString() == TransactionStatusEnums.COMPLETED.ToString();
+                var textColor = isSuccess ? "text-green-500 dark:text-green-300" : "text-red-500 dark:text-red-300";
+                var statusHTML = $"<p class=\"mt-1 text-md {textColor}\">{iPNReponse.status.ToString()}</p>";
+
+                // Send notification
+                //var notification = new Notification
+                //{
+                //    Title = "Deposit " + int.Parse(iPNReponse.price) / 100,
+                //    Body = iPNReponse.message,
+                //    UserId = _claimsService.GetCurrentUserId == Guid.Empty ? Guid.Empty : _claimsService.GetCurrentUserId,
+                //    Url = "/profile/wallet",
+                //    Sender = "System"
+                //};
+                //await _notificationService.PushNotification(notification).ConfigureAwait(true);
+
+                //format image
+                var imageHTML = string.Empty;
+                if (isSuccess)
+                {
+                    imageHTML = $"<!--green: from-[#00b894] to-[#55efc4] -->\r\n                <!-- red: from-[#FF4B4B] to-[#FF8B8B] -->\r\n                <div class=\"absolute inset-0 bg-gradient-to-br from-[#00b894] to-[#55efc4] rounded-lg shadow-lg\">\r\n                    <div class=\"flex flex-col items-center justify-center h-full text-white\">\r\n                        <div class=\"text-6xl font-bold star\">✨</div>\r\n                        <!-- <div className=\"text-6xl font-bold hidden\">❌</div> -->\r\n                        <div class=\"wrapper\">\r\n                            <h1 class=\"mt-4 text-2xl font-bold\">Payment Successful</h1>\r\n                        </div>\r\n                    </div>\r\n                </div>";
+                }
+                else
+                {
+                    imageHTML = "<!--green: from-[#00b894] to-[#55efc4] -->\r\n                <!-- red: from-[#FF4B4B] to-[#FF8B8B] -->\r\n                <div class=\"absolute inset-0 bg-gradient-to-br from-[#FF4B4B] to-[#FF8B8B] rounded-lg shadow-lg\">\r\n                    <div class=\"flex flex-col items-center justify-center h-full text-white\">\r\n                        \r\n                        <div className=\"text-6xl font-bold hidden\">❌</div>\r\n                        <div class=\"wrapper\">\r\n                            <h1 class=\"mt-4 text-2xl font-bold\">Payment Failed</h1>\r\n                        </div>\r\n                    </div>\r\n                </div>>";
+                }
+
+                string htmlFormat = string.Format(htmlString, imageHTML, iPNReponse.transactionId.ToString(), $"{int.Parse(iPNReponse.price) / 100}", statusHTML, iPNReponse.message);
+
+                return Content(htmlFormat, "text/html");
             }
             catch (Exception ex)
             {

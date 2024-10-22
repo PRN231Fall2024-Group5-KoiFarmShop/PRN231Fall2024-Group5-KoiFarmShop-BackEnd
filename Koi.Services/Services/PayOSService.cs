@@ -1,4 +1,5 @@
-﻿using Koi.DTOs.Enums;
+﻿using Koi.BusinessObjects;
+using Koi.DTOs.Enums;
 using Koi.Repositories.Interfaces;
 using Koi.Services.Interface;
 using Microsoft.Extensions.Configuration;
@@ -68,10 +69,7 @@ namespace Koi.Services.Services
                 {
                     case "00":
                         // Update the transaction status
-                        transaction.TransactionStatus = TransactionStatusEnums.COMPLETED.ToString();
-                        transaction.Note = "Nạp tiền thành công";
-                        await _unitOfWork.TransactionRepository.Update(transaction);
-                        await _unitOfWork.SaveChangeAsync();
+                        await UpdateStatusTransaction(transaction);
 
                         return new WebhookResponse
                         {
@@ -81,10 +79,7 @@ namespace Koi.Services.Services
 
                     case "01":
                         // Update the transaction status
-                        transaction.TransactionStatus = TransactionStatusEnums.FAILED.ToString();
-                        transaction.Note = "Payment failed: Invalid parameters";
-                        await _unitOfWork.TransactionRepository.Update(transaction);
-                        await _unitOfWork.SaveChangeAsync();
+                        await UpdateErrorTransaction(transaction, "Payment failed");
 
                         return new WebhookResponse
                         {
@@ -105,6 +100,24 @@ namespace Koi.Services.Services
                 _logger.LogError(ex.Message);
                 throw ex;
             }
+        }
+
+        private async Task UpdateStatusTransaction(WalletTransaction transaction)
+        {
+            transaction.TransactionStatus = TransactionStatusEnums.COMPLETED.ToString();
+            //Plus money to user wallet
+            var wallet = await _unitOfWork.WalletRepository.GetAllWalletByIdAsync(transaction.WalletId);
+            wallet.Balance += transaction.Amount;
+            await _unitOfWork.TransactionRepository.Update(transaction);
+            await _unitOfWork.SaveChangeAsync();
+        }
+
+        public async Task UpdateErrorTransaction(WalletTransaction transaction, string note)
+        {
+            transaction.TransactionStatus = TransactionStatusEnums.FAILED.ToString();
+            transaction.Note = note;
+            await _unitOfWork.TransactionRepository.Update(transaction);
+            await _unitOfWork.SaveChangeAsync();
         }
     }
 
