@@ -104,7 +104,7 @@ namespace Koi.WebAPI.Controllers
             }
         }
 
-        [HttpPut("CancelOrder/{id}")]
+        [HttpPut("cancel-order/{id}")]
         public async Task<IActionResult> CancelOrderAsync(int id)
         {
             try
