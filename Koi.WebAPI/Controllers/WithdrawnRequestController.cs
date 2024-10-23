@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Koi.BusinessObjects;
+using Koi.DTOs.WalletDTOs;
 using Koi.Repositories.Commons;
 using Koi.Services.Interface;
 using Microsoft.AspNetCore.Mvc;
