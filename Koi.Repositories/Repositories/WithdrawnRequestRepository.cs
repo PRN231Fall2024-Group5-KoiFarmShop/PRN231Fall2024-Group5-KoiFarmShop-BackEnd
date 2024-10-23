@@ -59,7 +59,7 @@ namespace Koi.Repositories.Repositories
             }
 
             var wallet = await _context.Wallets.FirstOrDefaultAsync(w => w.UserId == request.UserId);
-
+            //get user wallet
             // Update request status
             request.Status = "Success";
             request.ImageUrl = imageUrl;
@@ -75,7 +75,13 @@ namespace Koi.Repositories.Repositories
                 CreatedAt = _timeService.GetCurrentTime(),
                 CreatedBy = _claimsService.GetCurrentUserId,
                 Note = "Withdrawal " + request.Amount,
+                WalletId = request.UserId,
+                BalanceBefore = wallet.Balance,
+                BalanceAfter = wallet.Balance - request.Amount,
+                TransactionType = "Withdrawal",
+                PaymentMethod = "Bank Transfer"
             };
+
             _context.WalletTransactions.Add(transaction);
 
             await _context.SaveChangesAsync();
