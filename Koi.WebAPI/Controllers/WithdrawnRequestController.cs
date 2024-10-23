@@ -1,6 +1,5 @@
 ﻿using AutoMapper;
 using Koi.BusinessObjects;
-using Koi.DTOs.WalletDTOs;
 using Koi.Repositories.Commons;
 using Koi.Services.Interface;
 using Microsoft.AspNetCore.Mvc;
@@ -20,6 +19,21 @@ namespace Koi.WebAPI.Controllers
             _logger = logger;
             _withdrawnRequestService = withdrawnRequestService;
             _mapper = mapper;
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> GetAll()
+        {
+            try
+            {
+                var result = await _withdrawnRequestService.GetAllRequest();
+                return Ok(ApiResult<List<WithdrawnRequest>>.Succeed(result, "Request list retrieved successfully."));
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error retrieving withdrawal requests.");
+                return BadRequest(ApiResult<object>.Fail(ex));
+            }
         }
 
         [HttpGet("GetListByUserId")]
