@@ -59,10 +59,6 @@ namespace Koi.Repositories.Repositories
             }
 
             var wallet = await _context.Wallets.FirstOrDefaultAsync(w => w.UserId == request.UserId);
-            if (wallet == null || wallet.Balance < request.Amount)
-            {
-                throw new Exception("Insufficient funds in the wallet.");
-            }
 
             // Update request status
             request.Status = "Success";
@@ -71,15 +67,16 @@ namespace Koi.Repositories.Repositories
             request.ModifiedBy = _claimsService.GetCurrentUserId;
 
             // Create a withdrawal transaction
-            var transaction = new Transaction
+            var transaction = new WalletTransaction
             {
                 Amount = request.Amount,
                 TransactionDate = _timeService.GetCurrentTime(),
                 TransactionStatus = TransactionStatusEnums.COMPLETED.ToString(),
                 CreatedAt = _timeService.GetCurrentTime(),
-                CreatedBy = _claimsService.GetCurrentUserId
+                CreatedBy = _claimsService.GetCurrentUserId,
+                Note = "Withdrawal " + request.Amount,
             };
-            _context.Transactions.Add(transaction);
+            _context.WalletTransactions.Add(transaction);
 
             await _context.SaveChangesAsync();
             return request;
@@ -97,6 +94,10 @@ namespace Koi.Repositories.Repositories
             request.Status = "Rejected";
             request.ModifiedAt = _timeService.GetCurrentTime();
             request.ModifiedBy = _claimsService.GetCurrentUserId;
+
+            //Add the amount back to the wallet
+            var wallet = await _context.Wallets.FirstOrDefaultAsync(w => w.UserId == request.UserId);
+            wallet.Balance += request.Amount;
 
             await _context.SaveChangesAsync();
             return request;
