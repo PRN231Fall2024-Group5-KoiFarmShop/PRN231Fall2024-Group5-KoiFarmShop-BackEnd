@@ -24,4 +24,10 @@ namespace Koi.DTOs.WalletDTOs
         public string? vnp_ResponseCode { get; set; }
         public string vnp_PayDate { get; set; } = string.Empty;
     }
+
+    public class WithdrawnRequestDTO
+    {
+        public string BankNote { get; set; }
+        public long Amount { get; set; }
+    }
 }

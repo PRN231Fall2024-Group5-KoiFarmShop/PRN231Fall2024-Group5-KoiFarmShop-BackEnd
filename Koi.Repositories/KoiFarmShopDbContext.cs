@@ -27,8 +27,9 @@ namespace Koi.Repositories
         public DbSet<KoiDiary> KoiDiaries { get; set; }
         public DbSet<Diet> Diets { get; set; }
         public DbSet<RequestForSale> RequestForSales { get; set; }
+        public DbSet<WithdrawnRequest> WithdrawnRequests { get; set; }
 
-        public KoiFarmShopDbContext(DbContextOptions options) : base(options)
+        public KoiFarmShopDbContext(DbContextOptions<KoiFarmShopDbContext> options) : base(options)
         {
         }
 

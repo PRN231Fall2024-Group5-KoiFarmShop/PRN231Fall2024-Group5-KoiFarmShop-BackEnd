@@ -63,6 +63,8 @@ namespace Koi.Services.Mapper
             CreateMap<ConsignmentForNurtureDTO, ConsignmentForNurture>().ReverseMap();
             CreateMap<ConsignmentRequestDTO, ConsignmentForNurture>().ReverseMap();
             CreateMap<ConsignmentUpdateDTO, ConsignmentForNurture>().ReverseMap();
+
+            CreateMap<WithdrawnRequestDTO, WithdrawnRequest>().ReverseMap();
         }
     }
 }

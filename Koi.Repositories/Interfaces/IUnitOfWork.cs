@@ -17,6 +17,7 @@
         public IDietRepository DietRepository { get; }
         public IConsignmentForNurtureRepository ConsignmentForNurtureRepository { get; }
         public INotificationRepository NotificationRepository { get; }
+        public IWithdrawnRequestRepository WithdrawnRequestRepository { get; }
         Task<int> SaveChangeAsync();
     }
 }
