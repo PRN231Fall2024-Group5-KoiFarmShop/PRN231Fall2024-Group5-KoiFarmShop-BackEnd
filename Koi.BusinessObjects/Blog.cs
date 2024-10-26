@@ -14,7 +14,6 @@ namespace Koi.BusinessObjects
         public string Content { get; set; }
         public int AuthorId { get; set; } // Foreign key to User
 
-        // public DateTime CreatedDate { get; set; } already have CreatedAT
         public string? Tags { get; set; }
 
         public bool IsPublished { get; set; }
