@@ -14,7 +14,6 @@ namespace Koi.Services.Services
 
         private readonly IClaimsService _claimsService;
 
-
         public KoiFishService(
             IUnitOfWork unitOfWork,
             IMapper mapper,
@@ -38,11 +37,13 @@ namespace Koi.Services.Services
         {
             return _unitOfWork.KoiFishRepository.FilterAllField();
         }
+
         public IQueryable<KoiFish> GetMyKoiFishes()
         {
             var id = _claimsService.GetCurrentUserId;
             return _unitOfWork.KoiFishRepository.FilterAllField().Where(x => x.OwnerId == id).AsQueryable();
         }
+
         public async Task<KoiFishResponseDTO> GetKoiFishById(int id)
         {
             var fish = await _unitOfWork.KoiFishRepository.GetByIdAsync(id,
@@ -59,13 +60,16 @@ namespace Koi.Services.Services
 
             var result = _mapper.Map<KoiFishResponseDTO>(fish);
 
-
             return result;
         }
 
         public async Task<KoiFishResponseDTO> CreateKoiFish(KoiFishCreateDTO fishModel)
         {
             var user = await _unitOfWork.UserRepository.GetCurrentUserAsync();
+            if (user == null)
+            {
+                throw new Exception("401 - User is not signed in ");
+            }
             KoiFish fish = _mapper.Map<KoiFish>(fishModel);
             fish.KoiBreeds = [];
             foreach (var breedId in fishModel.KoiBreedIds)
@@ -90,7 +94,8 @@ namespace Koi.Services.Services
                 fish.IsAvailableForSale = false;
                 fish.IsSold = false;
                 fish.IsDeleted = false;
-                fish.Price = 0;
+                fish.Price = fishModel.Price;
+                fish.OwnerId = _claimsService.GetCurrentUserId;
             }
             fish.IsAvailableForSale = fishModel.IsAvailableForSale;
             fish.IsSold = fishModel.IsSold;
@@ -104,7 +109,6 @@ namespace Koi.Services.Services
 
         public async Task<KoiFishResponseDTO> UpdateKoiFish(int id, KoiFishUpdateDTO fishModel)
         {
-
             try
             {
                 var user = await _unitOfWork.UserRepository.GetCurrentUserAsync();
@@ -134,7 +138,6 @@ namespace Koi.Services.Services
                     fish.IsAvailableForSale = fishModel.IsAvailableForSale;
                     fish.IsSold = fishModel.IsSold;
                     fish.IsDeleted = fishModel.IsDeleted;
-
                 }
                 if (fish.KoiFishImages == null) fish.KoiFishImages = [];
                 foreach (var item in fish.KoiFishImages)
