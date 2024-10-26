@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Koi.WebAPI.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/v1/koi-diaries")]
     [ApiController]
     public class KoiFishDiaryController : ControllerBase
     {
@@ -14,13 +14,15 @@ namespace Koi.WebAPI.Controllers
         private readonly IMapper _mapper;
 
         public KoiFishDiaryController(
-            IKoiDiaryService _koiDiaryService,
+            IKoiDiaryService koiDiaryService,
             IMapper mapper
         )
         {
-            _koiDiaryService = _koiDiaryService;
+            _koiDiaryService = koiDiaryService;
             _mapper = mapper;
         }
+
+
         [HttpPost]
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]

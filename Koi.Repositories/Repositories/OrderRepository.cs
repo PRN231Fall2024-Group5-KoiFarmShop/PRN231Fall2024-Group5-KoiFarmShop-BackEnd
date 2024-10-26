@@ -22,13 +22,14 @@ namespace Koi.Repositories.Repositories
         public async Task<List<Order>> GetOrdersByUserId(int userId)
         {
             return await _dbContext.Orders
+                                    .Include(x => x.OrderDetails).ThenInclude(x => x.KoiFish)
                                    .Where(o => o.UserId == userId)
                                    .ToListAsync();
         }
 
         public async Task<Order> GetOrdersById(int orderId)
         {
-            return await _dbContext.Orders.FindAsync(orderId);
+            return await _dbContext.Orders.Include(x => x.OrderDetails).ThenInclude(x => x.KoiFish).FirstOrDefaultAsync(x => x.Id == orderId);
         }
 
         // Cập nhật trạng thái của đơn hàng
@@ -63,7 +64,7 @@ namespace Koi.Repositories.Repositories
         // Lấy tất cả đơn hàng
         public async Task<List<Order>> GetAllOrdersAsync()
         {
-            return await _dbContext.Orders.ToListAsync();
+            return await _dbContext.Orders.Include(x => x.OrderDetails).ThenInclude(x => x.KoiFish).ToListAsync();
         }
 
         public async Task<List<OrderDetail>> CreateOrderWithOrderDetails(Order order, List<KoiFish> purchaseFishes)
@@ -81,14 +82,20 @@ namespace Koi.Repositories.Repositories
                         Price = fish.Price,
                         Status = OrderStatusEnums.PENDING.ToString(),
                     };
+                    if (fish.IsConsigned.Value && fish.ConsignmentForNurtures.Any())
+                    {
+                        var existingConsignment = fish.ConsignmentForNurtures.ToList();
+                        orderDetail.ConsignmentForNurtureId = existingConsignment.First().Id;
+                    }
                     order.OrderDetails = [];
                     order.OrderDetails.Add(orderDetail);
                     orderDetails.Add(orderDetail);
+                    fish.OwnerId = _claimsService.GetCurrentUserId;
                 }
 
                 _dbContext.Entry(order).State = EntityState.Modified;
                 await _dbContext.OrderDetails.AddRangeAsync(orderDetails);
-                await _dbContext.SaveChangesAsync();
+                // await _dbContext.SaveChangesAsync();
 
                 return orderDetails;
             }

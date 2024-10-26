@@ -4,29 +4,26 @@ using Koi.DTOs.KoiCertificateDTOs;
 using Koi.Repositories.Helper;
 using Koi.Repositories.Interfaces;
 using Koi.Services.Interface;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Koi.Services.Services
 {
-    public class KoiCertificcateService: IKoiCertificateService
+    public class KoiCertificateService : IKoiCertificateService
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
-        public KoiCertificcateService(IUnitOfWork unitOfWork , IMapper mapper )
+
+        public KoiCertificateService(IUnitOfWork unitOfWork, IMapper mapper)
         {
             _unitOfWork = unitOfWork;
             _mapper = mapper;
         }
-        public async Task<KoiCertificateResponseDTO> GetKoiCertificateById (int id)
+
+        public async Task<KoiCertificateResponseDTO> GetKoiCertificateById(int id)
         {
             try
             {
-                var certificate = await _unitOfWork.KoiCertificateRepository.GetByIdAsync (id);
-                if(certificate == null)
+                var certificate = await _unitOfWork.KoiCertificateRepository.GetByIdAsync(id);
+                if (certificate == null)
                 {
                     throw new Exception("404 - Certificate not found!");
                 }
@@ -37,48 +34,75 @@ namespace Koi.Services.Services
             {
                 throw ex;
             }
-            
+
         }
+
+        public async Task<List<KoiCertificateResponseDTO>> GetListCertificateByKoiId(int koiId)
+        {
+            try
+            {
+                var list = await _unitOfWork.KoiCertificateRepository.GetListCertificateByKoiIdAsync(koiId);
+                if (list == null)
+                {
+                    throw new Exception("404 - Certificate not found!");
+                }
+                var result = _mapper.Map<List<KoiCertificateResponseDTO>>(list);
+                result = result.ToList();
+                return result;
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
+        public IQueryable<KoiCertificate> GetKoiCertificates() => _unitOfWork.KoiCertificateRepository.GetQueryable();
+
         public async Task<List<KoiCertificateResponseDTO>> GetKoiCertificates(KoiCertificateParams certificateParams)
         {
             try
             {
                 var list = await _unitOfWork.KoiCertificateRepository.GetAllAsync();
-                
+
                 if (!string.IsNullOrEmpty(certificateParams.KoiName))
                 {
                     list = list
                         .Where(x => x.KoiFish.Name.ToLower().Contains(certificateParams.KoiName.ToLower()))
                         .ToList();
                 }
+
                 if (!string.IsNullOrEmpty(certificateParams.UserName))
                 {
                     list = list
-                        .Where(x => x.KoiFish.Consigner.FullName.ToLower().Contains(certificateParams.UserName.ToLower()))
+                        .Where(x => x.KoiFish.Owner.FullName.ToLower().Contains(certificateParams.UserName.ToLower()))
                         .ToList();
                 }
+
                 var result = _mapper.Map<List<KoiCertificateResponseDTO>>(list);
 
                 result = result.ToList();
                 return result;
-
-            }catch(Exception ex)
+            }
+            catch (Exception ex)
             {
                 throw ex;
             }
         }
-        public async Task<KoiCertificateResponseDTO> CreateKoiCertificate(CreateKoiCertificateDTO dto) 
+
+
+
+        public async Task<KoiCertificateResponseDTO> CreateKoiCertificate(CreateKoiCertificateDTO dto)
         {
             try
             {
                 var existingCertificates = await _unitOfWork.KoiCertificateRepository.GetAllAsync();
-                var isExist = existingCertificates.FirstOrDefault(x => x.CertificateUrl.ToLower() == dto.CertificateUrl.ToLower());
-                if(isExist != null)
-                {
-                    throw new Exception("400 - Create failed. Certificate has already existed!");
-                }
+                //var isExist = existingCertificates.FirstOrDefault(x => x.CertificateUrl.ToLower() == dto.CertificateUrl.ToLower());
+                //if(isExist != null)
+                //{
+                //    throw new Exception("400 - Create failed. Certificate has already existed!");
+                //}
                 var koiExist = await _unitOfWork.KoiFishRepository.GetByIdAsync(dto.KoiFishId);
-                if (koiExist== null)
+                if (koiExist == null)
                 {
                     throw new Exception("400 - Create failed. KoiFish is not exist!");
                 }
@@ -90,18 +114,20 @@ namespace Koi.Services.Services
                     KoiFish = koiExist
                 };
                 var newCertificate = await _unitOfWork.KoiCertificateRepository.AddAsync(certificate);
-                var result = _mapper.Map<KoiCertificateResponseDTO>(newCertificate);
                 int check = await _unitOfWork.SaveChangeAsync();
-                if(check < 0)
+                if (check < 0)
                 {
                     throw new Exception("400 - Create failed");
                 }
+                var result = _mapper.Map<KoiCertificateResponseDTO>(newCertificate);
                 return result;
-            }catch(Exception ex)
+            }
+            catch (Exception ex)
             {
                 throw ex;
             }
         }
+
         public async Task<KoiCertificateResponseDTO> UpdateKoiCertificate(UpdateKoiCertificateDTO dto, int id)
         {
             try
@@ -115,23 +141,25 @@ namespace Koi.Services.Services
                 {
                     existingCertificate.CertificateUrl = dto.CertificateUrl;
                 }
-                if(!string.IsNullOrEmpty(dto.CertificateType))
+                if (!string.IsNullOrEmpty(dto.CertificateType))
                 {
                     existingCertificate.CertificateType = dto.CertificateType;
                 }
                 var check = await _unitOfWork.KoiCertificateRepository.Update(existingCertificate);
-                if(check == false)
+                if (check == false)
                 {
                     throw new Exception("400 - Update failed");
                 }
                 var result = _mapper.Map<KoiCertificateResponseDTO>(existingCertificate);
                 await _unitOfWork.SaveChangeAsync();
                 return result;
-            }catch(Exception ex)
+            }
+            catch (Exception ex)
             {
                 throw ex;
             }
         }
+
         public async Task<bool> DeleteKoiCertificate(int id)
         {
             try

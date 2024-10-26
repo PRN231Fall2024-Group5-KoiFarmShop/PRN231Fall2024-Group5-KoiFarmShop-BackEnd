@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Koi.WebAPI.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/v1/diets")]
     [ApiController]
     public class DietController : ControllerBase
     {
@@ -21,18 +21,8 @@ namespace Koi.WebAPI.Controllers
             _dietService = dietService;
             _mapper = mapper;
         }
-        // GET: api/<KoiBreedController>
-        /// <summary>
-        /// Get list koi breeds
-        /// </summary>
-        /// <returns>A list of Koi Breeds</returns>
-        /// <remarks>
-        /// Sample request:
-        ///
-        ///     GET /KoiBreeds
-        ///
-        /// </remarks>
-        [HttpGet]
+
+        [HttpGet()]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]

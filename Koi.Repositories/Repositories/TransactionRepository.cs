@@ -23,7 +23,7 @@ namespace Koi.Repositories.Repositories
             _claimsService = claims;
         }
 
-        public async Task<List<WalletTransaction>> GetTransactionsByOrderId(int orderId)
+        public async Task<List<WalletTransaction>> GetWalletTransactionsByOrderId(int orderId)
         {
             return await _dbContext.WalletTransactions
                                    .Where(o => o.OrderId == orderId)
@@ -32,6 +32,8 @@ namespace Koi.Repositories.Repositories
 
         public async Task<WalletTransaction> AddWalletTransaction(WalletTransaction walletTransaction)
         {
+            walletTransaction.CreatedAt = _timeService.GetCurrentTime();
+            walletTransaction.CreatedBy = _claimsService.GetCurrentUserId;
             var result = await _dbContext.WalletTransactions.AddAsync(walletTransaction);
             return result.Entity;
         }
@@ -39,6 +41,11 @@ namespace Koi.Repositories.Repositories
         public async Task<WalletTransaction> GetWalletTransactionsById(int id)
         {
             return await _dbContext.WalletTransactions.FindAsync(id);
+        }
+
+        public async Task<List<WalletTransaction>> GetWalletTransactionsByUserId(int userId)
+        {
+            return await _dbContext.WalletTransactions.Where(x => x.Wallet.UserId == userId).ToListAsync();
         }
     }
 }

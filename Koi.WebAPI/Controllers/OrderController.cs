@@ -1,5 +1,6 @@
 ﻿using Koi.DTOs.PaymentDTOs;
 using Koi.Repositories.Commons;
+using Koi.Repositories.Interfaces;
 using Koi.Services.Interface;
 using Microsoft.AspNetCore.Mvc;
 
@@ -11,11 +12,13 @@ namespace Koi.WebAPI.Controllers
     {
         private readonly IOrderService _paymentService;
         private readonly IVnPayService _vnPayService;
+        private readonly IClaimsService _claimsService;
 
-        public OrderController(IOrderService paymentService, IVnPayService vnPayService)
+        public OrderController(IOrderService paymentService, IVnPayService vnPayService, IClaimsService claimsService)
         {
             _paymentService = paymentService;
             _vnPayService = vnPayService;
+            _claimsService = claimsService;
         }
 
         /// <summary>
@@ -44,6 +47,25 @@ namespace Koi.WebAPI.Controllers
             try
             {
                 var result = await _paymentService.GetOrdersByUserIdAsync(id);
+                return Ok(ApiResult<List<OrderDTO>>.Succeed(result, "Get list order Successfully!"));
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ApiResult<object>.Fail(ex));
+            }
+        }
+
+        [HttpGet("users/me/orders")]
+        public async Task<IActionResult> GetOrdersByCurrentUser()
+        {
+            try
+            {
+                if (_claimsService.GetCurrentUserId == -1)
+                {
+                    throw new Exception("401 - User have been not signed in");
+                }
+
+                var result = await _paymentService.GetOrdersByUserIdAsync(_claimsService.GetCurrentUserId);
                 return Ok(ApiResult<List<OrderDTO>>.Succeed(result, "Get list order Successfully!"));
             }
             catch (Exception ex)
@@ -81,7 +103,8 @@ namespace Koi.WebAPI.Controllers
                 return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
             }
         }
-        [HttpPut("CancelOrder/{id}")]
+
+        [HttpPut("cancel-order/{id}")]
         public async Task<IActionResult> CancelOrderAsync(int id)
         {
             try

@@ -1,6 +1,5 @@
 ﻿using Koi.BusinessObjects;
 using Koi.Repositories;
-using Koi.Repositories.Models.TestDTO;
 using Koi.Services.Hubs;
 using Koi.WebAPI.Injection;
 using Koi.WebAPI.MiddleWares;
@@ -8,6 +7,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.OData;
 using Microsoft.IdentityModel.Tokens;
+using Microsoft.OData.Edm;
 using Microsoft.OData.ModelBuilder;
 using Microsoft.OpenApi.Models;
 using System.Reflection;
@@ -24,6 +24,7 @@ builder.Services.AddControllers()
         options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
         options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles;
         options.JsonSerializerOptions.PropertyNamingPolicy = JsonNamingPolicy.CamelCase;
+        options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
     });
 
 //CONFIG FOR JWT AUTHENTICATION ON SWAGGER
@@ -117,17 +118,25 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddSignalR();
 
 // START - ADD ODATA
-var modelBuilder = new ODataConventionModelBuilder();
-modelBuilder.EntityType<OrderTestDTO>();
-modelBuilder.EntitySet<CustomerTestDTO>("Customers");
-var edmModel = modelBuilder.GetEdmModel();
+IEdmModel GetEdmModel()
+{
+    var modelBuilder = new ODataConventionModelBuilder();
+    modelBuilder.EntitySet<KoiFish>("koi-fishes");
+    modelBuilder.EntitySet<KoiFish>("my-koi-fishes");
+    modelBuilder.EntitySet<KoiBreed>("koi-breeds");
+    modelBuilder.EntitySet<KoiCertificate>("koi-certificates");
+    modelBuilder.EntitySet<KoiDiary>("koi-diaries");
+    modelBuilder.EntitySet<Diet>("diets");
 
-builder.Services.AddControllers()
-    .AddOData(
-    options => options.Select().Filter().OrderBy().Expand().Count().SetMaxTop(null)
-    .AddRouteComponents(
-        routePrefix: "odata",
-        model: edmModel));
+    return modelBuilder.GetEdmModel();
+}
+
+
+builder.Services.AddControllers().AddOData(opt =>
+    opt.Select().Filter().OrderBy().Expand().Count().SetMaxTop(100).AddRouteComponents("api/v1/odata", GetEdmModel()));
+
+
+
 // END - ADD ODATA
 //ADD CORS
 //builder.Services.AddCors(options =>
@@ -164,6 +173,10 @@ builder.Services.AddCors(opt =>
     });
 });
 
+builder.Services.AddSingleton<IConfiguration>(builder.Configuration);
+//CLAIM SERVICE
+builder.Services.AddHttpContextAccessor();
+
 var app = builder.Build();
 
 // SCOPE FOR MIGRATION
@@ -172,8 +185,7 @@ var scope = app.Services.CreateScope();
 var userManager = scope.ServiceProvider.GetRequiredService<UserManager<User>>();
 var logger = scope.ServiceProvider.GetRequiredService<ILogger<Program>>();
 
-//CLAIM SERVICE
-builder.Services.AddHttpContextAccessor();
+
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
@@ -222,6 +234,9 @@ app.UseRouting();
 app.MapControllers();
 
 app.UseStaticFiles();
+
+
+
 
 // USE MIDDLEWARE
 app.UseMiddleware<GlobalExceptionMiddleware>();

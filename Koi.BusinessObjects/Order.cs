@@ -11,14 +11,14 @@
         public string? PaymentMethod { get; set; }
         public string? ShippingMethod { get; set; }
         public string? Note { get; set; }
+        public long IncompleteAmount { get; set; } = 0;
 
         //navigation
         public virtual ICollection<OrderDetail> OrderDetails { get; set; }
 
-        public virtual ICollection<WalletTransaction>? WalletTransactions { get; set; }  // Thêm navigation property cho WalletTransaction
+        public virtual WalletTransaction WalletTransaction { get; set; }  // Thêm navigation property cho WalletTransaction
 
         public virtual ICollection<Transaction> Transactions { get; set; }
-        public virtual Wallet? Wallet { get; set; }
         public virtual User User { get; set; }
     }
 }

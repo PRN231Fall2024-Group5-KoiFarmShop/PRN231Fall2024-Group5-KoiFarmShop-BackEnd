@@ -50,6 +50,9 @@ namespace Koi.Services.Services
                 throw new Exception("500");
             }
         }
+
+        public IQueryable<KoiDiary> GetDiaryList() => _unitOfWork.KoiDiaryRepository.GetQueryable();
+
         public async Task<KoiFishDiaryCreateDTO> UpdateDiary(int id, KoiFishDiaryUpdateDTO koiDiary)
         {
             try

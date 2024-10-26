@@ -1,16 +1,13 @@
 ﻿using AutoMapper;
 using Koi.DTOs.KoiCertificateDTOs;
-using Koi.DTOs.KoiFishDTOs;
 using Koi.Repositories.Commons;
 using Koi.Repositories.Helper;
 using Koi.Services.Interface;
-using Koi.Services.Services;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Koi.WebAPI.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/v1/koi-certificates")]
     [ApiController]
     public class KoiCertificateController : ControllerBase
     {
@@ -21,7 +18,28 @@ namespace Koi.WebAPI.Controllers
             _koiCertificateService = koiCertificateService;
             _mapper = mapper;
         }
-        [HttpGet]
+
+
+        [HttpGet("getList/{koiId}")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> GetList(int koiId)
+        {
+            try
+            {
+                var certificates = await _koiCertificateService.GetListCertificateByKoiId(koiId);
+
+
+                var koiCertificateReponseDTOs = _mapper.Map<List<KoiCertificateResponseDTO>>(certificates);
+
+                return Ok(ApiResult<List<KoiCertificateResponseDTO>>.Succeed(koiCertificateReponseDTOs, "Get list certificates successfully"));
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+            }
+        }
+        [HttpGet()]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> Get([FromQuery] KoiCertificateParams certificateParams)
@@ -30,7 +48,6 @@ namespace Koi.WebAPI.Controllers
             {
                 var certificates = await _koiCertificateService.GetKoiCertificates(certificateParams);
 
-                //Response.AddPaginationHeader(breeds.MetaData);
 
                 var koiCertificateReponseDTOs = _mapper.Map<List<KoiCertificateResponseDTO>>(certificates);
 
@@ -74,7 +91,9 @@ namespace Koi.WebAPI.Controllers
             try
             {
                 var certificateModel = await _koiCertificateService.CreateKoiCertificate(certificate);
-                return Created();
+                var locationUri = $"/api/koiCertificates/{certificateModel.Id}";
+
+                return Created(locationUri, certificateModel);
             }
             catch (Exception ex)
             {

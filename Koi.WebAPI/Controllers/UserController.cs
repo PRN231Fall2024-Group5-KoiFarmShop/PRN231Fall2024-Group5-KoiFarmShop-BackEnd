@@ -89,13 +89,13 @@ namespace Koi.WebAPI.Controllers
         /// <response code="200">Returns a success message with user data if registration is successful.</response>
         /// <response code="400">Returns an error message if registration fails (e.g., email already exists, invalid data).</response>
         [HttpPost()]
-        public async Task<IActionResult> CreateUserAsync([FromBody] UserSignupModel userSignup)
+        public async Task<IActionResult> CreateUserAsync([FromBody] UserSignupModel userSignup, RoleEnums role)
         {
             try
             {
-                string roleName = string.IsNullOrEmpty(userSignup.RoleName.ToString()) ? userSignup.RoleName.ToString() : "CUSTOMER";
+                string roleName = string.IsNullOrEmpty(role.ToString()) ? role.ToString() : "CUSTOMER";
 
-                var data = await _userService.ResigerAsync(userSignup, userSignup.RoleName.ToString());
+                var data = await _userService.ResigerAsync(userSignup, roleName);
                 if (data.IsSuccess)
                 {
                     // var confirmationLink = Url.Action(nameof(ConfirmEmail), "users", new { email = userLogin.Email, token = data.Message }, Request.Scheme);
@@ -176,7 +176,7 @@ namespace Koi.WebAPI.Controllers
         {
             try
             {
-                string roleName = string.IsNullOrEmpty(userUpdatemodel.RoleName.ToString()) ? userUpdatemodel.RoleName.ToString() : "CUSTOMER";
+                string roleName = !string.IsNullOrEmpty(userUpdatemodel.RoleName.ToString()) ? userUpdatemodel.RoleName.ToString() : "CUSTOMER";
 
                 var result = await _userService.UpdateUserWithRoleAsync(id, userUpdatemodel, roleName);
                 if (result.IsSuccess == false)

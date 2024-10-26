@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Koi.Repositories.Migrations
 {
     [DbContext(typeof(KoiFarmShopDbContext))]
-    [Migration("20240927132418_INITDB")]
-    partial class INITDB
+    [Migration("20241023020437_withdrawn")]
+    partial class withdrawn
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -89,6 +89,9 @@ namespace Koi.Repositories.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
+                    b.Property<long?>("ActualCost")
+                        .HasColumnType("bigint");
+
                     b.Property<DateTime>("ConsignmentDate")
                         .HasColumnType("datetime2");
 
@@ -102,7 +105,10 @@ namespace Koi.Repositories.Migrations
                     b.Property<int?>("CreatedBy")
                         .HasColumnType("int");
 
-                    b.Property<int>("CustomerId")
+                    b.Property<int?>("CustomerId")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("DailyFeedAmount")
                         .HasColumnType("int");
 
                     b.Property<DateTime?>("DeletedAt")
@@ -111,7 +117,10 @@ namespace Koi.Repositories.Migrations
                     b.Property<int?>("DeletedBy")
                         .HasColumnType("int");
 
-                    b.Property<int>("DietId")
+                    b.Property<long?>("DietCost")
+                        .HasColumnType("bigint");
+
+                    b.Property<int?>("DietId")
                         .HasColumnType("int");
 
                     b.Property<DateTime>("EndDate")
@@ -120,7 +129,7 @@ namespace Koi.Repositories.Migrations
                     b.Property<DateTime?>("InspectionDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<bool>("InspectionRequired")
+                    b.Property<bool?>("InspectionRequired")
                         .HasColumnType("bit");
 
                     b.Property<bool?>("IsDeleted")
@@ -129,23 +138,29 @@ namespace Koi.Repositories.Migrations
                     b.Property<int>("KoiFishId")
                         .HasColumnType("int");
 
+                    b.Property<long?>("LaborCost")
+                        .HasColumnType("bigint");
+
                     b.Property<DateTime?>("ModifiedAt")
                         .HasColumnType("datetime2");
 
                     b.Property<int?>("ModifiedBy")
                         .HasColumnType("int");
 
-                    b.Property<int>("PackageCareId")
-                        .HasColumnType("int");
+                    b.Property<string>("Note")
+                        .HasColumnType("nvarchar(max)");
 
-                    b.Property<long>("PriceByDayDeale")
+                    b.Property<long?>("ProjectedCost")
                         .HasColumnType("bigint");
 
-                    b.Property<int>("StaffId")
+                    b.Property<int?>("StaffId")
                         .HasColumnType("int");
 
                     b.Property<DateTime>("StartDate")
                         .HasColumnType("datetime2");
+
+                    b.Property<int?>("TotalDays")
+                        .HasColumnType("int");
 
                     b.HasKey("Id");
 
@@ -154,8 +169,6 @@ namespace Koi.Repositories.Migrations
                     b.HasIndex("DietId");
 
                     b.HasIndex("KoiFishId");
-
-                    b.HasIndex("PackageCareId");
 
                     b.HasIndex("StaffId");
 
@@ -459,12 +472,6 @@ namespace Koi.Repositories.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<int>("Age")
-                        .HasColumnType("int");
-
-                    b.Property<int?>("ConsignedBy")
-                        .HasColumnType("int");
-
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
 
@@ -479,6 +486,9 @@ namespace Koi.Repositories.Migrations
 
                     b.Property<int?>("DeletedBy")
                         .HasColumnType("int");
+
+                    b.Property<DateTime>("Dob")
+                        .HasColumnType("datetime2");
 
                     b.Property<bool?>("Gender")
                         .HasColumnType("bit");
@@ -514,6 +524,9 @@ namespace Koi.Repositories.Migrations
                     b.Property<string>("Origin")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<int?>("OwnerId")
+                        .HasColumnType("int");
+
                     b.Property<string>("PersonalityTraits")
                         .HasColumnType("nvarchar(max)");
 
@@ -525,7 +538,7 @@ namespace Koi.Repositories.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("ConsignedBy");
+                    b.HasIndex("OwnerId");
 
                     b.ToTable("KoiFishs");
                 });
@@ -650,6 +663,9 @@ namespace Koi.Repositories.Migrations
                     b.Property<int?>("DeletedBy")
                         .HasColumnType("int");
 
+                    b.Property<long>("IncompleteAmount")
+                        .HasColumnType("bigint");
+
                     b.Property<bool?>("IsConsignmentIncluded")
                         .HasColumnType("bit");
 
@@ -686,14 +702,9 @@ namespace Koi.Repositories.Migrations
                     b.Property<int>("UserId")
                         .HasColumnType("int");
 
-                    b.Property<int?>("WalletUserId")
-                        .HasColumnType("int");
-
                     b.HasKey("Id");
 
                     b.HasIndex("UserId");
-
-                    b.HasIndex("WalletUserId");
 
                     b.ToTable("Orders");
                 });
@@ -805,7 +816,7 @@ namespace Koi.Repositories.Migrations
                     b.ToTable("OrderDetailFeedbacks");
                 });
 
-            modelBuilder.Entity("Koi.BusinessObjects.PackageCare", b =>
+            modelBuilder.Entity("Koi.BusinessObjects.RequestForSale", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -825,23 +836,10 @@ namespace Koi.Repositories.Migrations
                     b.Property<int?>("DeletedBy")
                         .HasColumnType("int");
 
-                    b.Property<string>("Description")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<long?>("FoodCost")
-                        .HasColumnType("bigint");
-
                     b.Property<bool?>("IsDeleted")
                         .HasColumnType("bit");
 
-                    b.Property<long?>("LaborCost")
-                        .HasColumnType("bigint");
-
-                    b.Property<int>("MaxSize")
-                        .HasColumnType("int");
-
-                    b.Property<int>("MinSize")
+                    b.Property<int>("KoiFishId")
                         .HasColumnType("int");
 
                     b.Property<DateTime?>("ModifiedAt")
@@ -850,16 +848,26 @@ namespace Koi.Repositories.Migrations
                     b.Property<int?>("ModifiedBy")
                         .HasColumnType("int");
 
-                    b.Property<string>("Name")
+                    b.Property<string>("Note")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<long?>("PriceDealed")
+                        .HasColumnType("bigint");
+
+                    b.Property<string>("RequestStatus")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<long?>("TotalCost")
-                        .HasColumnType("bigint");
+                    b.Property<int>("UserId")
+                        .HasColumnType("int");
 
                     b.HasKey("Id");
 
-                    b.ToTable("PackageCares");
+                    b.HasIndex("KoiFishId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("RequestForSales");
                 });
 
             modelBuilder.Entity("Koi.BusinessObjects.Role", b =>
@@ -942,14 +950,9 @@ namespace Koi.Repositories.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("UserId")
-                        .HasColumnType("int");
-
                     b.HasKey("Id");
 
                     b.HasIndex("OrderId");
-
-                    b.HasIndex("UserId");
 
                     b.ToTable("Transactions");
                 });
@@ -1161,16 +1164,76 @@ namespace Koi.Repositories.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<int?>("UserId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("WalletId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("OrderId")
+                        .IsUnique()
+                        .HasFilter("[OrderId] IS NOT NULL");
+
+                    b.HasIndex("UserId");
+
+                    b.HasIndex("WalletId");
+
+                    b.ToTable("WalletTransactions");
+                });
+
+            modelBuilder.Entity("Koi.BusinessObjects.WithdrawnRequest", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<long>("Amount")
+                        .HasColumnType("bigint");
+
+                    b.Property<string>("BankNote")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int?>("CreatedBy")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime?>("DeletedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int?>("DeletedBy")
+                        .HasColumnType("int");
+
+                    b.Property<string>("ImageUrl")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool?>("IsDeleted")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTime?>("ModifiedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int?>("ModifiedBy")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<int>("UserId")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("OrderId");
-
                     b.HasIndex("UserId");
 
-                    b.ToTable("WalletTransactions");
+                    b.ToTable("WithdrawnRequests");
                 });
 
             modelBuilder.Entity("KoiBreedKoiFish", b =>
@@ -1307,40 +1370,28 @@ namespace Koi.Repositories.Migrations
                     b.HasOne("Koi.BusinessObjects.User", "Customer")
                         .WithMany()
                         .HasForeignKey("CustomerId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
+                        .OnDelete(DeleteBehavior.Restrict);
 
                     b.HasOne("Koi.BusinessObjects.Diet", "Diet")
                         .WithMany("Consignments")
-                        .HasForeignKey("DietId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("DietId");
 
                     b.HasOne("Koi.BusinessObjects.KoiFish", "KoiFish")
-                        .WithMany()
-                        .HasForeignKey("KoiFishId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Koi.BusinessObjects.PackageCare", "PackageCare")
                         .WithMany("ConsignmentForNurtures")
-                        .HasForeignKey("PackageCareId")
+                        .HasForeignKey("KoiFishId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("Koi.BusinessObjects.User", "Staff")
                         .WithMany()
                         .HasForeignKey("StaffId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
+                        .OnDelete(DeleteBehavior.Restrict);
 
                     b.Navigation("Customer");
 
                     b.Navigation("Diet");
 
                     b.Navigation("KoiFish");
-
-                    b.Navigation("PackageCare");
 
                     b.Navigation("Staff");
                 });
@@ -1396,11 +1447,11 @@ namespace Koi.Repositories.Migrations
 
             modelBuilder.Entity("Koi.BusinessObjects.KoiFish", b =>
                 {
-                    b.HasOne("Koi.BusinessObjects.User", "Consigner")
-                        .WithMany("KoiFishsConsigned")
-                        .HasForeignKey("ConsignedBy");
+                    b.HasOne("Koi.BusinessObjects.User", "Owner")
+                        .WithMany("OwnerKoiFishes")
+                        .HasForeignKey("OwnerId");
 
-                    b.Navigation("Consigner");
+                    b.Navigation("Owner");
                 });
 
             modelBuilder.Entity("Koi.BusinessObjects.KoiFishImage", b =>
@@ -1422,13 +1473,7 @@ namespace Koi.Repositories.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Koi.BusinessObjects.Wallet", "Wallet")
-                        .WithMany()
-                        .HasForeignKey("WalletUserId");
-
                     b.Navigation("User");
-
-                    b.Navigation("Wallet");
                 });
 
             modelBuilder.Entity("Koi.BusinessObjects.OrderDetail", b =>
@@ -1467,6 +1512,25 @@ namespace Koi.Repositories.Migrations
                     b.Navigation("Order");
                 });
 
+            modelBuilder.Entity("Koi.BusinessObjects.RequestForSale", b =>
+                {
+                    b.HasOne("Koi.BusinessObjects.KoiFish", "KoiFish")
+                        .WithMany()
+                        .HasForeignKey("KoiFishId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Koi.BusinessObjects.User", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("KoiFish");
+
+                    b.Navigation("User");
+                });
+
             modelBuilder.Entity("Koi.BusinessObjects.Role", b =>
                 {
                     b.HasOne("Koi.BusinessObjects.User", null)
@@ -1482,15 +1546,7 @@ namespace Koi.Repositories.Migrations
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.HasOne("Koi.BusinessObjects.User", "User")
-                        .WithMany()
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.Navigation("Order");
-
-                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("Koi.BusinessObjects.Wallet", b =>
@@ -1507,16 +1563,31 @@ namespace Koi.Repositories.Migrations
             modelBuilder.Entity("Koi.BusinessObjects.WalletTransaction", b =>
                 {
                     b.HasOne("Koi.BusinessObjects.Order", "Order")
-                        .WithMany("WalletTransactions")
-                        .HasForeignKey("OrderId");
+                        .WithOne("WalletTransaction")
+                        .HasForeignKey("Koi.BusinessObjects.WalletTransaction", "OrderId");
 
-                    b.HasOne("Koi.BusinessObjects.User", "User")
+                    b.HasOne("Koi.BusinessObjects.User", null)
                         .WithMany("WalletTransactions")
-                        .HasForeignKey("UserId")
+                        .HasForeignKey("UserId");
+
+                    b.HasOne("Koi.BusinessObjects.Wallet", "Wallet")
+                        .WithMany("WalletTransactions")
+                        .HasForeignKey("WalletId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("Order");
+
+                    b.Navigation("Wallet");
+                });
+
+            modelBuilder.Entity("Koi.BusinessObjects.WithdrawnRequest", b =>
+                {
+                    b.HasOne("Koi.BusinessObjects.User", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("User");
                 });
@@ -1594,6 +1665,8 @@ namespace Koi.Repositories.Migrations
 
             modelBuilder.Entity("Koi.BusinessObjects.KoiFish", b =>
                 {
+                    b.Navigation("ConsignmentForNurtures");
+
                     b.Navigation("KoiCertificates");
 
                     b.Navigation("KoiDiaries");
@@ -1607,7 +1680,8 @@ namespace Koi.Repositories.Migrations
 
                     b.Navigation("Transactions");
 
-                    b.Navigation("WalletTransactions");
+                    b.Navigation("WalletTransaction")
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("Koi.BusinessObjects.OrderDetail", b =>
@@ -1615,24 +1689,24 @@ namespace Koi.Repositories.Migrations
                     b.Navigation("OrderDetailFeedbacks");
                 });
 
-            modelBuilder.Entity("Koi.BusinessObjects.PackageCare", b =>
-                {
-                    b.Navigation("ConsignmentForNurtures");
-                });
-
             modelBuilder.Entity("Koi.BusinessObjects.User", b =>
                 {
                     b.Navigation("Blogs");
 
-                    b.Navigation("KoiFishsConsigned");
-
                     b.Navigation("Orders");
+
+                    b.Navigation("OwnerKoiFishes");
 
                     b.Navigation("Roles");
 
                     b.Navigation("Wallet")
                         .IsRequired();
 
+                    b.Navigation("WalletTransactions");
+                });
+
+            modelBuilder.Entity("Koi.BusinessObjects.Wallet", b =>
+                {
                     b.Navigation("WalletTransactions");
                 });
 #pragma warning restore 612, 618

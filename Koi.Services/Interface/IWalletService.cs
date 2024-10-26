@@ -2,11 +2,6 @@
 using Koi.DTOs.TransactionDTOs;
 using Koi.DTOs.WalletDTOs;
 using Microsoft.AspNetCore.Http;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Koi.Services.Interface
 {
@@ -15,6 +10,7 @@ namespace Koi.Services.Interface
         Task<DepositResponseDTO> CompletePending(int orderId);
 
         Task<DepositResponseDTO> Deposit(long amount);
+        Task<DepositResponseDTO> DepositByPayOS(int amount);
 
         Task<List<WalletDTO>> GetAllWallets();
 

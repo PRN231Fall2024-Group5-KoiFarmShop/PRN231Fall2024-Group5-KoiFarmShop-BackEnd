@@ -37,6 +37,7 @@ namespace Koi.WebAPI.Injection
             services.AddAutoMapper(typeof(MapperConfigProfile).Assembly);
             services.AddScoped<IClaimsService, ClaimsService>();
             services.AddScoped<IVnPayService, VnPayService>();
+            services.AddScoped<IPayOSService, PayOSService>();
 
             // add repositories
             services.AddScoped<IUserRepository, UserRepository>();
@@ -50,6 +51,9 @@ namespace Koi.WebAPI.Injection
             services.AddScoped<IKoiImageRepository, KoiImageRepository>();
             services.AddScoped<IOrderDetailRepository, OrderDetailRepository>();
             services.AddScoped<IDietRepository, DietRepository>();
+            services.AddScoped<IConsignmentForNurtureRepository, ConsignmentForNurtureRepository>();
+            services.AddScoped<INotificationRepository, NotificationRepository>();
+            services.AddScoped<IWithdrawnRequestRepository, WithdrawnRequestRepository>();
             services.AddScoped<IBlogRepository, BlogRepository>();
             // add generic repositories
             services.AddScoped<IGenericRepository<KoiFish>, GenericRepository<KoiFish>>();
@@ -62,6 +66,9 @@ namespace Koi.WebAPI.Injection
             services.AddScoped<IGenericRepository<KoiFishImage>, GenericRepository<KoiFishImage>>();
             services.AddScoped<IGenericRepository<OrderDetail>, GenericRepository<OrderDetail>>();
             services.AddScoped<IGenericRepository<Diet>, GenericRepository<Diet>>();
+            services.AddScoped<IGenericRepository<ConsignmentForNurture>, GenericRepository<ConsignmentForNurture>>();
+            services.AddScoped<IGenericRepository<Notification>, GenericRepository<Notification>>();
+            services.AddScoped<IGenericRepository<WithdrawnRequest>, GenericRepository<WithdrawnRequest>>();
             services.AddScoped<IGenericRepository<Blog>, GenericRepository<Blog>>();
             // add signInManager
             services.AddScoped<SignInManager<User>>();
@@ -70,10 +77,14 @@ namespace Koi.WebAPI.Injection
             services.AddScoped<IKoiBreedService, KoiBreedService>();
             services.AddScoped<IKoiFishService, KoiFishService>();
             services.AddScoped<IOrderService, OrderService>();
+            services.AddScoped<IKoiDiaryService, KoiDiaryService>();
             services.AddScoped<IWalletService, WalletService>();
-            services.AddScoped<IKoiCertificateService, KoiCertificcateService>();
+            services.AddScoped<IKoiCertificateService, KoiCertificateService>();
             services.AddScoped<IOrderDetailServices, OrderDetailServices>();
             services.AddScoped<IDietService, DietService>();
+            services.AddScoped<IConsignmentForNurtureService, ConsignmentForNurtureService>();
+            services.AddScoped<INotificationService, NotificationService>();
+            services.AddScoped<IWithdrawnRequestService, WithdrawnRequestService>();
             services.AddScoped<IBlogService, BlogService>();
             // add unitOfWork
             services.AddScoped<IUnitOfWork, UnitOfWork>();
