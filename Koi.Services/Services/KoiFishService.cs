@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Koi.BusinessObjects;
 using Koi.DTOs.KoiFishDTOs;
+using Koi.DTOs.KoiCertificateDTOs;
 using Koi.Repositories.Helper;
 using Koi.Repositories.Interfaces;
 using Koi.Services.Interface;
@@ -13,16 +14,19 @@ namespace Koi.Services.Services
         private readonly IMapper _mapper;
 
         private readonly IClaimsService _claimsService;
+        private readonly IKoiCertificateService _koiCertificateService;
 
         public KoiFishService(
             IUnitOfWork unitOfWork,
             IMapper mapper,
-            IClaimsService claimsService
+            IClaimsService claimsService,
+            IKoiCertificateService koiCertificateService
         )
         {
             _unitOfWork = unitOfWork;
             _mapper = mapper;
             _claimsService = claimsService;
+            _koiCertificateService = koiCertificateService;
         }
 
         public async Task<PagedList<KoiFish>> GetKoiFishes(KoiParams koiParams)
@@ -102,6 +106,22 @@ namespace Koi.Services.Services
             var result = await _unitOfWork.KoiFishRepository.AddAsync(fish);
 
             if (await _unitOfWork.SaveChangeAsync() <= 0) throw new Exception("400 - Fail saving changes!");
+
+            if (fishModel.Certificates != null && fishModel.Certificates.Any())
+            {
+                foreach (var certInfo in fishModel.Certificates)
+                {
+                    var certificateDto = new CreateKoiCertificateDTO
+                    {
+                        CertificateUrl = certInfo.CertificateUrl,
+                        CertificateType = certInfo.CertificateType,
+                        KoiFishId = result.Id
+                    };
+
+                    await _koiCertificateService.CreateKoiCertificate(certificateDto);
+                }
+            }
+
             return _mapper.Map<KoiFishResponseDTO>(result);
         }
 
