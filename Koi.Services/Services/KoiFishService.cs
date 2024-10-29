@@ -92,13 +92,11 @@ namespace Koi.Services.Services
             if (user.RoleName == "CUSTOMER")
             {
                 fish.IsAvailableForSale = false;
-                fish.IsSold = false;
                 fish.IsDeleted = false;
                 fish.Price = fishModel.Price;
                 fish.OwnerId = _claimsService.GetCurrentUserId;
             }
             fish.IsAvailableForSale = fishModel.IsAvailableForSale;
-            fish.IsSold = fishModel.IsSold;
             fish.IsDeleted = false;
 
             var result = await _unitOfWork.KoiFishRepository.AddAsync(fish);
@@ -136,7 +134,6 @@ namespace Koi.Services.Services
                 if (user.RoleName == "MANAGER")
                 {
                     fish.IsAvailableForSale = fishModel.IsAvailableForSale;
-                    fish.IsSold = fishModel.IsSold;
                     fish.IsDeleted = fishModel.IsDeleted;
                 }
                 if (fish.KoiFishImages == null) fish.KoiFishImages = [];

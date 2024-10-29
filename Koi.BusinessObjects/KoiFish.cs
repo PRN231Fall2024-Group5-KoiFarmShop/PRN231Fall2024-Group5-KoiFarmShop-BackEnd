@@ -16,7 +16,6 @@ namespace Koi.BusinessObjects
         public bool? IsAvailableForSale { get; set; }
         public long Price { get; set; }
         public bool? IsConsigned { get; set; } = false;
-        public bool? IsSold { get; set; }
         public int? OwnerId { get; set; }
 
         //navigation
