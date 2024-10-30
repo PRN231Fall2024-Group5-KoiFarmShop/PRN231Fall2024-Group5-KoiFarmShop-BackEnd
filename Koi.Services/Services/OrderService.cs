@@ -59,7 +59,7 @@ namespace Koi.Services.Services
 
         public async Task<List<OrderDTO>> GetOrdersAsync()
         {
-            return _mapper.Map<List<OrderDTO>>(await _unitOfWork.OrderRepository.GetAllAsync());
+            return _mapper.Map<List<OrderDTO>>(await _unitOfWork.OrderRepository.GetAllOrdersAsync());
         }
 
         public async Task<OrderDTO> GetOrderByIdAsync(int orderId)
@@ -71,6 +71,7 @@ namespace Koi.Services.Services
         {
             return _mapper.Map<List<OrderDTO>>(await _unitOfWork.OrderRepository.GetOrdersByUserId(userId)); ;
         }
+
         public async Task<OrderDTO> CancelOrderAsync(int id)
         {
             var order = await _unitOfWork.OrderRepository.GetOrdersById(id);
@@ -85,7 +86,7 @@ namespace Koi.Services.Services
                 {
                     item.Status = OrderDetailStatusEnum.CANCELED.ToString();
                 }
-                //Need works!! Add refund transaction 
+                //Need works!! Add refund transaction
 
                 if (await _unitOfWork.SaveChangeAsync() <= 0) throw new Exception("500 - Fail Saving");
             }
