@@ -64,7 +64,7 @@ namespace Koi.Repositories.Repositories
         // Lấy tất cả đơn hàng
         public async Task<List<Order>> GetAllOrdersAsync()
         {
-            return await _dbContext.Orders.Include(x => x.OrderDetails).ThenInclude(x => x.KoiFish).ToListAsync();
+            return await _dbContext.Orders.Include(x => x.OrderDetails).ThenInclude(x => x.ConsignmentForNurture).ToListAsync();
         }
 
         public async Task<List<OrderDetail>> CreateOrderWithOrderDetails(Order order, List<KoiFish> purchaseFishes)
