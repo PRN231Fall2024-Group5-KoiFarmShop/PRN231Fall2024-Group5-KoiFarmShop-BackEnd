@@ -274,30 +274,12 @@ namespace Koi.WebAPI.Controllers
         /// <param name="userFilterModel">Filters to apply (e.g., name, email).</param>
         /// <response code="200">Returns a paginated list of users and pagination metadata in the headers.</response>
         [HttpGet()] // lấy tất cả user theo paging và filter
-        public async Task<IActionResult> GetAccountByFilters(//[FromQuery] PaginationParameter paginationParameter, [FromQuery] UserFilterModel userFilterModel
+        public async Task<IActionResult> GetAccountByFilters(
             )
         {
             try
             {
                 var result = await _userService.GetAllUsers();
-
-                //var result = await _userService.GetUsersByFiltersAsync(paginationParameter, userFilterModel);
-                //if (result == null)
-                //{
-                //    return NotFound("No accounts found with the specified filters.");
-                //}
-                //var metadata = new
-                //{
-                //    result.TotalCount,
-                //    result.PageSize,
-                //    result.CurrentPage,
-                //    result.TotalPages,
-                //    result.HasNext,
-                //    result.HasPrevious
-                //};
-
-                //Response.Headers.Add("X-Pagination", JsonConvert.SerializeObject(metadata));
-
                 return Ok(ApiResult<List<UserDetailsModel>>.Succeed(result, "Get list users successfully"));
             }
             catch (Exception ex)

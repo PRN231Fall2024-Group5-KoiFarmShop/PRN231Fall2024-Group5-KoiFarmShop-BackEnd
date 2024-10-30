@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Koi.BusinessObjects;
 using Koi.Repositories.Commons;
 using Koi.Services.Interface;
 using Microsoft.AspNetCore.Mvc;
@@ -16,6 +17,9 @@ namespace Koi.WebAPI.Controllers
         private readonly IKoiCertificateService _koiCertificateService;
         private readonly IKoiFishService _koiFishService;
         private readonly IKoiDiaryService _koiDiaryService;
+        private readonly IOrderService _paymentService;
+        private readonly IMapper _mapper;
+        private readonly IUserService _userService;
         private readonly IRequestForSaleService _requestForSaleService;
         private readonly IBlogService _blogService;
 
@@ -26,15 +30,21 @@ namespace Koi.WebAPI.Controllers
            IKoiDiaryService koiDiaryService,
            IKoiFishService koiFishService,
            IKoiCertificateService koiCertificateService,
+           IOrderService paymentService,
+           IUserService userService,
+           IKoiCertificateService koiCertificateService,
            IRequestForSaleService requestForSaleService,
            IBlogService blogService
         )
         {
+            _userService = userService;
             _dietService = dietService;
             _koiBreedService = koiBreedService;
             _koiCertificateService = koiCertificateService;
             _koiDiaryService = koiDiaryService;
             _koiFishService = koiFishService;
+            _paymentService = paymentService;
+            _mapper = mapper;
             _requestForSaleService = requestForSaleService;
             _blogService = blogService;
         }
@@ -203,6 +213,39 @@ namespace Koi.WebAPI.Controllers
             catch (Exception ex)
             {
                 return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+            }
+        }
+
+        [HttpGet("orders")]
+        [EnableQuery]
+        public async Task<IActionResult> GetOrders()
+        {
+            try
+            {
+                var result = await _paymentService.GetOrdersAsync();
+
+                return Ok(_mapper.Map<List<Order>>(result).AsQueryable());
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ApiResult<object>.Fail(ex));
+            }
+        }
+
+        [HttpGet("accounts")]
+        [EnableQuery]
+
+        public async Task<IActionResult> GetAccountByFilters(
+            )
+        {
+            try
+            {
+                var result = await _userService.GetAllUsers();
+                return Ok(_mapper.Map<List<User>>(result).AsQueryable());
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
             }
         }
     }
