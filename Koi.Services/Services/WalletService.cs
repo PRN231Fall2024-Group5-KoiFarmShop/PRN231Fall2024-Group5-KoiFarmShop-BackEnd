@@ -301,6 +301,10 @@ namespace Koi.Services.Services
                     var koiFish = await _unitOfWork.KoiFishRepository.GetByIdAsync(purchaseFish.FishId, x => x.ConsignmentForNurtures);
                     if (koiFish != null)
                     {
+                        if (koiFish.IsAvailableForSale == false)
+                        {
+                            throw new Exception("This fish is not for sale, already bought or belong to owner");
+                        }
                         fishes.Add(koiFish);
                         totalAmount += koiFish.Price;
                         if (purchaseFish.IsNuture && (purchaseFish.StartDate.HasValue && purchaseFish.EndDate.HasValue))
