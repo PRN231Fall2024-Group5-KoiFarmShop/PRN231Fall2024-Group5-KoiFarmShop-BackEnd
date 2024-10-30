@@ -21,6 +21,8 @@
                 public INotificationRepository NotificationRepository { get; }
                 public IWithdrawnRequestRepository WithdrawnRequestRepository { get; }
 
+                public IRequestForSaleRepository RequestForSaleRepository { get; }
+
                 Task<int> SaveChangeAsync();
         }
 }

@@ -16,7 +16,6 @@ namespace Koi.BusinessObjects
 
         // navigation
         public virtual User User { get; set; }
-
-        public virtual KoiFish KoiFish { get; set; }  // Thông tin KoiFish liên quan
+        public virtual KoiFish KoiFish { get; set; }
     }
 }
