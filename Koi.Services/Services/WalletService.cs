@@ -299,6 +299,7 @@ namespace Koi.Services.Services
                 foreach (var purchaseFish in purchaseDTO.PurchaseFishes)
                 {
                     var koiFish = await _unitOfWork.KoiFishRepository.GetByIdAsync(purchaseFish.FishId, x => x.ConsignmentForNurtures);
+                    if (koiFish.IsAvailableForSale == false) throw new Exception("400 - Fish " + koiFish.Name + " is not available for sale!");
                     if (koiFish != null)
                     {
                         fishes.Add(koiFish);
@@ -463,7 +464,7 @@ namespace Koi.Services.Services
                 }
 
                 //update order status
-                order.OrderStatus = OrderStatusEnums.COMPLETED.ToString();
+                order.OrderStatus = OrderStatusEnums.PENDING.ToString(); // khi ship xong roi moi complete
                 order.WalletTransaction = newWalletTransaction;
                 await _unitOfWork.WalletRepository.UpdateWallet(existingWallet);
                 await _unitOfWork.OrderRepository.Update(order);

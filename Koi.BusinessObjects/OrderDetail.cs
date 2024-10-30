@@ -13,10 +13,14 @@ namespace Koi.BusinessObjects
         public string? Status { get; set; }
         public string? ShippingStatus { get; set; }
         public string? NurtureStatus { get; set; }
+        public int? StaffId { get; set; }  // Foreign key to User (nhân viên thực hiện)
 
         //navigation
         [ForeignKey("OrderId")]
         public virtual Order Order { get; set; }
+
+        [ForeignKey("StaffId")]
+        public virtual User? Staff { get; set; }
 
         public virtual KoiFish KoiFish { get; set; }
         public virtual ICollection<OrderDetailFeedback> OrderDetailFeedbacks { get; set; }

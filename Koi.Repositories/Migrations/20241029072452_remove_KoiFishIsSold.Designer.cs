@@ -4,6 +4,7 @@ using Koi.Repositories;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Koi.Repositories.Migrations
 {
     [DbContext(typeof(KoiFarmShopDbContext))]
-    partial class KoiFarmShopDbContextModelSnapshot : ModelSnapshot
+    [Migration("20241029072452_remove_KoiFishIsSold")]
+    partial class remove_KoiFishIsSold
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -750,9 +753,6 @@ namespace Koi.Repositories.Migrations
                     b.Property<string>("ShippingStatus")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int?>("StaffId")
-                        .HasColumnType("int");
-
                     b.Property<string>("Status")
                         .HasColumnType("nvarchar(max)");
 
@@ -763,8 +763,6 @@ namespace Koi.Repositories.Migrations
                     b.HasIndex("KoiFishId");
 
                     b.HasIndex("OrderId");
-
-                    b.HasIndex("StaffId");
 
                     b.ToTable("OrderDetails");
                 });
@@ -1493,17 +1491,11 @@ namespace Koi.Repositories.Migrations
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.HasOne("Koi.BusinessObjects.User", "Staff")
-                        .WithMany()
-                        .HasForeignKey("StaffId");
-
                     b.Navigation("ConsignmentForNurture");
 
                     b.Navigation("KoiFish");
 
                     b.Navigation("Order");
-
-                    b.Navigation("Staff");
                 });
 
             modelBuilder.Entity("Koi.BusinessObjects.OrderDetailFeedback", b =>

@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Koi.BusinessObjects;
 using Koi.DTOs.Enums;
+using Koi.DTOs.PaymentDTOs;
 using Koi.Repositories.Interfaces;
 using Koi.Services.Interface;
 
@@ -11,6 +12,7 @@ namespace Koi.Services.Services
         private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
         private readonly IOrderDetailServices _orderDetailServices;
+
         //private readonly INotificationService _notificationService;
         private readonly IClaimsService _claimsService;
 
@@ -114,6 +116,36 @@ namespace Koi.Services.Services
             else
             {
                 throw new Exception("400 - Order status or detail status is invalid");
+            }
+        }
+
+        public async Task<OrderDetailDTO> AssignStaffOrderDetail(int id, int staffId)
+        {
+            try
+            {
+                var detail = await _unitOfWork.OrderDetailRepository.GetByIdAsync(id, x => x.ConsignmentForNurture);
+                if (detail == null) throw new Exception("404 - Not Found Order Detail!");
+                var order = await _unitOfWork.OrderRepository.GetByIdAsync(detail.OrderId);
+                if (order == null) throw new Exception("404 - Not Found Order");
+
+                if ((order.OrderStatus == OrderStatusEnums.PENDING.ToString() || order.OrderStatus == OrderStatusEnums.PROCESSING.ToString()) && detail.Status == OrderDetailStatusEnum.PENDING.ToString())
+                {
+                    detail.Status = OrderDetailStatusEnum.SHIPPING.ToString();
+                    if (order.OrderStatus != OrderStatusEnums.PROCESSING.ToString())
+                        order.OrderStatus = OrderStatusEnums.PROCESSING.ToString();
+                    detail.StaffId = staffId;
+                    await _unitOfWork.OrderDetailRepository.Update(detail);
+                    if (await _unitOfWork.SaveChangeAsync() <= 0) throw new Exception("400 - Fail saving");
+                    return _mapper.Map<OrderDetailDTO>(detail);
+                }
+                else
+                {
+                    throw new Exception("400 - Order status or detail status is invalid");
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
             }
         }
     }

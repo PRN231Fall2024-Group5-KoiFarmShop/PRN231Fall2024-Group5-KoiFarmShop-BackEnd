@@ -1,4 +1,5 @@
-﻿using Koi.DTOs.KoiFishDTOs;
+﻿using Koi.DTOs.ConsignmentDTOs;
+using Koi.DTOs.KoiFishDTOs;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,5 +19,6 @@ namespace Koi.DTOs.PaymentDTOs
         public string? ShippingStatus { get; set; }
         public string? NurtureStatus { get; set; }
         public virtual KoiFishResponseDTO KoiFish { get; set; }
+        public virtual ConsignmentForNurtureDTO? ConsignmentForNurture { get; set; }
     }
 }
