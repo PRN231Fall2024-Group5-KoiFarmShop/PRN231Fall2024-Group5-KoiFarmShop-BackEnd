@@ -122,6 +122,8 @@ IEdmModel GetEdmModel()
 {
     var modelBuilder = new ODataConventionModelBuilder();
     modelBuilder.EntitySet<KoiFish>("koi-fishes");
+    modelBuilder.EntitySet<User>("accounts");
+    modelBuilder.EntitySet<Order>("orders");
     modelBuilder.EntitySet<KoiFish>("my-koi-fishes");
     modelBuilder.EntitySet<KoiBreed>("koi-breeds");
     modelBuilder.EntitySet<KoiCertificate>("koi-certificates");
