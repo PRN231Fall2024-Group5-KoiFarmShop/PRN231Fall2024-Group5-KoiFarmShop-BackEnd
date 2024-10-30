@@ -464,7 +464,7 @@ namespace Koi.Services.Services
                 }
 
                 //update order status
-                order.OrderStatus = OrderStatusEnums.COMPLETED.ToString();
+                order.OrderStatus = OrderStatusEnums.PENDING.ToString(); // khi ship xong roi moi complete
                 order.WalletTransaction = newWalletTransaction;
                 await _unitOfWork.WalletRepository.UpdateWallet(existingWallet);
                 await _unitOfWork.OrderRepository.Update(order);

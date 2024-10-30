@@ -17,6 +17,7 @@ namespace Koi.DTOs.PaymentDTOs
         public string? ShippingAddress { get; set; }
         public string? PaymentMethod { get; set; } = "VNPAY";
         public string? Note { get; set; }
+        public string? UserName { get; set; }
 
         public virtual WalletTransactionDTO? WalletTransaction { get; set; }  // Thêm navigation property cho WalletTransaction
         public virtual List<OrderDetailDTO>? OrderDetails { get; set; }
