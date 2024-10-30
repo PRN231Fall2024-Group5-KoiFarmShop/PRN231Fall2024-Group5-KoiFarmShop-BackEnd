@@ -51,7 +51,9 @@ namespace Koi.Services.Mapper
             CreateMap<User, CustomerProfileDTO>().ReverseMap();
 
             //ORDER & WALLET
-            CreateMap<OrderDTO, Order>().ReverseMap();
+            CreateMap<Order, OrderDTO>()
+            .ForMember(dest => dest.UserName, opt => opt.MapFrom(src => src.User.UserName))
+                .ReverseMap();
             CreateMap<WalletDTO, Wallet>().ReverseMap();
             CreateMap<TransactionDTO, Transaction>().ReverseMap();
             CreateMap<WalletTransactionDTO, WalletTransaction>().ReverseMap();

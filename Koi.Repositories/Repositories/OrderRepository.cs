@@ -64,7 +64,7 @@ namespace Koi.Repositories.Repositories
         // Lấy tất cả đơn hàng
         public async Task<List<Order>> GetAllOrdersAsync()
         {
-            return await _dbContext.Orders.Include(x => x.OrderDetails).ThenInclude(x => x.ConsignmentForNurture).ToListAsync();
+            return await _dbContext.Orders.Include(x => x.OrderDetails).ThenInclude(x => x.ConsignmentForNurture).ThenInclude(x => x.KoiFish).Include(x => x.User).ToListAsync();
         }
 
         public async Task<List<OrderDetail>> CreateOrderWithOrderDetails(Order order, List<KoiFish> purchaseFishes)
@@ -81,11 +81,13 @@ namespace Koi.Repositories.Repositories
                         // SubTotal = (int)fish.Price,
                         Price = fish.Price,
                         Status = OrderStatusEnums.PENDING.ToString(),
+                        ShippingStatus = "PENDING"
                     };
                     if (fish.IsConsigned.Value && fish.ConsignmentForNurtures.Any())
                     {
                         var existingConsignment = fish.ConsignmentForNurtures.ToList();
                         orderDetail.ConsignmentForNurtureId = existingConsignment.First().Id;
+                        orderDetail.NurtureStatus = "PENDING";
                     }
                     order.OrderDetails = [];
                     order.OrderDetails.Add(orderDetail);
