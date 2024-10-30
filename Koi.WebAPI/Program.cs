@@ -127,6 +127,8 @@ IEdmModel GetEdmModel()
     modelBuilder.EntitySet<KoiCertificate>("koi-certificates");
     modelBuilder.EntitySet<KoiDiary>("koi-diaries");
     modelBuilder.EntitySet<Diet>("diets");
+    modelBuilder.EntitySet<RequestForSale>("request-for-sales");
+    modelBuilder.EntitySet<RequestForSale>("my-request-for-sales");
 
     return modelBuilder.GetEdmModel();
 }
