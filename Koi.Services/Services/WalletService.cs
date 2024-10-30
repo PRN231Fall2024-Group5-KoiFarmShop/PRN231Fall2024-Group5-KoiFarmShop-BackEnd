@@ -302,6 +302,10 @@ namespace Koi.Services.Services
                     if (koiFish.IsAvailableForSale == false) throw new Exception("400 - Fish " + koiFish.Name + " is not available for sale!");
                     if (koiFish != null)
                     {
+                        if (koiFish.IsAvailableForSale == false)
+                        {
+                            throw new Exception("This fish is not for sale, already bought or belong to owner");
+                        }
                         fishes.Add(koiFish);
                         totalAmount += koiFish.Price;
                         if (purchaseFish.IsNuture && (purchaseFish.StartDate.HasValue && purchaseFish.EndDate.HasValue))
