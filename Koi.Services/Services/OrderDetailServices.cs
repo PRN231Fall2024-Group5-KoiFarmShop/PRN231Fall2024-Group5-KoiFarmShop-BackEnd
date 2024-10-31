@@ -58,7 +58,7 @@ namespace Koi.Services.Services
         {
             var detail = await _unitOfWork.OrderDetailRepository.GetByIdAsync(id);
             if (detail == null) throw new Exception("404 - Not Found Order Detail!");
-            var order = await _unitOfWork.OrderRepository.GetByIdAsync(detail.OrderId);
+            var order = await _unitOfWork.OrderRepository.GetByIdAsync(detail.OrderId, x => x.OrderDetails);
             if (order == null) throw new Exception("404 - Not Found Order");
             if (order.OrderStatus == OrderStatusEnums.PROCESSING.ToString() && detail.Status == OrderDetailStatusEnum.SHIPPING.ToString())
             {
@@ -78,7 +78,7 @@ namespace Koi.Services.Services
         {
             var detail = await _unitOfWork.OrderDetailRepository.GetByIdAsync(id);
             if (detail == null) throw new Exception("404 - Not Found Order Detail!");
-            var order = await _unitOfWork.OrderRepository.GetByIdAsync(detail.OrderId);
+            var order = await _unitOfWork.OrderRepository.GetByIdAsync(detail.OrderId, x => x.OrderDetails);
             if (order == null) throw new Exception("404 - Not Found Order");
 
             if ((order.OrderStatus == OrderStatusEnums.PENDING.ToString() || order.OrderStatus == OrderStatusEnums.PROCESSING.ToString()) && detail.Status == OrderDetailStatusEnum.PENDING.ToString())
@@ -101,7 +101,7 @@ namespace Koi.Services.Services
         {
             var detail = await _unitOfWork.OrderDetailRepository.GetByIdAsync(id);
             if (detail == null) throw new Exception("404 - Not Found Order Detail!");
-            var order = await _unitOfWork.OrderRepository.GetByIdAsync(detail.OrderId);
+            var order = await _unitOfWork.OrderRepository.GetByIdAsync(detail.OrderId, x => x.OrderDetails);
             if (order == null) throw new Exception("404 - Not Found Order");
 
             if ((order.OrderStatus == OrderStatusEnums.PENDING.ToString() || order.OrderStatus == OrderStatusEnums.PROCESSING.ToString()) && detail.Status == OrderDetailStatusEnum.PENDING.ToString())
@@ -124,7 +124,7 @@ namespace Koi.Services.Services
             {
                 var detail = await _unitOfWork.OrderDetailRepository.GetByIdAsync(id, x => x.ConsignmentForNurture);
                 if (detail == null) throw new Exception("404 - Not Found Order Detail!");
-                var order = await _unitOfWork.OrderRepository.GetByIdAsync(detail.OrderId);
+                var order = await _unitOfWork.OrderRepository.GetByIdAsync(detail.OrderId, x => x.OrderDetails);
                 if (order == null) throw new Exception("404 - Not Found Order!");
                 var staff = await _unitOfWork.UserRepository.GetAccountDetailsAsync(staffId);
                 if (staff == null) throw new Exception("404 - Not Found staff!");
