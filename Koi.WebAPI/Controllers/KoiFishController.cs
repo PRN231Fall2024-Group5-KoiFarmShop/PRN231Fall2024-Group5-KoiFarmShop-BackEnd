@@ -112,6 +112,8 @@ namespace Koi.WebAPI.Controllers
                     return NotFound(ApiResult<object>.Fail(ex));
                 if (ex.Message.Contains("403"))
                     return Forbid();
+                if (ex.Message.Contains("401"))
+                    return Unauthorized();
                 return StatusCode(StatusCodes.Status500InternalServerError, ApiResult<object>.Fail(ex));
             }
         }
@@ -137,6 +139,8 @@ namespace Koi.WebAPI.Controllers
                     return NotFound(ApiResult<object>.Fail(ex));
                 if (ex.Message.Contains("403"))
                     return Forbid();
+                if (ex.Message.Contains("401"))
+                    return Unauthorized();
                 return StatusCode(StatusCodes.Status500InternalServerError, ApiResult<object>.Fail(ex));
             }
         }
