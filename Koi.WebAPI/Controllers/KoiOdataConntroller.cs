@@ -32,7 +32,6 @@ namespace Koi.WebAPI.Controllers
            IKoiCertificateService koiCertificateService,
            IOrderService paymentService,
            IUserService userService,
-           IKoiCertificateService koiCertificateService,
            IRequestForSaleService requestForSaleService,
            IBlogService blogService
         )
