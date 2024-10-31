@@ -1,7 +1,7 @@
 ﻿using AutoMapper;
 using Koi.BusinessObjects;
-using Koi.DTOs.KoiFishDTOs;
 using Koi.DTOs.KoiCertificateDTOs;
+using Koi.DTOs.KoiFishDTOs;
 using Koi.Repositories.Helper;
 using Koi.Repositories.Interfaces;
 using Koi.Services.Interface;
@@ -131,6 +131,7 @@ namespace Koi.Services.Services
             {
                 var user = await _unitOfWork.UserRepository.GetCurrentUserAsync();
                 KoiFish fish = await _unitOfWork.KoiFishRepository.GetByIdAsync(id, x => x.KoiBreeds);
+                if (user == null) throw new Exception("401 - Unauthorized");
                 if (user.RoleName == "CUSTOMER" && fish.OwnerId != null && user.Id != fish.OwnerId) throw new Exception("403 - Forbiden");
                 foreach (var breedId in fishModel.KoiBreedIds)
                 {
@@ -188,6 +189,7 @@ namespace Koi.Services.Services
         {
             var fish = await _unitOfWork.KoiFishRepository.GetByIdAsync(id);
             var user = await _unitOfWork.UserRepository.GetCurrentUserAsync();
+            if (user == null) throw new Exception("401 - Unauthorized");
             if (user.RoleName == "CUSTOMER" && fish.OwnerId != null && user.Id != fish.OwnerId) throw new Exception("403 - Forbiden");
             if (fish == null)
             {
