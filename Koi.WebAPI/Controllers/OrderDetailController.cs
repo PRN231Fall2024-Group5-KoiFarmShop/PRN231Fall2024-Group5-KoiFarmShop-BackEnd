@@ -98,7 +98,7 @@ namespace Koi.WebAPI.Controllers
             try
             {
                 var result = await _orderDetailServices.AssignStaffOrderDetail(id, staffId);
-                return Ok(ApiResult<OrderDTO>.Succeed(_mapper.Map<OrderDTO>(result), "Order Updated!"));
+                return Ok(ApiResult<OrderDTO>.Succeed(_mapper.Map<OrderDTO>(result), "Staff Assigned!"));
             }
             catch (Exception ex)
             {

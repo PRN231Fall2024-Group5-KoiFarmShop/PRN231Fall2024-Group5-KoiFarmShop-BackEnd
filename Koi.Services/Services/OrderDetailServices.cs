@@ -1,7 +1,6 @@
 ﻿using AutoMapper;
 using Koi.BusinessObjects;
 using Koi.DTOs.Enums;
-using Koi.DTOs.PaymentDTOs;
 using Koi.Repositories.Interfaces;
 using Koi.Services.Interface;
 
@@ -119,7 +118,7 @@ namespace Koi.Services.Services
             }
         }
 
-        public async Task<OrderDetailDTO> AssignStaffOrderDetail(int id, int staffId)
+        public async Task<Order> AssignStaffOrderDetail(int id, int staffId)
         {
             try
             {
@@ -137,7 +136,7 @@ namespace Koi.Services.Services
                     detail.StaffId = staffId;
                     await _unitOfWork.OrderDetailRepository.Update(detail);
                     if (await _unitOfWork.SaveChangeAsync() <= 0) throw new Exception("400 - Fail saving");
-                    return _mapper.Map<OrderDetailDTO>(detail);
+                    return _mapper.Map<Order>(detail);
                 }
                 else
                 {
