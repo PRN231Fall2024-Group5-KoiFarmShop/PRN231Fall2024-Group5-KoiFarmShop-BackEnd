@@ -1,7 +1,6 @@
 ﻿using AutoMapper;
 using Koi.BusinessObjects;
 using Koi.DTOs.Enums;
-using Koi.DTOs.PaymentDTOs;
 using Koi.Repositories.Interfaces;
 using Koi.Services.Interface;
 
@@ -59,7 +58,7 @@ namespace Koi.Services.Services
         {
             var detail = await _unitOfWork.OrderDetailRepository.GetByIdAsync(id);
             if (detail == null) throw new Exception("404 - Not Found Order Detail!");
-            var order = await _unitOfWork.OrderRepository.GetByIdAsync(detail.OrderId);
+            var order = await _unitOfWork.OrderRepository.GetByIdAsync(detail.OrderId, x => x.OrderDetails);
             if (order == null) throw new Exception("404 - Not Found Order");
             if (order.OrderStatus == OrderStatusEnums.PROCESSING.ToString() && detail.Status == OrderDetailStatusEnum.ISSHIPPING.ToString())
             {
@@ -79,7 +78,7 @@ namespace Koi.Services.Services
         {
             var detail = await _unitOfWork.OrderDetailRepository.GetByIdAsync(id);
             if (detail == null) throw new Exception("404 - Not Found Order Detail!");
-            var order = await _unitOfWork.OrderRepository.GetByIdAsync(detail.OrderId);
+            var order = await _unitOfWork.OrderRepository.GetByIdAsync(detail.OrderId, x => x.OrderDetails);
             if (order == null) throw new Exception("404 - Not Found Order");
 
             if ((order.OrderStatus == OrderStatusEnums.PENDING.ToString() || order.OrderStatus == OrderStatusEnums.PROCESSING.ToString()) && detail.Status == OrderDetailStatusEnum.PENDING.ToString())
@@ -102,7 +101,7 @@ namespace Koi.Services.Services
         {
             var detail = await _unitOfWork.OrderDetailRepository.GetByIdAsync(id);
             if (detail == null) throw new Exception("404 - Not Found Order Detail!");
-            var order = await _unitOfWork.OrderRepository.GetByIdAsync(detail.OrderId);
+            var order = await _unitOfWork.OrderRepository.GetByIdAsync(detail.OrderId, x => x.OrderDetails);
             if (order == null) throw new Exception("404 - Not Found Order");
 
             if ((order.OrderStatus == OrderStatusEnums.PENDING.ToString() || order.OrderStatus == OrderStatusEnums.PROCESSING.ToString()) && detail.Status == OrderDetailStatusEnum.PENDING.ToString())
@@ -119,15 +118,16 @@ namespace Koi.Services.Services
             }
         }
 
-        public async Task<OrderDetailDTO> AssignStaffOrderDetail(int id, int staffId)
+        public async Task<Order> AssignStaffOrderDetail(int id, int staffId)
         {
             try
             {
                 var detail = await _unitOfWork.OrderDetailRepository.GetByIdAsync(id, x => x.ConsignmentForNurture);
                 if (detail == null) throw new Exception("404 - Not Found Order Detail!");
-                var order = await _unitOfWork.OrderRepository.GetByIdAsync(detail.OrderId);
-                if (order == null) throw new Exception("404 - Not Found Order");
-
+                var order = await _unitOfWork.OrderRepository.GetByIdAsync(detail.OrderId, x => x.OrderDetails);
+                if (order == null) throw new Exception("404 - Not Found Order!");
+                var staff = await _unitOfWork.UserRepository.GetAccountDetailsAsync(staffId);
+                if (staff == null) throw new Exception("404 - Not Found staff!");
                 if ((order.OrderStatus == OrderStatusEnums.PENDING.ToString() || order.OrderStatus == OrderStatusEnums.PROCESSING.ToString()) && detail.Status == OrderDetailStatusEnum.PENDING.ToString())
                 {
                     detail.Status = OrderDetailStatusEnum.ISSHIPPING.ToString();
@@ -136,7 +136,7 @@ namespace Koi.Services.Services
                     detail.StaffId = staffId;
                     await _unitOfWork.OrderDetailRepository.Update(detail);
                     if (await _unitOfWork.SaveChangeAsync() <= 0) throw new Exception("400 - Fail saving");
-                    return _mapper.Map<OrderDetailDTO>(detail);
+                    return _mapper.Map<Order>(order);
                 }
                 else
                 {

@@ -315,7 +315,6 @@ namespace Koi.Repositories
                         IsAvailableForSale = true,
                         Price = 500000,
                         IsConsigned = false,
-                        IsSold = false,
 
                         KoiBreeds = new List<KoiBreed>
                         {
@@ -337,7 +336,6 @@ namespace Koi.Repositories
                         IsAvailableForSale = false,
                         Price = 800000,
                         IsConsigned = true,
-                        IsSold = false,
 
                         KoiBreeds = new List<KoiBreed>
                         {
@@ -359,7 +357,6 @@ namespace Koi.Repositories
                         IsAvailableForSale = true,
                         Price = 600000,
                         IsConsigned = false,
-                        IsSold = false,
 
                         KoiBreeds = new List<KoiBreed>
                         {
@@ -380,7 +377,6 @@ namespace Koi.Repositories
                         IsAvailableForSale = true,
                         Price = 700000,
                         IsConsigned = true,
-                        IsSold = false,
 
                         KoiBreeds = new List<KoiBreed>
                         {
@@ -401,7 +397,6 @@ namespace Koi.Repositories
                         IsAvailableForSale = false,
                         Price = 400000,
                         IsConsigned = false,
-                        IsSold = true,
 
                         KoiBreeds = new List<KoiBreed>
                         {
@@ -422,7 +417,6 @@ namespace Koi.Repositories
                         IsAvailableForSale = true,
                         Price = 650000,
                         IsConsigned = false,
-                        IsSold = false,
 
                         KoiBreeds = new List<KoiBreed>
                         {
@@ -443,7 +437,6 @@ namespace Koi.Repositories
                         IsAvailableForSale = true,
                         Price = 750000,
                         IsConsigned = false,
-                        IsSold = false,
 
                         KoiBreeds = new List<KoiBreed>
                         {
@@ -464,7 +457,6 @@ namespace Koi.Repositories
                         IsAvailableForSale = true,
                         Price = 550000,
                         IsConsigned = true,
-                        IsSold = false,
 
                         KoiBreeds = new List<KoiBreed>
                         {
@@ -485,7 +477,6 @@ namespace Koi.Repositories
                         IsAvailableForSale = true,
                         Price = 620000,
                         IsConsigned = false,
-                        IsSold = false,
 
                         KoiBreeds = new List<KoiBreed>
                         {
@@ -507,7 +498,6 @@ namespace Koi.Repositories
                         IsAvailableForSale = false,
                         Price = 680000,
                         IsConsigned = true,
-                        IsSold = false,
 
                         KoiBreeds = new List<KoiBreed>
                         {
@@ -529,7 +519,6 @@ namespace Koi.Repositories
                         IsAvailableForSale = true,
                         Price = 720000,
                         IsConsigned = false,
-                        IsSold = false,
 
                         KoiBreeds = new List<KoiBreed>
                         {
@@ -552,7 +541,6 @@ namespace Koi.Repositories
                         IsAvailableForSale = true,
                         Price = 560000,
                         IsConsigned = false,
-                        IsSold = false,
 
                         KoiBreeds = new List<KoiBreed>
                         {
@@ -573,7 +561,6 @@ namespace Koi.Repositories
                         IsAvailableForSale = true,
                         Price = 620000,
                         IsConsigned = true,
-                        IsSold = false,
 
                         KoiBreeds = new List<KoiBreed>
                         {
@@ -594,7 +581,6 @@ namespace Koi.Repositories
                         IsAvailableForSale = false,
                         Price = 700000,
                         IsConsigned = false,
-                        IsSold = true,
 
                         KoiBreeds = new List<KoiBreed>
                         {
@@ -615,7 +601,6 @@ namespace Koi.Repositories
                         IsAvailableForSale = true,
                         Price = 650000,
                         IsConsigned = true,
-                        IsSold = false,
 
                         KoiBreeds = new List<KoiBreed>
                         {
@@ -636,7 +621,6 @@ namespace Koi.Repositories
                         IsAvailableForSale = true,
                         Price = 700000,
                         IsConsigned = false,
-                        IsSold = false,
 
                         KoiBreeds = new List<KoiBreed>
                         {
@@ -658,7 +642,6 @@ namespace Koi.Repositories
                         IsAvailableForSale = true,
                         Price = 550000,
                         IsConsigned = false,
-                        IsSold = false,
 
                         KoiBreeds = new List<KoiBreed>
                         {
@@ -679,7 +662,6 @@ namespace Koi.Repositories
                         IsAvailableForSale = true,
                         Price = 680000,
                         IsConsigned = true,
-                        IsSold = false,
 
                         KoiBreeds = new List<KoiBreed>
                         {
@@ -700,7 +682,6 @@ namespace Koi.Repositories
                         IsAvailableForSale = true,
                         Price = 750000,
                         IsConsigned = false,
-                        IsSold = false,
 
                         KoiBreeds = new List<KoiBreed>
                         {
@@ -722,7 +703,6 @@ namespace Koi.Repositories
                         IsAvailableForSale = true,
                         Price = 690000,
                         IsConsigned = true,
-                        IsSold = false,
 
                         KoiBreeds = new List<KoiBreed>
                         {
@@ -744,7 +724,6 @@ namespace Koi.Repositories
                         IsAvailableForSale = true,
                         Price = 640000,
                         IsConsigned = false,
-                        IsSold = false,
 
                         KoiBreeds = new List<KoiBreed>
                         {
@@ -765,7 +744,7 @@ namespace Koi.Repositories
                         IsAvailableForSale = true,
                         Price = 530000,
                         IsConsigned = true,
-                        IsSold = false,
+
                         KoiBreeds = new List<KoiBreed>
                         {
                             koiBreeds.FirstOrDefault(b => b.Name == "Doitsu"),
@@ -786,7 +765,6 @@ namespace Koi.Repositories
                         IsAvailableForSale = true,
                         Price = 720000,
                         IsConsigned = false,
-                        IsSold = false,
 
                         KoiBreeds = new List<KoiBreed>
                         {
@@ -808,7 +786,6 @@ namespace Koi.Repositories
                         IsAvailableForSale = false,
                         Price = 670000,
                         IsConsigned = true,
-                        IsSold = false,
 
                         KoiBreeds = new List<KoiBreed>
                         {
@@ -830,7 +807,6 @@ namespace Koi.Repositories
                         IsAvailableForSale = true,
                         Price = 610000,
                         IsConsigned = false,
-                        IsSold = false,
 
                         KoiBreeds = new List<KoiBreed>
                         {
@@ -852,7 +828,6 @@ namespace Koi.Repositories
                         IsAvailableForSale = true,
                         Price = 690000,
                         IsConsigned = true,
-                        IsSold = false,
 
                         KoiBreeds = new List<KoiBreed>
                         {
@@ -874,7 +849,6 @@ namespace Koi.Repositories
                         IsAvailableForSale = true,
                         Price = 710000,
                         IsConsigned = false,
-                        IsSold = false,
 
                         KoiBreeds = new List<KoiBreed>
                         {
@@ -896,7 +870,6 @@ namespace Koi.Repositories
                         IsAvailableForSale = true,
                         Price = 560000,
                         IsConsigned = true,
-                        IsSold = false,
 
                         KoiBreeds = new List<KoiBreed>
                         {
@@ -917,7 +890,6 @@ namespace Koi.Repositories
                         IsAvailableForSale = true,
                         Price = 550000,
                         IsConsigned = false,
-                        IsSold = false,
 
                         KoiBreeds = new List<KoiBreed>
                         {
@@ -938,7 +910,6 @@ namespace Koi.Repositories
                         IsAvailableForSale = true,
                         Price = 670000,
                         IsConsigned = true,
-                        IsSold = false,
 
                         KoiBreeds = new List<KoiBreed>
                         {
@@ -959,7 +930,6 @@ namespace Koi.Repositories
                         IsAvailableForSale = true,
                         Price = 740000,
                         IsConsigned = false,
-                        IsSold = false,
 
                         KoiBreeds = new List<KoiBreed>
                         {

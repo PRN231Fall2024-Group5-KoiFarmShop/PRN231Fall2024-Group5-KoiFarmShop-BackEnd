@@ -299,6 +299,7 @@ namespace Koi.Services.Services
                 foreach (var purchaseFish in purchaseDTO.PurchaseFishes)
                 {
                     var koiFish = await _unitOfWork.KoiFishRepository.GetByIdAsync(purchaseFish.FishId, x => x.ConsignmentForNurtures);
+                    if (koiFish.IsAvailableForSale == false) throw new Exception("400 - Fish " + koiFish.Name + " is not available for sale!");
                     if (koiFish != null)
                     {
                         if (koiFish.IsAvailableForSale == false)

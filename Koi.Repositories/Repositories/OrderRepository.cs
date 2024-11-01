@@ -93,6 +93,7 @@ namespace Koi.Repositories.Repositories
                     order.OrderDetails.Add(orderDetail);
                     orderDetails.Add(orderDetail);
                     fish.OwnerId = _claimsService.GetCurrentUserId;
+                    fish.IsAvailableForSale = false;
                 }
 
                 _dbContext.Entry(order).State = EntityState.Modified;

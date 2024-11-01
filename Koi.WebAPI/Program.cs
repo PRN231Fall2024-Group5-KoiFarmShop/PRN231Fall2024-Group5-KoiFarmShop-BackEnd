@@ -122,11 +122,15 @@ IEdmModel GetEdmModel()
 {
     var modelBuilder = new ODataConventionModelBuilder();
     modelBuilder.EntitySet<KoiFish>("koi-fishes");
+    modelBuilder.EntitySet<User>("accounts");
+    modelBuilder.EntitySet<Order>("orders");
     modelBuilder.EntitySet<KoiFish>("my-koi-fishes");
     modelBuilder.EntitySet<KoiBreed>("koi-breeds");
     modelBuilder.EntitySet<KoiCertificate>("koi-certificates");
     modelBuilder.EntitySet<KoiDiary>("koi-diaries");
     modelBuilder.EntitySet<Diet>("diets");
+    modelBuilder.EntitySet<RequestForSale>("request-for-sales");
+    modelBuilder.EntitySet<RequestForSale>("my-request-for-sales");
 
     return modelBuilder.GetEdmModel();
 }

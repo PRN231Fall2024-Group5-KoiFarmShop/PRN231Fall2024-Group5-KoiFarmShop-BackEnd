@@ -7,6 +7,7 @@ using Koi.DTOs.KoiCertificateDTOs;
 using Koi.DTOs.KoiDiaryDTOs;
 using Koi.DTOs.KoiFishDTOs;
 using Koi.DTOs.PaymentDTOs;
+using Koi.DTOs.RequestForSaleDTOs;
 using Koi.DTOs.TransactionDTOs;
 using Koi.DTOs.UserDTOs;
 using Koi.DTOs.WalletDTOs;
@@ -67,6 +68,11 @@ namespace Koi.Services.Mapper
             CreateMap<ConsignmentUpdateDTO, ConsignmentForNurture>().ReverseMap();
 
             CreateMap<WithdrawnRequestDTO, WithdrawnRequest>().ReverseMap();
+
+            // Request for sale
+            CreateMap<RequestForSale, RequestForSaleResponseDTO>();
+            CreateMap<RequestForSaleCreateDTO, RequestForSale>();
+            CreateMap<RequestForSaleUpdateDTO, RequestForSale>();
         }
     }
 }

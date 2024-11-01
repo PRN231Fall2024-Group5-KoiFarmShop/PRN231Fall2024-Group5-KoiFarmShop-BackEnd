@@ -87,5 +87,27 @@ namespace Koi.WebAPI.Controllers
                 return StatusCode(StatusCodes.Status500InternalServerError, ApiResult<object>.Fail(ex));
             }
         }
+
+        [HttpPut("{id}/assign")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> AssignStaffToOrderDetail(int id, [FromBody] int staffId)
+        {
+            try
+            {
+                var result = await _orderDetailServices.AssignStaffOrderDetail(id, staffId);
+                return Ok(ApiResult<OrderDTO>.Succeed(_mapper.Map<OrderDTO>(result), "Staff Assigned!"));
+            }
+            catch (Exception ex)
+            {
+                if (ex.Message.Contains("400"))
+                    return BadRequest(ApiResult<object>.Fail(ex));
+                if (ex.Message.Contains("404"))
+                    return NotFound(ApiResult<object>.Fail(ex));
+                return StatusCode(StatusCodes.Status500InternalServerError, ApiResult<object>.Fail(ex));
+            }
+        }
     }
 }

@@ -90,6 +90,7 @@ namespace Koi.Services.Services
                 foreach (var item in order.OrderDetails)
                 {
                     item.Status = OrderDetailStatusEnum.CANCELED.ToString();
+                    item.KoiFish.IsAvailableForSale = true;
                 }
                 //Need works!! Add refund transaction
 

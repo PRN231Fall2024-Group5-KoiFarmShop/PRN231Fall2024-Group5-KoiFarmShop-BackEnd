@@ -1,6 +1,7 @@
 ﻿using Koi.BusinessObjects;
 using Koi.DTOs.KoiFishDTOs;
 using Koi.Repositories.Helper;
+using Koi.Services.Interface;
 
 namespace Koi.Services.Interface
 {
