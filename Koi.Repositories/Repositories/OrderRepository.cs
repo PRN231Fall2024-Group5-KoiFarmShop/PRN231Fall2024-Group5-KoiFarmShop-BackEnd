@@ -22,14 +22,15 @@ namespace Koi.Repositories.Repositories
         public async Task<List<Order>> GetOrdersByUserId(int userId)
         {
             return await _dbContext.Orders
-                                    .Include(x => x.OrderDetails).ThenInclude(x => x.KoiFish)
+                                    .Include(x => x.User).Include(x => x.OrderDetails).ThenInclude(x => x.KoiFish).ThenInclude(x => x.ConsignmentForNurtures)
+
                                    .Where(o => o.UserId == userId)
                                    .ToListAsync();
         }
 
         public async Task<Order> GetOrdersById(int orderId)
         {
-            return await _dbContext.Orders.Include(x => x.OrderDetails).ThenInclude(x => x.KoiFish).FirstOrDefaultAsync(x => x.Id == orderId);
+            return await _dbContext.Orders.Include(x => x.User).Include(x => x.OrderDetails).ThenInclude(x => x.KoiFish).ThenInclude(x => x.ConsignmentForNurtures).FirstOrDefaultAsync(x => x.Id == orderId);
         }
 
         // Cập nhật trạng thái của đơn hàng
@@ -50,7 +51,7 @@ namespace Koi.Repositories.Repositories
         // Xóa đơn hàng
         public async Task<bool> DeleteOrder(int orderId)
         {
-            var order = await _dbContext.Orders.FirstOrDefaultAsync(o => o.Id == orderId);
+            var order = await GetOrdersById(orderId);
 
             if (order == null)
                 return false;
@@ -81,13 +82,12 @@ namespace Koi.Repositories.Repositories
                         // SubTotal = (int)fish.Price,
                         Price = fish.Price,
                         Status = OrderStatusEnums.PENDING.ToString(),
-                        ShippingStatus = "PENDING"
                     };
                     if (fish.IsConsigned.Value && fish.ConsignmentForNurtures.Any())
                     {
                         var existingConsignment = fish.ConsignmentForNurtures.ToList();
                         orderDetail.ConsignmentForNurtureId = existingConsignment.First().Id;
-                        orderDetail.NurtureStatus = "PENDING";
+                        orderDetail.ConsignmentCost = existingConsignment.First().ProjectedCost;
                     }
                     order.OrderDetails = [];
                     order.OrderDetails.Add(orderDetail);

@@ -158,7 +158,7 @@ namespace Koi.Services.Services
                 // Recalculate projected cost if dates are changed
                 if (consignmentUpdateDTO.StartDate != DateTime.MinValue || consignmentUpdateDTO.EndDate != DateTime.MinValue)
                 {
-                    var totalDays = ResourceHelper.DateTimeValidate(existingConsignment.StartDate, existingConsignment.EndDate);
+                    var totalDays = ResourceHelper.DateTimeValidate(existingConsignment.StartDate.Value, existingConsignment.EndDate.Value);
                     existingConsignment.TotalDays = totalDays;
                     existingConsignment.ProjectedCost = totalDays * existingConsignment.DietCost;
                 }

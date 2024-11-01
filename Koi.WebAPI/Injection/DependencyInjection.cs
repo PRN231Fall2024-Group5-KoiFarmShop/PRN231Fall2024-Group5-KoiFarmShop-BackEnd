@@ -83,6 +83,7 @@ namespace Koi.WebAPI.Injection
             services.AddScoped<IConsignmentForNurtureService, ConsignmentForNurtureService>();
             services.AddScoped<INotificationService, NotificationService>();
             services.AddScoped<IWithdrawnRequestService, WithdrawnRequestService>();
+            services.AddScoped<IStaffService, StaffService>();
             // add unitOfWork
             services.AddScoped<IUnitOfWork, UnitOfWork>();
             return services;

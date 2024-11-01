@@ -61,10 +61,10 @@ namespace Koi.Services.Services
             if (detail == null) throw new Exception("404 - Not Found Order Detail!");
             var order = await _unitOfWork.OrderRepository.GetByIdAsync(detail.OrderId);
             if (order == null) throw new Exception("404 - Not Found Order");
-            if (order.OrderStatus == OrderStatusEnums.PROCESSING.ToString() && detail.Status == OrderDetailStatusEnum.SHIPPING.ToString())
+            if (order.OrderStatus == OrderStatusEnums.PROCESSING.ToString() && detail.Status == OrderDetailStatusEnum.ISSHIPPING.ToString())
             {
                 detail.Status = OrderDetailStatusEnum.COMPLETED.ToString();
-                if (order.OrderDetails.All(x => x.Status == OrderDetailStatusEnum.COMPLETED.ToString() || x.Status == OrderDetailStatusEnum.CONSIGNED.ToString()))
+                if (order.OrderDetails.All(x => x.Status == OrderDetailStatusEnum.COMPLETED.ToString()))
                     order.OrderStatus = OrderDetailStatusEnum.COMPLETED.ToString();
                 if (await _unitOfWork.SaveChangeAsync() <= 0) throw new Exception("400 - Fail saving");
                 return order;
@@ -84,10 +84,10 @@ namespace Koi.Services.Services
 
             if ((order.OrderStatus == OrderStatusEnums.PENDING.ToString() || order.OrderStatus == OrderStatusEnums.PROCESSING.ToString()) && detail.Status == OrderDetailStatusEnum.PENDING.ToString())
             {
-                detail.Status = OrderDetailStatusEnum.CONSIGNED.ToString();
+                detail.Status = OrderDetailStatusEnum.ISNUTURING.ToString();
                 if (order.OrderStatus == OrderStatusEnums.PENDING.ToString())
                     order.OrderStatus = OrderStatusEnums.PROCESSING.ToString();
-                if (order.OrderDetails.All(x => x.Status == OrderDetailStatusEnum.COMPLETED.ToString() || x.Status == OrderDetailStatusEnum.CONSIGNED.ToString()))
+                if (order.OrderDetails.All(x => x.Status == OrderDetailStatusEnum.COMPLETED.ToString() || x.Status == OrderDetailStatusEnum.ISNUTURING.ToString()))
                     order.OrderStatus = OrderDetailStatusEnum.COMPLETED.ToString();
                 if (await _unitOfWork.SaveChangeAsync() <= 0) throw new Exception("400 - Fail saving");
                 return order;
@@ -107,7 +107,7 @@ namespace Koi.Services.Services
 
             if ((order.OrderStatus == OrderStatusEnums.PENDING.ToString() || order.OrderStatus == OrderStatusEnums.PROCESSING.ToString()) && detail.Status == OrderDetailStatusEnum.PENDING.ToString())
             {
-                detail.Status = OrderDetailStatusEnum.SHIPPING.ToString();
+                detail.Status = OrderDetailStatusEnum.ISSHIPPING.ToString();
                 if (order.OrderStatus != OrderStatusEnums.PROCESSING.ToString())
                     order.OrderStatus = OrderStatusEnums.PROCESSING.ToString();
                 if (await _unitOfWork.SaveChangeAsync() <= 0) throw new Exception("400 - Fail saving");
@@ -130,7 +130,7 @@ namespace Koi.Services.Services
 
                 if ((order.OrderStatus == OrderStatusEnums.PENDING.ToString() || order.OrderStatus == OrderStatusEnums.PROCESSING.ToString()) && detail.Status == OrderDetailStatusEnum.PENDING.ToString())
                 {
-                    detail.Status = OrderDetailStatusEnum.SHIPPING.ToString();
+                    detail.Status = OrderDetailStatusEnum.ISSHIPPING.ToString();
                     if (order.OrderStatus != OrderStatusEnums.PROCESSING.ToString())
                         order.OrderStatus = OrderStatusEnums.PROCESSING.ToString();
                     detail.StaffId = staffId;

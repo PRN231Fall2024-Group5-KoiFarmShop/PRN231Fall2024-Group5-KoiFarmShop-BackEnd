@@ -20,7 +20,6 @@ namespace Koi.Repositories.Repositories
 
         public async Task<OrderDetail> ChangeToCanceled(int id)
         {
-
             var tar = await _dbContext.OrderDetails.FirstOrDefaultAsync(x => x.Id == id);
             if (tar == null) throw new Exception("404 - Not Found OrderDetail");
             tar.Status = "CANCELED";
@@ -81,6 +80,12 @@ namespace Koi.Repositories.Repositories
                 throw;
             }
             return tar;
+        }
+
+        public async Task<List<OrderDetail>> GetAssignedOrderDetails(int staffId)
+        {
+            var result = await _dbContext.OrderDetails.Include(x => x.KoiFish).Include(x => x.ConsignmentForNurture).Where(x => x.StaffId == staffId).ToListAsync();
+            return result;
         }
     }
 }

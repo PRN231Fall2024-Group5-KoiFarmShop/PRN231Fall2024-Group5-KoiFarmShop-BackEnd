@@ -110,7 +110,8 @@ namespace Koi.Repositories
                         ImageUrl = "https://scontent.fsgn15-1.fna.fbcdn.net/v/t39.30808-1/430878538_2206677789683723_4464660377243750146_n.jpg",
                         Address = "HCM",
                         IsActive = true,
-                        CreatedDate = DateTime.UtcNow.AddHours(7)
+                        CreatedDate = DateTime.UtcNow.AddHours(7),
+                        RoleName="STAFF"
                     },
                     new User
                     {
@@ -172,7 +173,7 @@ namespace Koi.Repositories
                 // Sử dụng AddRange để thêm danh sách khách hàng
                 foreach (var customerr in customers)
                 {
-                    await context.Users.AddAsync(customerr);
+                    await CreateUserAsync(userManager, customer, "123456", customer.RoleName);
                 }
                 await context.SaveChangesAsync();
             }

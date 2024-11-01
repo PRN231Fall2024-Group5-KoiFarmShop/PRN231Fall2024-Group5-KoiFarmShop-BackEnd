@@ -64,7 +64,12 @@ namespace Koi.Services.Services
 
         public async Task<OrderDTO> GetOrderByIdAsync(int orderId)
         {
-            return _mapper.Map<OrderDTO>(await _unitOfWork.OrderRepository.GetOrdersById(orderId));
+            var result = await _unitOfWork.OrderRepository.GetOrdersById(orderId);
+            if (result == null)
+            {
+                throw new Exception("404 - Cannot found this order");
+            }
+            return _mapper.Map<OrderDTO>(result);
         }
 
         public async Task<List<OrderDTO>> GetOrdersByUserIdAsync(int userId)

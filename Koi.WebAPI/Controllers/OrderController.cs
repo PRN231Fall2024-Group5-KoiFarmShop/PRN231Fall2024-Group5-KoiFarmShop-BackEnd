@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Koi.WebAPI.Controllers
 {
-    [Route("api/v1")]
+    [Route("api/v1/")]
     [ApiController]
     public class OrderController : ControllerBase
     {
@@ -34,6 +34,20 @@ namespace Koi.WebAPI.Controllers
             {
                 var result = await _paymentService.GetOrdersAsync();
                 return Ok(ApiResult<List<OrderDTO>>.Succeed(result, "Get list order Successfully!"));
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ApiResult<object>.Fail(ex));
+            }
+        }
+
+        [HttpGet("orders/{id}")]
+        public async Task<IActionResult> GetOrderById(int id)
+        {
+            try
+            {
+                var result = await _paymentService.GetOrderByIdAsync(id);
+                return Ok(ApiResult<OrderDTO>.Succeed(result, "Get list order Successfully!"));
             }
             catch (Exception ex)
             {
@@ -74,7 +88,7 @@ namespace Koi.WebAPI.Controllers
             }
         }
 
-        [HttpPost()]
+        [HttpPost("orders")]
         public async Task<IActionResult> CheckOutAsync(VnpayOrderInfo orderInfo)
         {
             try
@@ -104,7 +118,7 @@ namespace Koi.WebAPI.Controllers
             }
         }
 
-        [HttpPut("cancel-order/{id}")]
+        [HttpDelete("orders/{id}")]
         public async Task<IActionResult> CancelOrderAsync(int id)
         {
             try
