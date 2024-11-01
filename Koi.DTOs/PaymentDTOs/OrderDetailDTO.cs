@@ -18,8 +18,7 @@ namespace Koi.DTOs.PaymentDTOs
 
         public long Price { get; set; }
         public string? Status { get; set; }
-        public string? ShippingStatus { get; set; }
-        public string? NurtureStatus { get; set; }
+
         public int? StaffId { get; set; }
         public virtual KoiFishResponseDTO KoiFish { get; set; }
         public virtual ConsignmentForNurtureDTO? ConsignmentForNurture { get; set; }

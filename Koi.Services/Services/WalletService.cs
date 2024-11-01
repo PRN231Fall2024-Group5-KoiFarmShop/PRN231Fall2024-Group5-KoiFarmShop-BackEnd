@@ -326,6 +326,8 @@ namespace Koi.Services.Services
                                 DailyFeedAmount = koiFish.DailyFeedAmount,
                                 TotalDays = purchaseFish.TotalDays,
                                 ProjectedCost = purchaseFish.TotalDays * existingDiet.DietCost,
+                                ActualCost = purchaseFish.TotalDays * existingDiet.DietCost,
+                                ConsignmentDate = _currentTime.GetCurrentTime(),
                                 ConsignmentStatus = ConsignmentStatusEnums.PENDING.ToString()//PENDING CONSIGNMENT STATUS
                             };
 

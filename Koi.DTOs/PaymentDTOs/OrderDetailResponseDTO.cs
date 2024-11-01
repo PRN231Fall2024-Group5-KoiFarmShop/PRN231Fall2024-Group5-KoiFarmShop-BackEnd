@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Koi.DTOs.PaymentDTOs
 {
-    public class OrderDetailResponseDTO
+    public class OrderDetailResponseDTO : OrderDetailDTO
     {
     }
 }

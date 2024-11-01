@@ -62,18 +62,22 @@ namespace Koi.Services.Services
                     }
                     detail.StaffId = staffId;
                     detail.Status = OrderDetailStatusEnum.ISSHIPPING.ToString();
-
-                    if (detail.ConsignmentForNurture != null)
+                    var existingConsignment = detail.ConsignmentForNurture;
+                    if (existingConsignment != null)
                     {
-                        if (detail.ConsignmentForNurture.StaffId != null)
+                        if (existingConsignment.StaffId != null)
                         {
                             message += "Staff reassigned for existing consignment.";
                         }
-                        detail.ConsignmentForNurture.StaffId = staffId;
+                        existingConsignment.StaffId = staffId;
+                        existingConsignment.StartDate = _currentTime.GetCurrentTime();
+                        existingConsignment.EndDate = _currentTime.GetCurrentTime().AddDays(existingConsignment.TotalDays.Value);
+                        existingConsignment.InspectionRequired = true;
+                        existingConsignment.InspectionDate = _currentTime.GetCurrentTime();
                         detail.Status = OrderDetailStatusEnum.ISNUTURING.ToString();
-                        detail.ConsignmentForNurture.ConsignmentStatus = ConsignmentStatusEnums.NURTURING.ToString();
+                        existingConsignment.ConsignmentStatus = ConsignmentStatusEnums.NURTURING.ToString();
 
-                        await _unitOfWork.ConsignmentForNurtureRepository.Update(detail.ConsignmentForNurture);
+                        await _unitOfWork.ConsignmentForNurtureRepository.Update(existingConsignment);
                     }
                     else
                     {
@@ -96,6 +100,7 @@ namespace Koi.Services.Services
                 throw new Exception(ex.Message);
             }
         }
+
         //order details
 
         public async Task<ConsignmentForNurtureDTO> UpdateConsignmentStatusOnlyAsync(int consignmentId, ConsignmentStatusEnums newStatus)
@@ -157,6 +162,7 @@ namespace Koi.Services.Services
                 throw new Exception("400 - Order status or detail status is invalid");
             }
         }
+
         //order details
 
         public async Task<Order> ChangeToConsigned(int id)
@@ -191,6 +197,7 @@ namespace Koi.Services.Services
                 throw new Exception("400 - Order status or detail status is invalid");
             }
         }
+
         //order details
         public async Task<Order> ChangeToShipping(int id)
         {
