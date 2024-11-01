@@ -1,5 +1,6 @@
 ﻿using Koi.BusinessObjects;
 using Koi.Repositories.Interfaces;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -25,6 +26,12 @@ namespace Koi.Repositories.Repositories
         {
             body.ConsignmentDate = _timeService.GetCurrentTime();
             var result = await AddAsync(body);
+            return result;
+        }
+
+        public async Task<List<ConsignmentForNurture>> GetAssignedConsignments(int staffId)
+        {
+            var result = await _dbContext.ConsignmentForNurtures.Include(x => x.KoiFish).Include(x => x.Diet).Where(x => x.StaffId == staffId).ToListAsync();
             return result;
         }
     }

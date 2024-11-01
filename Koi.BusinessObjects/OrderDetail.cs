@@ -10,9 +10,10 @@ namespace Koi.BusinessObjects
         public int? ConsignmentForNurtureId { get; set; }
 
         public long Price { get; set; }
+        public long? ConsignmentCost { get; set; }
         public string? Status { get; set; }
-        public string? ShippingStatus { get; set; }
-        public string? NurtureStatus { get; set; }
+        public string? Note { get; set; }
+
         public int? StaffId { get; set; }  // Foreign key to User (nhân viên thực hiện)
 
         //navigation

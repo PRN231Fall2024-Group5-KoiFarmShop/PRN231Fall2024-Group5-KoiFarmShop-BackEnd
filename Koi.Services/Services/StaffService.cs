@@ -1,0 +1,218 @@
+﻿using AutoMapper;
+using Koi.BusinessObjects;
+using Koi.DTOs.ConsignmentDTOs;
+using Koi.DTOs.Enums;
+using Koi.DTOs.PaymentDTOs;
+using Koi.Repositories.Commons;
+using Koi.Repositories.Interfaces;
+using Koi.Services.Interface;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace Koi.Services.Services
+{
+    public class StaffService : IStaffService
+    {
+        private readonly IUnitOfWork _unitOfWork;
+        private readonly IMapper _mapper;
+        private readonly IOrderService _orderService;
+        private readonly IOrderDetailServices _orderDetailServices;
+        private readonly ICurrentTime _currentTime;
+
+        public StaffService(IUnitOfWork unitOfWork, IMapper mapper, IOrderService orderService, IOrderDetailServices orderDetailServices, ICurrentTime currentTime)
+        {
+            _unitOfWork = unitOfWork;
+            _mapper = mapper;
+            _orderService = orderService;
+            _orderDetailServices = orderDetailServices;
+            _currentTime = currentTime;
+        }
+
+        public async Task<List<ConsignmentForNurtureDetailDTO>> GetAssignedConsigntment(int staffId)
+        {
+            var result = await _unitOfWork.ConsignmentForNurtureRepository.GetAssignedConsignments(staffId);
+            return _mapper.Map<List<ConsignmentForNurtureDetailDTO>>(result);
+        }
+
+        public async Task<List<OrderDetailDTO>> OrderDetailDTO(int staffId)
+        {
+            var result = await _unitOfWork.OrderDetailRepository.GetAssignedOrderDetails(staffId);
+            return _mapper.Map<List<OrderDetailDTO>>(result);
+        }
+
+        public async Task<ApiResult<OrderDetailDTO>> AssignStaffOrderDetail(int ordetailId, int staffId)
+        {
+            try
+            {
+                var detail = await _unitOfWork.OrderDetailRepository.GetByIdAsync(ordetailId, x => x.ConsignmentForNurture, x => x.KoiFish);
+                if (detail == null) throw new Exception("404 - Not Found Order Detail!");
+                var order = await _unitOfWork.OrderRepository.GetByIdAsync(detail.OrderId);
+                if (order == null) throw new Exception("404 - Not Found Order");
+
+                if (order.OrderStatus != OrderStatusEnums.COMPLETED.ToString() && detail.Status != OrderDetailStatusEnum.COMPLETED.ToString())
+                {
+                    string message = "Staff assigned successfully.";
+
+                    if (detail.StaffId != null)
+                    {
+                        message = "Staff reassigned for existing order detail.";
+                    }
+                    detail.StaffId = staffId;
+                    detail.Status = OrderDetailStatusEnum.ISSHIPPING.ToString();
+
+                    if (detail.ConsignmentForNurture != null)
+                    {
+                        if (detail.ConsignmentForNurture.StaffId != null)
+                        {
+                            message += "Staff reassigned for existing consignment.";
+                        }
+                        detail.ConsignmentForNurture.StaffId = staffId;
+                        detail.Status = OrderDetailStatusEnum.ISNUTURING.ToString();
+                        detail.ConsignmentForNurture.ConsignmentStatus = ConsignmentStatusEnums.NURTURING.ToString();
+
+                        await _unitOfWork.ConsignmentForNurtureRepository.Update(detail.ConsignmentForNurture);
+                    }
+                    else
+                    {
+                        if (order.OrderStatus != OrderStatusEnums.PROCESSING.ToString())
+                            order.OrderStatus = OrderStatusEnums.PROCESSING.ToString();
+                    }
+
+                    await _unitOfWork.OrderDetailRepository.Update(detail);
+                    if (await _unitOfWork.SaveChangeAsync() <= 0) throw new Exception("400 - Fail saving");
+
+                    return ApiResult<OrderDetailDTO>.Succeed(_mapper.Map<OrderDetailDTO>(detail), message);
+                }
+                else
+                {
+                    return ApiResult<OrderDetailDTO>.Error(null, "400 - Order status or detail status is invalid");
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        }
+        //order details
+
+        public async Task<ConsignmentForNurtureDTO> UpdateConsignmentStatusOnlyAsync(int consignmentId, ConsignmentStatusEnums newStatus)
+        {
+            try
+            {
+                // Lấy consignment từ cơ sở dữ liệu
+                var consignment = await _unitOfWork.ConsignmentForNurtureRepository.GetByIdAsync(consignmentId);
+                if (consignment == null)
+                {
+                    throw new Exception($"404 - Consignment with id {consignmentId} not found");
+                }
+
+                // Cập nhật trạng thái và thời gian chỉnh sửa
+                consignment.ConsignmentStatus = newStatus.ToString();
+                consignment.ModifiedAt = _currentTime.GetCurrentTime();
+
+                // Lưu thay đổi
+                await _unitOfWork.ConsignmentForNurtureRepository.Update(consignment);
+                if (await _unitOfWork.SaveChangeAsync() <= 0)
+                {
+                    throw new Exception("400 - Failed to update consignment status");
+                }
+
+                return _mapper.Map<ConsignmentForNurtureDTO>(consignment);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        }
+
+        //change order detail to complete
+        public async Task<Order> ChangeToCompleted(int id)
+        {
+            var detail = await _unitOfWork.OrderDetailRepository.GetByIdAsync(id, x => x.ConsignmentForNurture);
+            if (detail == null) throw new Exception("404 - Not Found Order Detail!");
+            var order = await _unitOfWork.OrderRepository.GetByIdAsync(detail.OrderId);
+            if (order == null) throw new Exception("404 - Not Found Order");
+            if (order.OrderStatus == OrderStatusEnums.PROCESSING.ToString()
+                && (detail.Status == OrderDetailStatusEnum.ISSHIPPING.ToString()
+                || detail.Status == OrderDetailStatusEnum.ISNUTURING.ToString()))
+            {
+                detail.Status = OrderDetailStatusEnum.COMPLETED.ToString();
+                //if(detail.ConsignmentForNurture != null)
+                //{
+                //    if(detail.ConsignmentForNurture.ConsignmentStatus != ConsignmentStatusEnums.DONE.ToString())
+                //    {
+                //        throw new Exception("400 - This consignment of order detail is not finished");
+                //    }
+                //}
+                if (order.OrderDetails.All(x => x.Status == OrderDetailStatusEnum.COMPLETED.ToString()))
+                    order.OrderStatus = OrderDetailStatusEnum.COMPLETED.ToString();
+                if (await _unitOfWork.SaveChangeAsync() <= 0) throw new Exception("400 - Fail saving");
+                return order;
+            }
+            else
+            {
+                throw new Exception("400 - Order status or detail status is invalid");
+            }
+        }
+        //order details
+
+        public async Task<Order> ChangeToConsigned(int id)
+        {
+            var detail = await _unitOfWork.OrderDetailRepository.GetByIdAsync(id, x => x.ConsignmentForNurture);
+            if (detail == null) throw new Exception("404 - Not Found Order Detail!");
+            var order = await _unitOfWork.OrderRepository.GetByIdAsync(detail.OrderId);
+            if (order == null) throw new Exception("404 - Not Found Order");
+
+            if (order.OrderStatus != OrderStatusEnums.COMPLETED.ToString()
+                && detail.Status != OrderDetailStatusEnum.COMPLETED.ToString()
+                )
+            {
+                detail.Status = OrderDetailStatusEnum.ISNUTURING.ToString();
+                if (detail.ConsignmentForNurture != null)
+                {
+                    if (detail.ConsignmentForNurture.ConsignmentStatus != ConsignmentStatusEnums.DONE.ToString())
+                    {
+                        throw new Exception("400 - this consignment of order detail is not finished");
+                    }
+                }
+
+                if (order.OrderStatus == OrderStatusEnums.PENDING.ToString())
+                    order.OrderStatus = OrderStatusEnums.PROCESSING.ToString();
+                if (order.OrderDetails.All(x => x.Status == OrderDetailStatusEnum.COMPLETED.ToString() || x.Status == OrderDetailStatusEnum.ISNUTURING.ToString()))
+                    order.OrderStatus = OrderDetailStatusEnum.COMPLETED.ToString();
+                if (await _unitOfWork.SaveChangeAsync() <= 0) throw new Exception("400 - Fail saving");
+                return order;
+            }
+            else
+            {
+                throw new Exception("400 - Order status or detail status is invalid");
+            }
+        }
+        //order details
+        public async Task<Order> ChangeToShipping(int id)
+        {
+            var detail = await _unitOfWork.OrderDetailRepository.GetByIdAsync(id);
+            if (detail == null) throw new Exception("404 - Not Found Order Detail!");
+            var order = await _unitOfWork.OrderRepository.GetByIdAsync(detail.OrderId);
+            if (order == null) throw new Exception("404 - Not Found Order");
+
+            if (order.OrderStatus != OrderStatusEnums.COMPLETED.ToString()
+                          && detail.Status != OrderDetailStatusEnum.COMPLETED.ToString()
+                )
+            {
+                detail.Status = OrderDetailStatusEnum.ISSHIPPING.ToString();
+                if (order.OrderStatus != OrderStatusEnums.PROCESSING.ToString())
+                    order.OrderStatus = OrderStatusEnums.PROCESSING.ToString();
+                if (await _unitOfWork.SaveChangeAsync() <= 0) throw new Exception("400 - Fail saving");
+                return order;
+            }
+            else
+            {
+                throw new Exception("400 - Order status or detail status is invalid");
+            }
+        }
+    }
+}
