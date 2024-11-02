@@ -2,6 +2,7 @@
 using Koi.BusinessObjects;
 using Koi.DTOs.ConsignmentDTOs;
 using Koi.DTOs.Enums;
+using Koi.DTOs.PaymentDTOs;
 using Koi.Repositories.Interfaces;
 using Koi.Repositories.Utils;
 using Koi.Services.Interface;
@@ -14,12 +15,14 @@ namespace Koi.Services.Services
         private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
         private readonly ICurrentTime _currentTime;
+        private readonly IWalletService _walletService;
 
-        public ConsignmentForNurtureService(IUnitOfWork unitOfWork, IMapper mapper, ICurrentTime currentTime)
+        public ConsignmentForNurtureService(IUnitOfWork unitOfWork, IMapper mapper, ICurrentTime currentTime, IWalletService walletService)
         {
             _unitOfWork = unitOfWork;
             _mapper = mapper;
             _currentTime = currentTime;
+            _walletService = walletService;
         }
 
         public async Task<ConsignmentForNurtureDTO> CreateConsignmentAsync(ConsignmentRequestDTO consignmentRequestDTO)
@@ -58,17 +61,77 @@ namespace Koi.Services.Services
                     TotalDays = totalDays,
                     DietCost = diet.DietCost,
                     ProjectedCost = projectedCost,
+                    ActualCost = projectedCost,
                     ConsignmentDate = _currentTime.GetCurrentTime(),
                     ConsignmentStatus = ConsignmentStatusEnums.PENDING.ToString(),
                     Note = consignmentRequestDTO.Note
                 };
 
-                var addedConsignment = await _unitOfWork.ConsignmentForNurtureRepository.AddNurtureConsignmentAsync(consignment);
+                var addedConsignment = await _unitOfWork.ConsignmentForNurtureRepository.AddAsync(consignment);
 
+                //if (await _unitOfWork.SaveChangeAsync() <= 0)
+                //{
+                //    throw new Exception("400 - Adding consginment proccess has been failed");
+                //}
+
+                //Create order for this consignment
+
+                var newOrder = new Order
+                {
+                    UserId = user.Id,
+                    TotalAmount = projectedCost,
+                    OrderStatus = OrderStatusEnums.PENDING.ToString(),
+                    ShippingAddress = "",
+                    PaymentMethod = "Order create for consignment",
+                    IsConsignmentIncluded = true,
+                };
+                newOrder = await _unitOfWork.OrderRepository.AddAsync(newOrder);
+
+                var personalWallet = await _unitOfWork.WalletRepository.GetWalletByUserId(user.Id);
+                var wallet = user.Wallet;
+                if (personalWallet == null)
+                {
+                    throw new Exception("Personal Wallet not found+");
+                }
+                // Check balance
+
+                if (personalWallet.Balance < newOrder.TotalAmount)
+                {
+                    newOrder.OrderStatus = OrderStatusEnums.CANCELLED.ToString();
+                    newOrder.Note = "Not enough wallet to pay";
+
+                    consignment.ConsignmentStatus = OrderStatusEnums.CANCELLED.ToString();
+                    consignment.Note = "Not enough wallet to pay";
+
+                    if (await _unitOfWork.SaveChangeAsync() <= 0)
+                    {
+                        throw new Exception("400 - Adding consginment and create order proccess has been failed");
+                    }
+                    throw new Exception("You dont have enough money to purchase this order");
+                }
                 if (await _unitOfWork.SaveChangeAsync() <= 0)
                 {
-                    throw new Exception("400 - Adding consginment proccess has been failed");
+                    throw new Exception("400 - Adding consginment and create order proccess has been failed");
                 }
+
+                var orderDetail = new OrderDetail
+                {
+                    OrderId = newOrder.Id,
+                    KoiFishId = koiFish.Id,
+                    Note = "Order detail for consignment",
+                    Price = projectedCost,
+                    ConsignmentCost = projectedCost,
+                    Status = OrderStatusEnums.PENDING.ToString(),
+                };
+
+                newOrder.OrderDetails = [orderDetail];
+                orderDetail = await _unitOfWork.OrderDetailRepository.AddAsync(orderDetail);
+                if (await _unitOfWork.SaveChangeAsync() <= 0)
+                {
+                    throw new Exception("400 - Adding order detail consignment proccess has been failed");
+                }
+
+                await _walletService.PurchaseItem(user.Id, newOrder.Id);
 
                 return _mapper.Map<ConsignmentForNurtureDTO>(addedConsignment);
             }

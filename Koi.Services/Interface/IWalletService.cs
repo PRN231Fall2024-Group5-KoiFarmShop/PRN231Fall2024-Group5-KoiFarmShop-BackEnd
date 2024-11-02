@@ -1,4 +1,5 @@
-﻿using Koi.DTOs.PaymentDTOs;
+﻿using Koi.BusinessObjects;
+using Koi.DTOs.PaymentDTOs;
 using Koi.DTOs.TransactionDTOs;
 using Koi.DTOs.WalletDTOs;
 using Microsoft.AspNetCore.Http;
@@ -23,5 +24,6 @@ namespace Koi.Services.Interface
         Task<WalletTransactionDTO> UpdateBalanceWallet(IQueryCollection query);
         Task<List<WalletTransactionDTO>> GetWalletTransactionsByUserId(int userId);
         Task<OrderDTO> CheckOut(PurchaseDTO purchaseDTO);
+        Task<WalletTransactionDTO> PurchaseItem(int userId, Order order);
     }
 }
