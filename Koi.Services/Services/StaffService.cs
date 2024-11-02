@@ -134,7 +134,7 @@ namespace Koi.Services.Services
         }
 
         //change order detail to complete
-        public async Task<Order> ChangeToCompleted(int id)
+        public async Task<OrderDetailDTO> ChangeToCompleted(int id)
         {
             var detail = await _unitOfWork.OrderDetailRepository.GetByIdAsync(id, x => x.ConsignmentForNurture);
             if (detail == null) throw new Exception("404 - Not Found Order Detail!");
@@ -155,7 +155,7 @@ namespace Koi.Services.Services
                 if (order.OrderDetails.All(x => x.Status == OrderDetailStatusEnum.COMPLETED.ToString()))
                     order.OrderStatus = OrderDetailStatusEnum.COMPLETED.ToString();
                 if (await _unitOfWork.SaveChangeAsync() <= 0) throw new Exception("400 - Fail saving");
-                return order;
+                return _mapper.Map<OrderDetailDTO>(detail);
             }
             else
             {
@@ -165,7 +165,7 @@ namespace Koi.Services.Services
 
         //order details
 
-        public async Task<Order> ChangeToConsigned(int id)
+        public async Task<OrderDetailDTO> ChangeToConsigned(int id)
         {
             var detail = await _unitOfWork.OrderDetailRepository.GetByIdAsync(id, x => x.ConsignmentForNurture);
             if (detail == null) throw new Exception("404 - Not Found Order Detail!");
@@ -190,7 +190,7 @@ namespace Koi.Services.Services
                 if (order.OrderDetails.All(x => x.Status == OrderDetailStatusEnum.COMPLETED.ToString() || x.Status == OrderDetailStatusEnum.ISNUTURING.ToString()))
                     order.OrderStatus = OrderDetailStatusEnum.COMPLETED.ToString();
                 if (await _unitOfWork.SaveChangeAsync() <= 0) throw new Exception("400 - Fail saving");
-                return order;
+                return _mapper.Map<OrderDetailDTO>(detail);
             }
             else
             {
@@ -199,7 +199,7 @@ namespace Koi.Services.Services
         }
 
         //order details
-        public async Task<Order> ChangeToShipping(int id)
+        public async Task<OrderDetailDTO> ChangeToShipping(int id)
         {
             var detail = await _unitOfWork.OrderDetailRepository.GetByIdAsync(id);
             if (detail == null) throw new Exception("404 - Not Found Order Detail!");
@@ -214,7 +214,30 @@ namespace Koi.Services.Services
                 if (order.OrderStatus != OrderStatusEnums.PROCESSING.ToString())
                     order.OrderStatus = OrderStatusEnums.PROCESSING.ToString();
                 if (await _unitOfWork.SaveChangeAsync() <= 0) throw new Exception("400 - Fail saving");
-                return order;
+                return _mapper.Map<OrderDetailDTO>(detail);
+            }
+            else
+            {
+                throw new Exception("400 - Order status or detail status is invalid");
+            }
+        }
+
+        public async Task<OrderDetailDTO> ChangeToGettingFish(int id)
+        {
+            var detail = await _unitOfWork.OrderDetailRepository.GetByIdAsync(id);
+            if (detail == null) throw new Exception("404 - Not Found Order Detail!");
+            var order = await _unitOfWork.OrderRepository.GetByIdAsync(detail.OrderId);
+            if (order == null) throw new Exception("404 - Not Found Order");
+
+            if ((order.OrderStatus != OrderStatusEnums.COMPLETED.ToString()
+                          && detail.Status != OrderDetailStatusEnum.COMPLETED.ToString()) && detail.Status == OrderDetailStatusEnum.PENDING.ToString()
+                )
+            {
+                detail.Status = OrderDetailStatusEnum.GETTINGFISH.ToString();
+                if (order.OrderStatus != OrderStatusEnums.PROCESSING.ToString())
+                    order.OrderStatus = OrderStatusEnums.PROCESSING.ToString();
+                if (await _unitOfWork.SaveChangeAsync() <= 0) throw new Exception("400 - Fail saving");
+                return _mapper.Map<OrderDetailDTO>(detail);
             }
             else
             {

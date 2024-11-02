@@ -14,11 +14,19 @@ namespace Koi.Services.Interface
     public interface IStaffService
     {
         Task<ApiResult<OrderDetailDTO>> AssignStaffOrderDetail(int id, int staffId);
-        Task<Order> ChangeToCompleted(int id);
-        Task<Order> ChangeToConsigned(int id);
-        Task<Order> ChangeToShipping(int id);
+
+        Task<OrderDetailDTO> ChangeToCompleted(int id);
+
+        Task<OrderDetailDTO> ChangeToConsigned(int id);
+
+        Task<OrderDetailDTO> ChangeToGettingFish(int id);
+
+        Task<OrderDetailDTO> ChangeToShipping(int id);
+
         Task<List<ConsignmentForNurtureDetailDTO>> GetAssignedConsigntment(int staffId);
+
         Task<List<OrderDetailDTO>> OrderDetailDTO(int staffId);
+
         Task<ConsignmentForNurtureDTO> UpdateConsignmentStatusOnlyAsync(int consignmentId, ConsignmentStatusEnums newStatus);
     }
 }
