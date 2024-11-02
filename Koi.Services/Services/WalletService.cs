@@ -350,6 +350,7 @@ namespace Koi.Services.Services
                     ShippingAddress = purchaseDTO.ShippingAddress,
                     PaymentMethod = "VNPAY",
                     Note = purchaseDTO.PurchaseFishes.Any(x => x.IsNuture) ? "Order with Nurture attached" : "Normal purchase fish order",
+                    IsConsignmentIncluded = purchaseDTO.PurchaseFishes.Any(x => x.IsNuture) ? true : false,
                 };
 
                 var personalWallet = await _unitOfWork.WalletRepository.GetWalletByUserId(user.Id);
