@@ -173,13 +173,7 @@ namespace Koi.Repositories
                 // Sử dụng AddRange để thêm danh sách khách hàng
                 foreach (var customerr in customers)
                 {
-                    await context.Users.AddAsync(customerr);
-                }
-                await context.SaveChangesAsync();
-
-                foreach (var customerr in customers)
-                {
-                    await CreateUserAsync(userManager, customer, "123456", customer.RoleName);
+                    await CreateUserAsync(userManager, customerr, "123456", "CUSTOMER");
                 }
             }
 
