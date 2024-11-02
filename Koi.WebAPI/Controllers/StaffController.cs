@@ -5,7 +5,6 @@ using Koi.DTOs.PaymentDTOs;
 using Koi.Repositories.Commons;
 using Koi.Repositories.Interfaces;
 using Koi.Services.Interface;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Koi.WebAPI.Controllers
@@ -16,11 +15,13 @@ namespace Koi.WebAPI.Controllers
     {
         private readonly IStaffService _staffService;
         private readonly IClaimsService _claimsService;
+        private readonly INotificationService _notificationService;
 
-        public StaffController(IStaffService staffService, IClaimsService claimsService)
+        public StaffController(IStaffService staffService, IClaimsService claimsService, INotificationService notificationService)
         {
             _staffService = staffService;
             _claimsService = claimsService;
+            _notificationService = notificationService;
         }
 
         /// <summary>
@@ -44,6 +45,16 @@ namespace Koi.WebAPI.Controllers
                 var result = await _staffService.AssignStaffOrderDetail(orderDetailId, id);
                 if (result.IsSuccess)
                 {
+                    //Notification
+                    var notification = new Notification
+                    {
+                        Title = "New Task Assigned",
+                        Body = $"You have been assigned to a new task.",
+                        ReceiverId = id,
+                        Type = "USER",
+                        Url = "/staff/order-details/" + orderDetailId
+                    };
+                    await _notificationService.PushNotification(notification);
                     return Ok(result);
                 }
                 else

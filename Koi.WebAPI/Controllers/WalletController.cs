@@ -1,4 +1,5 @@
-﻿using Koi.DTOs.Enums;
+﻿using Koi.BusinessObjects;
+using Koi.DTOs.Enums;
 using Koi.DTOs.PaymentDTOs;
 using Koi.DTOs.TransactionDTOs;
 using Koi.DTOs.WalletDTOs;
@@ -22,13 +23,15 @@ namespace Koi.WebAPI.Controllers
         private readonly IVnPayService _vnPayService;
         private readonly IClaimsService _claimsService;
         private readonly IPayOSService _payOSService;
+        private readonly INotificationService _notificationService;
 
-        public WalletController(IWalletService walletService, IVnPayService vnPayService, IClaimsService claimsService, IPayOSService payOSService)
+        public WalletController(IWalletService walletService, IVnPayService vnPayService, IClaimsService claimsService, IPayOSService payOSService, INotificationService notificationService)
         {
             _walletService = walletService;
             _vnPayService = vnPayService;
             _claimsService = claimsService;
             _payOSService = payOSService;
+            _notificationService = notificationService;
         }
 
         [HttpPost("wallets/deposit")]
@@ -39,6 +42,17 @@ namespace Koi.WebAPI.Controllers
                 var result = await _walletService.Deposit(amount);
                 if (result != null)
                 {
+                    // Create and push notification
+                    var notification = new Notification
+                    {
+                        Title = "Deposit Successful",
+                        Body = $"Your deposit of {amount} has been processed successfully.",
+                        ReceiverId = _claimsService.GetCurrentUserId,
+                        Type = "USER",
+                        Url = "/profile/wallet",
+                    };
+                    await _notificationService.PushNotification(notification);
+
                     return Ok(ApiResult<DepositResponseDTO>.Succeed(result, "Create deposit order successfully"));
                 }
                 else
@@ -309,6 +323,16 @@ namespace Koi.WebAPI.Controllers
                 }
 
                 var result = await _walletService.CheckOut(purchaseDTO);
+
+                var notification = new Notification
+                {
+                    Title = "Purchase Successful",
+                    Body = "Your purchase has been completed. Please check your wallet balance.",
+                    ReceiverId = userId,
+                    Type = "USER",
+                    Url = "/profile/orders",
+                };
+                await _notificationService.PushNotification(notification);
 
                 return Ok(ApiResult<OrderDTO>.Succeed(result, "Purchase successfully, please check your wallet!"));
 

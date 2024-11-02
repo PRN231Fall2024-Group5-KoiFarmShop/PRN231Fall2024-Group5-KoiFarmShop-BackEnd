@@ -5,9 +5,7 @@ using Koi.Repositories.Commons;
 
 using Koi.Repositories.Models.UserModels;
 using Koi.Services.Interface;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Newtonsoft.Json;
 
 namespace Koi.WebAPI.Controllers
 {
@@ -16,10 +14,12 @@ namespace Koi.WebAPI.Controllers
     public class UserController : ControllerBase
     {
         private readonly IUserService _userService;
+        private readonly INotificationService _notificationService;
 
-        public UserController(IUserService userService)
+        public UserController(IUserService userService, INotificationService notificationService)
         {
             _userService = userService;
+            _notificationService = notificationService;
         }
 
         /// <summary>
@@ -55,6 +55,19 @@ namespace Koi.WebAPI.Controllers
                     //var message = new Message(new string[] { data.Data.Email }, "Confirmation email link", confirmationLink!);
                     // await _emailService.SendEmail(message);
                     data.Message = "Register Successfuly <3";
+
+                    //Notification
+                    var notification = new Notification
+                    {
+                        Title = "Welcome to Koi Farm Shop",
+                        Body = "Thank you for registering with us. We hope you enjoy your shopping experience.",
+                        ReceiverId = data.Data.Id,
+                        Type = "USER", //ALL, USER, MANAGER, STAFF, CUSTOMER
+                        Url = "https://koifarmshop.netlify.app/",
+                        IsRead = false,
+                    };
+                    await _notificationService.PushNotification(notification);
+
                     return Ok(data);
                 }
 
