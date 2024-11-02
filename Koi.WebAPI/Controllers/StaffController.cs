@@ -124,7 +124,7 @@ namespace Koi.WebAPI.Controllers
             try
             {
                 var result = await _staffService.ChangeToCompleted(id);
-                return Ok(ApiResult<Order>.Succeed(result, "Order detail status changed to Completed."));
+                return Ok(ApiResult<OrderDetailDTO>.Succeed(result, "Order detail status changed to Completed."));
             }
             catch (Exception ex)
             {
@@ -147,7 +147,7 @@ namespace Koi.WebAPI.Controllers
             try
             {
                 var result = await _staffService.ChangeToConsigned(id);// change to nurturing
-                return Ok(ApiResult<Order>.Succeed(result, "Order detail status changed to Consigned."));
+                return Ok(ApiResult<OrderDetailDTO>.Succeed(result, "Order detail status changed to Consigned."));
             }
             catch (Exception ex)
             {
@@ -170,7 +170,30 @@ namespace Koi.WebAPI.Controllers
             try
             {
                 var result = await _staffService.ChangeToShipping(id);
-                return Ok(ApiResult<Order>.Succeed(result, "Order detail status changed to Shipping."));
+                return Ok(ApiResult<OrderDetailDTO>.Succeed(result, "Order detail status changed to Shipping."));
+            }
+            catch (Exception ex)
+            {
+                if (ex.Message.Contains("404"))
+                    return NotFound(ApiResult<object>.Fail(ex));
+                return BadRequest(ApiResult<object>.Fail(ex));
+            }
+        }
+
+        /// <summary>
+        /// Change the status of an order detail to Shipping.
+        /// </summary>
+        /// <param name="id">The ID of the order detail.</param>
+        /// <returns>The updated order with the new status.</returns>
+        /// <response code="200">Order detail status updated to Shipping.</response>
+        /// <response code="404">If the order detail or order is not found.</response>
+        [HttpPut("order-details/{id}/get-fish")]
+        public async Task<IActionResult> ChangeTogettingfish(int id)
+        {
+            try
+            {
+                var result = await _staffService.ChangeToGettingFish(id);
+                return Ok(ApiResult<OrderDetailDTO>.Succeed(result, "Order detail status changed to Shipping."));
             }
             catch (Exception ex)
             {

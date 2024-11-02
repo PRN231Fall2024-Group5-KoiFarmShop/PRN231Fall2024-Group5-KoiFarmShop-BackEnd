@@ -131,7 +131,7 @@ namespace Koi.Services.Services
                     throw new Exception("400 - Adding order detail consignment proccess has been failed");
                 }
 
-                await _walletService.PurchaseItem(user.Id, newOrder.Id);
+                await _walletService.PurchaseItem(user.Id, newOrder);
 
                 return _mapper.Map<ConsignmentForNurtureDTO>(addedConsignment);
             }
