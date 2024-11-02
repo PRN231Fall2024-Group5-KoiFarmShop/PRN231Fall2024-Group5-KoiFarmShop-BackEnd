@@ -71,7 +71,7 @@ namespace Koi.Repositories.Repositories
             var notifications = await _context.Notifications
                 .Where(n => n.Type == "ALL"
                             || n.ReceiverId == user.Id
-                            || (n.Type == "ROLE" && roles.Contains(n.Type)))
+                            || (roles.Contains(n.Type)))
                 .OrderByDescending(n => n.CreatedAt)
                 .ToListAsync();
 

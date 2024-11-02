@@ -39,17 +39,7 @@ namespace Koi.Services.Services
             await _unitOfWork.SaveChangeAsync();
 
             // Push notification to SignalR clients
-            if (notification.ReceiverId == null)
-            {
-                // If ReceiverId is null, push to all clients
-                await _notificationHubContext.Clients.All.SendAsync("ReceiveNotification", notification.Title, notification.Body);
-            }
-            else
-            {
-                // Push notification to a specific user
-                await _notificationHubContext.Clients.User(notification.ReceiverId.ToString())
-                    .SendAsync("ReceiveNotification", notification.Title, notification.Body);
-            }
+            await _notificationHubContext.Clients.All.SendAsync("ReceiveMessage", notification.Title, notification.Body);
         }
 
         // Push notification to users with "Manager" role
