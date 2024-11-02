@@ -308,29 +308,32 @@ namespace Koi.Services.Services
                         }
                         fishes.Add(koiFish);
                         totalAmount += koiFish.Price;
-                        if (purchaseFish.IsNuture && (purchaseFish.StartDate.HasValue && purchaseFish.EndDate.HasValue))
+                        if (purchaseFish.IsNuture && purchaseFish.TotalDays.HasValue)//&& (purchaseFish.StartDate.HasValue && purchaseFish.EndDate.HasValue))
                         {
                             var existingDiet = await _unitOfWork.DietRepository.GetByIdAsync(purchaseFish.DietId);
                             if (existingDiet == null)
                             {
                                 throw new Exception($"400-Invalid id diet {purchaseFish.DietId} is not existed");
                             }
-                            var nurtureDays = ResourceHelper.DateTimeValidate(purchaseFish.StartDate.Value, purchaseFish.EndDate.Value);
+                            // var nurtureDays = ResourceHelper.DateTimeValidate(purchaseFish.StartDate.Value, purchaseFish.EndDate.Value);
                             var newConsignment = new ConsignmentForNurture
                             {
                                 KoiFishId = koiFish.Id,
-                                StartDate = purchaseFish.StartDate.Value,
-                                EndDate = purchaseFish.EndDate.Value,
+                                //   StartDate = purchaseFish.StartDate.Value,
+                                //  EndDate = purchaseFish.EndDate.Value,
                                 DietId = existingDiet.Id,
                                 DietCost = existingDiet.DietCost,
                                 DailyFeedAmount = koiFish.DailyFeedAmount,
-                                TotalDays = nurtureDays,
-                                ProjectedCost = nurtureDays * existingDiet.DietCost,
+                                TotalDays = purchaseFish.TotalDays,
+                                ProjectedCost = purchaseFish.TotalDays * existingDiet.DietCost,
+                                ActualCost = purchaseFish.TotalDays * existingDiet.DietCost,
+                                ConsignmentDate = _currentTime.GetCurrentTime(),
                                 ConsignmentStatus = ConsignmentStatusEnums.PENDING.ToString()//PENDING CONSIGNMENT STATUS
                             };
 
                             koiFish.IsConsigned = true;
                             koiFish.ConsignmentForNurtures = [newConsignment];
+                            koiFish.IsAvailableForSale = true;
 
                             consignments.Add(await _unitOfWork.ConsignmentForNurtureRepository.AddAsync(newConsignment));
                             totalAmount += newConsignment.ProjectedCost; // thêm tiền nuôi cá
@@ -373,6 +376,8 @@ namespace Koi.Services.Services
                 }
                 // create order details and update owner id
                 var orderDetails = await _unitOfWork.OrderRepository.CreateOrderWithOrderDetails(newOrder, fishes);
+                // Purchase
+                var transation = await PurchaseItem(user.Id, newOrder);
 
                 //if (await _unitOfWork.SaveChangeAsync() <= 0)
                 //{
@@ -390,9 +395,6 @@ namespace Koi.Services.Services
                 //};
 
                 //await _notificationService.PushNotification(notification);
-
-                // Purchase
-                var transation = await PurchaseItem(user.Id, newOrder);
 
                 //Notification to event order
                 //var notificationToOrganizer = new Notification

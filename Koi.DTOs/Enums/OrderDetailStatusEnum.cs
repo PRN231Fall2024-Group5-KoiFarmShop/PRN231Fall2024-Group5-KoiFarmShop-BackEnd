@@ -3,8 +3,9 @@
     public enum OrderDetailStatusEnum
     {
         PENDING,
-        CONSIGNED,
-        SHIPPING,
+        GETTINGFISH,
+        ISSHIPPING,
+        ISNUTURING,
         COMPLETED,
         CANCELED
     }
