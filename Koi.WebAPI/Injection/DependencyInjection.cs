@@ -56,6 +56,7 @@ namespace Koi.WebAPI.Injection
             services.AddScoped<IWithdrawnRequestRepository, WithdrawnRequestRepository>();
             services.AddScoped<IBlogRepository, BlogRepository>();
             services.AddScoped<IRequestForSaleRepository, RequestForSaleRepository>();
+            services.AddScoped<IFAQRepository, FAQRepository>();
             // add generic repositories
             services.AddScoped<IGenericRepository<KoiFish>, GenericRepository<KoiFish>>();
             services.AddScoped<IGenericRepository<KoiFish>, GenericRepository<KoiFish>>();
@@ -72,6 +73,7 @@ namespace Koi.WebAPI.Injection
             services.AddScoped<IGenericRepository<WithdrawnRequest>, GenericRepository<WithdrawnRequest>>();
             services.AddScoped<IGenericRepository<Blog>, GenericRepository<Blog>>();
             services.AddScoped<IGenericRepository<RequestForSale>, GenericRepository<RequestForSale>>();
+            services.AddScoped<IGenericRepository<FAQ>, GenericRepository<FAQ>>();
             // add signInManager
             services.AddScoped<SignInManager<User>>();
             // add services
@@ -90,6 +92,7 @@ namespace Koi.WebAPI.Injection
             services.AddScoped<IBlogService, BlogService>();
             services.AddScoped<IRequestForSaleService, RequestForSaleService>();
             services.AddScoped<IStaffService, StaffService>();
+            services.AddScoped<IFAQService, FAQService>();
             // add unitOfWork
             services.AddScoped<IUnitOfWork, UnitOfWork>();
             return services;
