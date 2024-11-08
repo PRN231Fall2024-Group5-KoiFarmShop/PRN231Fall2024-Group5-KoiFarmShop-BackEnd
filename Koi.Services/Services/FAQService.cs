@@ -52,6 +52,7 @@ namespace Koi.Services.Services
             fAQFromDb.Question = fAQ.Question;
             fAQFromDb.Answer = fAQ.Answer;
             var isSuccess = await _unitOfWork.FAQRepository.Update(fAQFromDb);
+            await _unitOfWork.SaveChangeAsync();
             return isSuccess ? fAQFromDb : null;
         }
     }
