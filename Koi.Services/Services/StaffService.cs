@@ -70,7 +70,6 @@ namespace Koi.Services.Services
                         message = "Staff reassigned for existing order detail.";
                     }
                     detail.StaffId = staffId;
-                    detail.Status = OrderDetailStatusEnum.ISSHIPPING.ToString();
                     var existingConsignment = detail.ConsignmentForNurture;
                     if (existingConsignment != null)
                     {
@@ -79,8 +78,8 @@ namespace Koi.Services.Services
                             message += "Staff reassigned for existing consignment.";
                         }
                         existingConsignment.StaffId = staffId;
-                       // existingConsignment.StartDate = _currentTime.GetCurrentTime();
-                       // existingConsignment.EndDate = _currentTime.GetCurrentTime().AddDays(existingConsignment.TotalDays.Value);
+                        // existingConsignment.StartDate = _currentTime.GetCurrentTime();
+                        // existingConsignment.EndDate = _currentTime.GetCurrentTime().AddDays(existingConsignment.TotalDays.Value);
                         existingConsignment.InspectionRequired = true;
                         existingConsignment.InspectionDate = _currentTime.GetCurrentTime();
                         detail.Status = OrderDetailStatusEnum.ISNUTURING.ToString();
@@ -90,6 +89,8 @@ namespace Koi.Services.Services
                     }
                     else
                     {
+                        detail.Status = OrderDetailStatusEnum.ISSHIPPING.ToString();
+
                         if (order.OrderStatus != OrderStatusEnums.PROCESSING.ToString())
                             order.OrderStatus = OrderStatusEnums.PROCESSING.ToString();
                     }
@@ -101,7 +102,6 @@ namespace Koi.Services.Services
                 }
                 else
                 {
-
                     return ApiResult<OrderDetailDTO>.Error(null, "400 - Order status:" + order.OrderStatus + "or detail status:" + detail.Status + "is invalid");
                 }
             }
@@ -205,7 +205,7 @@ namespace Koi.Services.Services
 
                 if (order.OrderStatus == OrderStatusEnums.PENDING.ToString())
                     order.OrderStatus = OrderStatusEnums.PROCESSING.ToString();
-                if (order.OrderDetails.All(x => x.Status == OrderDetailStatusEnum.COMPLETED.ToString() ))
+                if (order.OrderDetails.All(x => x.Status == OrderDetailStatusEnum.COMPLETED.ToString()))
                     order.OrderStatus = OrderDetailStatusEnum.COMPLETED.ToString();
                 if (await _unitOfWork.SaveChangeAsync() <= 0) throw new Exception("400 - Fail saving");
                 return _mapper.Map<OrderDetailDTO>(detail);
@@ -236,7 +236,7 @@ namespace Koi.Services.Services
             }
             else
             {
-                throw new Exception("400 - Order status:"+order.OrderStatus+"or detail status:"+detail.Status+ "is invalid"  );
+                throw new Exception("400 - Order status:" + order.OrderStatus + "or detail status:" + detail.Status + "is invalid");
             }
         }
 
