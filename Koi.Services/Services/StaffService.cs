@@ -51,6 +51,15 @@ namespace Koi.Services.Services
                 if (detail == null) throw new Exception("404 - Not Found Order Detail!");
                 var order = await _unitOfWork.OrderRepository.GetByIdAsync(detail.OrderId);
                 if (order == null) throw new Exception("404 - Not Found Order");
+                var staff = await _unitOfWork.UserRepository.GetAccountDetailsAsync(staffId);
+                if (staff == null) throw new Exception("404 - Not found Staff");
+                else
+                {
+                    if (staff.RoleName != "STAFF")
+                    {
+                        throw new Exception("400 - You can only assign staff user except other roles");
+                    }
+                }
 
                 if (order.OrderStatus != OrderStatusEnums.COMPLETED.ToString() && detail.Status != OrderDetailStatusEnum.COMPLETED.ToString())
                 {
@@ -70,8 +79,8 @@ namespace Koi.Services.Services
                             message += "Staff reassigned for existing consignment.";
                         }
                         existingConsignment.StaffId = staffId;
-                        existingConsignment.StartDate = _currentTime.GetCurrentTime();
-                        existingConsignment.EndDate = _currentTime.GetCurrentTime().AddDays(existingConsignment.TotalDays.Value);
+                       // existingConsignment.StartDate = _currentTime.GetCurrentTime();
+                       // existingConsignment.EndDate = _currentTime.GetCurrentTime().AddDays(existingConsignment.TotalDays.Value);
                         existingConsignment.InspectionRequired = true;
                         existingConsignment.InspectionDate = _currentTime.GetCurrentTime();
                         detail.Status = OrderDetailStatusEnum.ISNUTURING.ToString();
@@ -92,7 +101,8 @@ namespace Koi.Services.Services
                 }
                 else
                 {
-                    return ApiResult<OrderDetailDTO>.Error(null, "400 - Order status or detail status is invalid");
+
+                    return ApiResult<OrderDetailDTO>.Error(null, "400 - Order status:" + order.OrderStatus + "or detail status:" + detail.Status + "is invalid");
                 }
             }
             catch (Exception ex)
@@ -136,15 +146,22 @@ namespace Koi.Services.Services
         //change order detail to complete
         public async Task<OrderDetailDTO> ChangeToCompleted(int id)
         {
-            var detail = await _unitOfWork.OrderDetailRepository.GetByIdAsync(id, x => x.ConsignmentForNurture);
+            var detail = await _unitOfWork.OrderDetailRepository.GetByIdAsync(id, x => x.KoiFish);
             if (detail == null) throw new Exception("404 - Not Found Order Detail!");
-            var order = await _unitOfWork.OrderRepository.GetByIdAsync(detail.OrderId);
+            var order = await _unitOfWork.OrderRepository.GetByIdAsync(detail.OrderId, x => x.User);
             if (order == null) throw new Exception("404 - Not Found Order");
             if (order.OrderStatus == OrderStatusEnums.PROCESSING.ToString()
                 && (detail.Status == OrderDetailStatusEnum.ISSHIPPING.ToString()
                 || detail.Status == OrderDetailStatusEnum.ISNUTURING.ToString()))
             {
                 detail.Status = OrderDetailStatusEnum.COMPLETED.ToString();
+
+                if (detail.KoiFish == null)
+                {
+                    throw new Exception($"This fish id: {detail.KoiFishId} does not exist in data");
+                }
+
+                detail.KoiFish.OwnerId = order.UserId;
                 //if(detail.ConsignmentForNurture != null)
                 //{
                 //    if(detail.ConsignmentForNurture.ConsignmentStatus != ConsignmentStatusEnums.DONE.ToString())
@@ -154,12 +171,13 @@ namespace Koi.Services.Services
                 //}
                 if (order.OrderDetails.All(x => x.Status == OrderDetailStatusEnum.COMPLETED.ToString()))
                     order.OrderStatus = OrderDetailStatusEnum.COMPLETED.ToString();
+
                 if (await _unitOfWork.SaveChangeAsync() <= 0) throw new Exception("400 - Fail saving");
                 return _mapper.Map<OrderDetailDTO>(detail);
             }
             else
             {
-                throw new Exception("400 - Order status or detail status is invalid");
+                throw new Exception("400 - Order status:" + order.OrderStatus + "or detail status:" + detail.Status + "is invalid");
             }
         }
 
@@ -194,7 +212,7 @@ namespace Koi.Services.Services
             }
             else
             {
-                throw new Exception("400 - Order status or detail status is invalid");
+                throw new Exception("400 - Order status:" + order.OrderStatus + "or detail status:" + detail.Status + "is invalid");
             }
         }
 
@@ -218,7 +236,7 @@ namespace Koi.Services.Services
             }
             else
             {
-                throw new Exception("400 - Order status or detail status is invalid");
+                throw new Exception("400 - Order status:"+order.OrderStatus+"or detail status:"+detail.Status+ "is invalid"  );
             }
         }
 
