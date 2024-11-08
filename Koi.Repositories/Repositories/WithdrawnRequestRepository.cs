@@ -123,13 +123,13 @@ namespace Koi.Repositories.Repositories
 
         public async Task<DashboardOrderStatisticsDto> Analyst(DateTime startDate, DateTime endDate)
         {
-            // Filter orders within the date range
-            var orders = await _context.Orders
-                .Where(o => o.OrderDate >= startDate && o.OrderDate <= endDate)
+            // Filter orders within the date range and with status COMPLETED
+            var completedOrders = await _context.Orders
+                .Where(o => o.OrderDate >= startDate && o.OrderDate <= endDate && o.OrderStatus == OrderDetailStatusEnum.COMPLETED.ToString())
                 .ToListAsync();
 
-            // Group orders by status and count them
-            var orderStatusCounts = orders
+            // Group completed orders by status and count them
+            var orderStatusCounts = completedOrders
                 .GroupBy(o => o.OrderStatus)
                 .Select(g => new
                 {
@@ -138,11 +138,11 @@ namespace Koi.Repositories.Repositories
                 })
                 .ToDictionary(x => x.Status, x => x.Count);
 
-            // Count the total number of orders
-            int totalOrders = orders.Count;
+            // Count the total number of completed orders
+            int totalOrders = completedOrders.Count;
 
-            // Calculate total revenue within the date range
-            long totalRevenue = orders.Sum(o => o.TotalAmount);
+            // Calculate total revenue for completed orders within the date range
+            long totalRevenue = completedOrders.Sum(o => o.TotalAmount);
 
             // Prepare the result object to return statistics
             var result = new DashboardOrderStatisticsDto
@@ -156,6 +156,7 @@ namespace Koi.Repositories.Repositories
 
             return result;
         }
+
 
     }
 }

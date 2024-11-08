@@ -75,13 +75,24 @@ namespace Koi.WebAPI.Controllers
                 var requestForSaleModel = await _requestForSaleService.CreateRequestForSale(requestForSale);
                 var notification = new Notification
                 {
-                    Title = "New Request Created",
+                    Title = "New Request For Sale Created",
                     Body = $"A new request with ID {requestForSaleModel.Id} has been created.",
                     ReceiverId = requestForSaleModel.UserId,
                     Type = "MANAGER",
                     Url = $"/manager/sale-request"
                 };
                 await _notificationService.PushNotification(notification);
+
+                //Noti for user
+                var notificationUser = new Notification
+                {
+                    Title = "New Request For Sale Created",
+                    Body = $"Your request with ID {requestForSaleModel.Id} has been created.",
+                    ReceiverId = requestForSaleModel.UserId,
+                    Type = "USER",
+                    Url = $"/manager/sale-request"
+                };
+                await _notificationService.PushNotification(notificationUser);
 
                 return Created(string.Empty, ApiResult<RequestForSaleResponseDTO>.Succeed(requestForSaleModel, "Create request for sale successfully!"));
             }
