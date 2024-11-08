@@ -2,6 +2,7 @@
 using Koi.BusinessObjects;
 using Koi.DTOs.KoiCertificateDTOs;
 using Koi.DTOs.KoiFishDTOs;
+using Koi.DTOs.KoiCertificateDTOs;
 using Koi.Repositories.Helper;
 using Koi.Repositories.Interfaces;
 using Koi.Services.Interface;
