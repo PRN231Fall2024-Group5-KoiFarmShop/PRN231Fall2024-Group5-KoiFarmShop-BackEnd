@@ -30,14 +30,19 @@ namespace Koi.Repositories.Utils
 
         public static int DateTimeValidate(DateTime startDate, DateTime endDate)
         {
+            // Chỉ lấy phần ngày, bỏ qua phần giờ
+            startDate = startDate.Date;
+            endDate = endDate.Date;
+
             if (endDate < startDate)
             {
                 throw new Exception("Invalid date time input: EndDate cannot be earlier than StartDate.");
             }
+
             TimeSpan duration = endDate - startDate;
 
-            // Trả về số ngày dưới dạng số nguyên
-            return duration.Days;
+            // Trả về số ngày dưới dạng số nguyên và thêm 1 để bao gồm cả ngày bắt đầu
+            return duration.Days + 1;
         }
     }
 }
