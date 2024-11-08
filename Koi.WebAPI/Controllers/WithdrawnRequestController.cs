@@ -97,5 +97,13 @@ namespace Koi.WebAPI.Controllers
                 return BadRequest(ApiResult<object>.Fail(ex));
             }
         }
+
+        [HttpGet("dashboard/analytics")]
+        public async Task<IActionResult> GetOrderAnalytics(DateTime startDate, DateTime endDate)
+        {
+            var statistics = await _withdrawnRequestService.Analyst(startDate, endDate);
+            return Ok(statistics);
+        }
+
     }
 }

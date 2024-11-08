@@ -250,8 +250,8 @@ namespace Koi.Repositories
                 {
                     item.CreatedAt = DateTime.Now;
                     item.ModifiedAt = DateTime.Now;
-                    item.CreatedBy = defaultUser.Id;
-                    item.ModifiedBy = defaultUser.Id;
+                    item.CreatedBy = -1;
+                    item.ModifiedBy = -1;
                 }
                 await context.KoiBreeds.AddRangeAsync(breeds);
                 await context.SaveChangesAsync();
@@ -942,8 +942,8 @@ namespace Koi.Repositories
                 {
                     item.CreatedAt = DateTime.Now;
                     item.ModifiedAt = DateTime.Now;
-                    item.CreatedBy = defaultUser.Id;
-                    item.ModifiedBy = defaultUser.Id;
+                    item.CreatedBy = -1;
+                    item.ModifiedBy = -1;
                 }
                 await context.KoiFishs.AddRangeAsync(fishList);
                 await context.SaveChangesAsync();

@@ -1,4 +1,5 @@
 ﻿using Koi.BusinessObjects;
+using Koi.DTOs.WalletDTOs;
 
 namespace Koi.Services.Interface
 {
@@ -9,5 +10,6 @@ namespace Koi.Services.Interface
         Task<List<WithdrawnRequest>> GetAllRequest();
         Task<WithdrawnRequest> ApproveRequest(int requestId, string imageUrl);
         Task<WithdrawnRequest> RejectRequest(int requestId);
+        Task<DashboardOrderStatisticsDto> Analyst(DateTime startDate, DateTime endDate);
     }
 }
