@@ -1,4 +1,5 @@
 ﻿using Koi.BusinessObjects;
+using Koi.DTOs.WalletDTOs;
 using Koi.Repositories.Interfaces;
 using Koi.Services.Interface;
 
@@ -36,6 +37,11 @@ namespace Koi.Services.Services
         public async Task<WithdrawnRequest> RejectRequest(int requestId)
         {
             return await _unitOfWork.WithdrawnRequestRepository.RejectRequest(requestId);
+        }
+
+        public Task<DashboardOrderStatisticsDto> Analyst(DateTime startDate, DateTime endDate)
+        {
+            return _unitOfWork.WithdrawnRequestRepository.Analyst(startDate, endDate);
         }
     }
 }

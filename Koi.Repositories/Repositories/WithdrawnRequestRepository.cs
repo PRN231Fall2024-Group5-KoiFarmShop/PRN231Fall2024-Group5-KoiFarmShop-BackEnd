@@ -1,5 +1,6 @@
 ﻿using Koi.BusinessObjects;
 using Koi.DTOs.Enums;
+using Koi.DTOs.WalletDTOs;
 using Koi.Repositories.Interfaces;
 using Microsoft.EntityFrameworkCore;
 
@@ -119,5 +120,42 @@ namespace Koi.Repositories.Repositories
         {
             return _context.WithdrawnRequests.Where(r => r.UserId == _claimsService.GetCurrentUserId).ToListAsync();
         }
+
+        public async Task<DashboardOrderStatisticsDto> Analyst(DateTime startDate, DateTime endDate)
+        {
+            // Filter orders within the date range
+            var orders = await _context.Orders
+                .Where(o => o.OrderDate >= startDate && o.OrderDate <= endDate)
+                .ToListAsync();
+
+            // Group orders by status and count them
+            var orderStatusCounts = orders
+                .GroupBy(o => o.OrderStatus)
+                .Select(g => new
+                {
+                    Status = g.Key,
+                    Count = g.Count()
+                })
+                .ToDictionary(x => x.Status, x => x.Count);
+
+            // Count the total number of orders
+            int totalOrders = orders.Count;
+
+            // Calculate total revenue within the date range
+            long totalRevenue = orders.Sum(o => o.TotalAmount);
+
+            // Prepare the result object to return statistics
+            var result = new DashboardOrderStatisticsDto
+            {
+                TotalOrders = totalOrders,
+                TotalRevenue = totalRevenue,
+                OrdersByStatus = orderStatusCounts,
+                StartDate = startDate,
+                EndDate = endDate
+            };
+
+            return result;
+        }
+
     }
 }
