@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Koi.BusinessObjects;
+using Koi.DTOs.ConsignmentDTOs;
 using Koi.DTOs.Enums;
 using Koi.DTOs.PaymentDTOs;
 using Koi.DTOs.TransactionDTOs;
@@ -308,7 +309,7 @@ namespace Koi.Services.Services
                         }
                         fishes.Add(koiFish);
                         totalAmount += koiFish.Price;
-                        if (purchaseFish.IsNuture && purchaseFish.TotalDays.HasValue)//&& (purchaseFish.StartDate.HasValue && purchaseFish.EndDate.HasValue))
+                        if (purchaseFish.IsNuture && purchaseFish.EndDate.HasValue)//&& (purchaseFish.StartDate.HasValue && purchaseFish.EndDate.HasValue))
                         {
                             var existingDiet = await _unitOfWork.DietRepository.GetByIdAsync(purchaseFish.DietId);
                             if (existingDiet == null)
@@ -316,6 +317,8 @@ namespace Koi.Services.Services
                                 throw new Exception($"400-Invalid id diet {purchaseFish.DietId} is not existed");
                             }
                             // var nurtureDays = ResourceHelper.DateTimeValidate(purchaseFish.StartDate.Value, purchaseFish.EndDate.Value);
+                            var totalDays = ResourceHelper.DateTimeValidate(_currentTime.GetCurrentTime(), purchaseFish.EndDate.Value);
+
                             var newConsignment = new ConsignmentForNurture
                             {
                                 KoiFishId = koiFish.Id,
@@ -324,9 +327,11 @@ namespace Koi.Services.Services
                                 DietId = existingDiet.Id,
                                 DietCost = existingDiet.DietCost,
                                 DailyFeedAmount = koiFish.DailyFeedAmount,
-                                TotalDays = purchaseFish.TotalDays,
-                                ProjectedCost = purchaseFish.TotalDays * existingDiet.DietCost,
-                                ActualCost = purchaseFish.TotalDays * existingDiet.DietCost,
+                                StartDate= _currentTime.GetCurrentTime(),
+                                EndDate = purchaseFish.EndDate.Value,
+                                TotalDays = totalDays,
+                                ProjectedCost = totalDays * existingDiet.DietCost,
+                                ActualCost = totalDays * existingDiet.DietCost,
                                 ConsignmentDate = _currentTime.GetCurrentTime(),
                                 ConsignmentStatus = ConsignmentStatusEnums.PENDING.ToString()//PENDING CONSIGNMENT STATUS
                             };

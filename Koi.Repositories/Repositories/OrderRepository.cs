@@ -92,7 +92,7 @@ namespace Koi.Repositories.Repositories
                     order.OrderDetails = [];
                     order.OrderDetails.Add(orderDetail);
                     orderDetails.Add(orderDetail);
-                    fish.OwnerId = _claimsService.GetCurrentUserId;
+                 //   fish.OwnerId = _claimsService.GetCurrentUserId;
                     fish.IsAvailableForSale = false;
                 }
 

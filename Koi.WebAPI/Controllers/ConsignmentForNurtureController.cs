@@ -82,27 +82,7 @@ namespace Koi.WebAPI.Controllers
             }
         }
 
-        /// <summary>
-        /// Update the status of a consignment.
-        /// </summary>
-        /// <param name="id">The ID of the consignment to update.</param>
-        /// <param name="newStatus">The new status to set for the consignment.</param>
-        /// <returns>Success message if the update was successful.</returns>
-        /// <response code="200">If the status update was successful.</response>
-        /// <response code="404">If the consignment was not found.</response>
-        [HttpPut("nurture-consignments/{id}/status")]
-        public async Task<IActionResult> UpdateConsignmentStatus(int id, [FromQuery] string newStatus)
-        {
-            try
-            {
-                await _consignmentService.UpdateConsignmentStatusAsync(id, newStatus);
-                return Ok(ApiResult<object>.Succeed(null, "Consignment status updated successfully."));
-            }
-            catch (Exception ex)
-            {
-                return HandleError(ex);
-            }
-        }
+       
 
         /// <summary>
         /// Update an existing consignment by ID and return the updated consignment.

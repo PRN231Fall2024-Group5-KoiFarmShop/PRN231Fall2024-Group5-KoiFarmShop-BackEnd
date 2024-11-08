@@ -101,17 +101,17 @@ namespace Koi.WebAPI.Controllers
         /// <summary>
         /// Update the status of a consignment to a new status.
         /// </summary>
-        /// <param name="consignmentId">The ID of the consignment to update.</param>
+        /// <param name="id">The ID of the consignment to update.</param>
         /// <param name="newStatus">The new status to set for the consignment.</param>
         /// <returns>The updated consignment details.</returns>
         /// <response code="200">Consignment status updated successfully.</response>
         /// <response code="404">If the consignment is not found.</response>
-        [HttpPut("nurture-consignments/{consignmentId}/status")]
-        public async Task<IActionResult> UpdateConsignmentStatus(int consignmentId, [FromQuery] ConsignmentStatusEnums newStatus)
+        [HttpPut("nurture-consignments/{id}/status")]
+        public async Task<IActionResult> UpdateConsignmentStatus(int id, [FromQuery] ConsignmentStatusEnums newStatus)
         {
             try
             {
-                var result = await _staffService.UpdateConsignmentStatusOnlyAsync(consignmentId, newStatus);
+                var result = await _staffService.UpdateConsignmentStatusOnlyAsync(id, newStatus);
                 return Ok(ApiResult<ConsignmentForNurtureDTO>.Succeed(result, "Consignment status updated successfully."));
             }
             catch (Exception ex)
@@ -123,7 +123,7 @@ namespace Koi.WebAPI.Controllers
         }
 
         /// <summary>
-        /// Change the status of an order detail to Completed.
+        /// Change order details from shipping to completed and automatically activate owner fish
         /// </summary>
         /// <param name="id">The ID of the order detail.</param>
         /// <returns>The updated order with the new status.</returns>
