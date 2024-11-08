@@ -9,6 +9,7 @@ using Koi.Repositories.Interfaces;
 using Koi.Repositories.Utils;
 using Koi.Services.Interface;
 using Microsoft.AspNetCore.Http;
+using Microsoft.IdentityModel.Tokens;
 
 namespace Koi.Services.Services
 {
@@ -327,7 +328,7 @@ namespace Koi.Services.Services
                                 DietId = existingDiet.Id,
                                 DietCost = existingDiet.DietCost,
                                 DailyFeedAmount = koiFish.DailyFeedAmount,
-                                StartDate= _currentTime.GetCurrentTime(),
+                                StartDate = _currentTime.GetCurrentTime(),
                                 EndDate = purchaseFish.EndDate.Value,
                                 TotalDays = totalDays,
                                 ProjectedCost = totalDays * existingDiet.DietCost,
@@ -357,7 +358,7 @@ namespace Koi.Services.Services
                     OrderStatus = OrderStatusEnums.PENDING.ToString(),
                     ShippingAddress = purchaseDTO.ShippingAddress,
                     PaymentMethod = "VNPAY",
-                    Note = purchaseDTO.PurchaseFishes.Any(x => x.IsNuture) ? "Order with Nurture attached" : "Normal purchase fish order",
+                    Note = consignments.Count() > 0 ? "Order with Nurture attached" : "Normal purchase fish order",
                     IsConsignmentIncluded = purchaseDTO.PurchaseFishes.Any(x => x.IsNuture) ? true : false,
                 };
 
