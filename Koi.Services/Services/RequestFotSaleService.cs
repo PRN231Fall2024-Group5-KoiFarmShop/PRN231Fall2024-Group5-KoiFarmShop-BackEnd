@@ -156,7 +156,7 @@ namespace Koi.Services.Services
           throw new Exception("400 - Update failed");
         }
 
-        if (existingRequestForSale.RequestStatus != "PENDING")
+        if (existingRequestForSale.RequestStatus == "APPROVED")
         {
           throw new Exception("400 - Update failed. Only pending request for sale can be updated!");
         }
@@ -262,7 +262,7 @@ namespace Koi.Services.Services
         throw ex;
       }
     }
-    public async Task<RequestForSaleResponseDTO> RejectRequest(int id)
+    public async Task<RequestForSaleResponseDTO> RejectRequest(int id, string reason)
     {
       try
       {
@@ -273,6 +273,13 @@ namespace Koi.Services.Services
         }
 
         existingRequest.RequestStatus = "REJECTED";
+
+        // Append rejection reason to note
+        string rejectionNote = $"REJECTED for reason: \"{reason}\"";
+        existingRequest.Note = string.IsNullOrEmpty(existingRequest.Note)
+          ? rejectionNote
+          : $"{existingRequest.Note}\n{rejectionNote}";
+
         await _unitOfWork.RequestForSaleRepository.Update(existingRequest);
         await _unitOfWork.SaveChangeAsync();
 
