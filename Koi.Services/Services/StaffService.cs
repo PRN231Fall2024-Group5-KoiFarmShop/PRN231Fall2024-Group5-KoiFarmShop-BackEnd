@@ -6,6 +6,7 @@ using Koi.DTOs.PaymentDTOs;
 using Koi.Repositories.Commons;
 using Koi.Repositories.Interfaces;
 using Koi.Services.Interface;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -90,8 +91,6 @@ namespace Koi.Services.Services
                     else
                     {
                         detail.Status = OrderDetailStatusEnum.ISSHIPPING.ToString();
-
-                     
                     }
                     if (order.OrderStatus != OrderStatusEnums.PROCESSING.ToString())
                         order.OrderStatus = OrderStatusEnums.PROCESSING.ToString();
@@ -123,6 +122,7 @@ namespace Koi.Services.Services
                 {
                     throw new Exception($"404 - Consignment with id {consignmentId} not found");
                 }
+                await CheckValidAssignedStaff(consignment); // check staff assigned có hợp lệ không
 
                 // Cập nhật trạng thái và thời gian chỉnh sửa
                 consignment.ConsignmentStatus = newStatus.ToString();
@@ -150,6 +150,9 @@ namespace Koi.Services.Services
             if (detail == null) throw new Exception("404 - Not Found Order Detail!");
             var order = await _unitOfWork.OrderRepository.GetByIdAsync(detail.OrderId, x => x.User);
             if (order == null) throw new Exception("404 - Not Found Order");
+
+            await CheckValidAssignedStaff(detail); // check staff assigned có hợp lệ không
+
             if (order.OrderStatus == OrderStatusEnums.PROCESSING.ToString()
                 && (detail.Status == OrderDetailStatusEnum.ISSHIPPING.ToString()
                 || detail.Status == OrderDetailStatusEnum.ISNUTURING.ToString()))
@@ -190,6 +193,8 @@ namespace Koi.Services.Services
             var order = await _unitOfWork.OrderRepository.GetByIdAsync(detail.OrderId);
             if (order == null) throw new Exception("404 - Not Found Order");
 
+            await CheckValidAssignedStaff(detail); // check staff assigned có hợp lệ không
+
             if (order.OrderStatus != OrderStatusEnums.COMPLETED.ToString()
                 && detail.Status != OrderDetailStatusEnum.COMPLETED.ToString()
                 )
@@ -224,6 +229,8 @@ namespace Koi.Services.Services
             var order = await _unitOfWork.OrderRepository.GetByIdAsync(detail.OrderId);
             if (order == null) throw new Exception("404 - Not Found Order");
 
+            await CheckValidAssignedStaff(detail); // check staff assigned có hợp lệ không
+
             if (order.OrderStatus != OrderStatusEnums.COMPLETED.ToString()
                           && detail.Status != OrderDetailStatusEnum.COMPLETED.ToString()
                 )
@@ -247,6 +254,8 @@ namespace Koi.Services.Services
             var order = await _unitOfWork.OrderRepository.GetByIdAsync(detail.OrderId);
             if (order == null) throw new Exception("404 - Not Found Order");
 
+            await CheckValidAssignedStaff(detail); // check staff assigned có hợp lệ không
+
             if ((order.OrderStatus != OrderStatusEnums.COMPLETED.ToString()
                           && detail.Status != OrderDetailStatusEnum.COMPLETED.ToString()) && detail.Status == OrderDetailStatusEnum.PENDING.ToString()
                 )
@@ -260,6 +269,34 @@ namespace Koi.Services.Services
             else
             {
                 throw new Exception("400 - Order status or detail status is invalid");
+            }
+        }
+
+        public async Task CheckValidAssignedStaff(OrderDetail assignDetail)
+        {
+            var user = await _unitOfWork.UserRepository.GetCurrentUserAsync();
+            if (user == null)
+            {
+                throw new Exception("401 - User have been not signed in");
+            }
+
+            if (user.Id != assignDetail.StaffId)
+            {
+                throw new Exception("403 - This staff dont have permission to update this order detail");
+            }
+        }
+
+        public async Task CheckValidAssignedStaff(ConsignmentForNurture assingnedConsignment)
+        {
+            var user = await _unitOfWork.UserRepository.GetCurrentUserAsync();
+            if (user == null)
+            {
+                throw new Exception("401 - User have been not signed in");
+            }
+
+            if (user.Id != assingnedConsignment.StaffId)
+            {
+                throw new Exception("403 - This staff dont have permission to update this order detail");
             }
         }
     }

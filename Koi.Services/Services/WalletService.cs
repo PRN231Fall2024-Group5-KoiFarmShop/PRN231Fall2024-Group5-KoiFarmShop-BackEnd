@@ -334,6 +334,7 @@ namespace Koi.Services.Services
                                 ProjectedCost = totalDays * existingDiet.DietCost,
                                 ActualCost = totalDays * existingDiet.DietCost,
                                 ConsignmentDate = _currentTime.GetCurrentTime(),
+                                CustomerId = user.Id,
                                 ConsignmentStatus = ConsignmentStatusEnums.PENDING.ToString()//PENDING CONSIGNMENT STATUS
                             };
 
