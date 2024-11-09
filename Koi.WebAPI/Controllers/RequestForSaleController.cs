@@ -186,16 +186,16 @@ namespace Koi.WebAPI.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> RejectRequest(int id)
+        public async Task<IActionResult> RejectRequest(int id, [FromBody] RejectRequestDTO rejectRequest)
         {
             try
             {
-                var result = await _requestForSaleService.RejectRequest(id);
+                var result = await _requestForSaleService.RejectRequest(id, rejectRequest.Reason);
 
                 var notification = new Notification
                 {
                     Title = "Request Rejected",
-                    Body = $"Your request with ID {id} has been rejected.",
+                    Body = $"Your request with ID {id} has been rejected. Reason: {rejectRequest.Reason}",
                     ReceiverId = result.UserId,
                     Type = "USER",
                     Url = $"/manager/sale-request"
