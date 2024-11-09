@@ -275,7 +275,7 @@ namespace Koi.Services.Services
 
         public async Task<OrderDetailDTO> CancelOrderDetail(int id)
         {
-            var detail = await _unitOfWork.OrderDetailRepository.GetByIdAsync(id);
+            var detail = await _unitOfWork.OrderDetailRepository.GetByIdAsync(id, x => x.ConsignmentForNurture);
             if (detail == null) throw new Exception("404 - Not Found Order Detail!");
             var order = await _unitOfWork.OrderRepository.GetByIdAsync(detail.OrderId);
             if (order == null) throw new Exception("404 - Not Found Order");
