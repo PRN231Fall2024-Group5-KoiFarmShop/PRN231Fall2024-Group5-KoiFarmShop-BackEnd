@@ -287,6 +287,11 @@ namespace Koi.Services.Services
                 ))
             {
                 detail.Status = OrderDetailStatusEnum.CANCELED.ToString();
+
+                if (detail.ConsignmentForNurture != null)
+                {
+                    detail.ConsignmentForNurture.ConsignmentStatus = ConsignmentStatusEnums.REJECTED.ToString();
+                }
                 if (order.OrderDetails.All(x => x.Status == OrderDetailStatusEnum.CANCELED.ToString()))
                     order.OrderStatus = OrderDetailStatusEnum.CANCELED.ToString();
                 if (await _unitOfWork.SaveChangeAsync() <= 0) throw new Exception("400 - Fail saving");
