@@ -1,11 +1,11 @@
 ﻿using AutoMapper;
-using Koi.BusinessObjects;
 using Koi.DTOs.ConsignmentDTOs;
 using Koi.DTOs.Enums;
 using Koi.DTOs.PaymentDTOs;
 using Koi.Repositories.Commons;
 using Koi.Repositories.Interfaces;
 using Koi.Services.Interface;
+
 using Microsoft.AspNetCore.Mvc.Rendering;
 using System;
 using System.Collections.Generic;
@@ -200,14 +200,7 @@ namespace Koi.Services.Services
                 )
             {
                 detail.Status = OrderDetailStatusEnum.ISNUTURING.ToString();
-                if (detail.ConsignmentForNurture != null)
-                {
-                    if (detail.ConsignmentForNurture.ConsignmentStatus != ConsignmentStatusEnums.DONE.ToString())
-                    {
-                        throw new Exception("400 - this consignment of order detail is not finished");
-                    }
-                    detail.ConsignmentForNurture.ConsignmentStatus = ConsignmentStatusEnums.NURTURING.ToString();
-                }
+
 
                 if (order.OrderStatus == OrderStatusEnums.PENDING.ToString())
                     order.OrderStatus = OrderStatusEnums.PROCESSING.ToString();
