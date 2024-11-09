@@ -91,10 +91,10 @@ namespace Koi.Services.Services
                     {
                         detail.Status = OrderDetailStatusEnum.ISSHIPPING.ToString();
 
-                        if (order.OrderStatus != OrderStatusEnums.PROCESSING.ToString())
-                            order.OrderStatus = OrderStatusEnums.PROCESSING.ToString();
+                     
                     }
-
+                    if (order.OrderStatus != OrderStatusEnums.PROCESSING.ToString())
+                        order.OrderStatus = OrderStatusEnums.PROCESSING.ToString();
                     await _unitOfWork.OrderDetailRepository.Update(detail);
                     if (await _unitOfWork.SaveChangeAsync() <= 0) throw new Exception("400 - Fail saving");
 
