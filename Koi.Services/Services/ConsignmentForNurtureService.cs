@@ -57,7 +57,6 @@ namespace Koi.Services.Services
                     DietId = consignmentRequestDTO.DietId,
                     StartDate = consignmentRequestDTO.StartDate,
                     EndDate = consignmentRequestDTO.EndDate,
-                    CustomerId = user.Id,
 
                     TotalDays = totalDays,
                     DietCost = diet.DietCost,

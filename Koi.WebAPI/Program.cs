@@ -99,8 +99,8 @@ builder.Services.AddAuthentication(options =>
     options.RequireHttpsMetadata = false;
     options.TokenValidationParameters = new Microsoft.IdentityModel.Tokens.TokenValidationParameters
     {
-        ValidateIssuer = true,
-        ValidateAudience = true,
+        ValidateIssuer = false,
+        ValidateAudience = false,
         ValidAudience = builder.Configuration["JWT:ValidAudience"],
         ValidIssuer = builder.Configuration["JWT:ValidIssuer"],
         IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["JWT:SecretKey"]))
@@ -135,11 +135,8 @@ IEdmModel GetEdmModel()
     return modelBuilder.GetEdmModel();
 }
 
-
 builder.Services.AddControllers().AddOData(opt =>
     opt.Select().Filter().OrderBy().Expand().Count().SetMaxTop(100).AddRouteComponents("api/v1/odata", GetEdmModel()));
-
-
 
 // END - ADD ODATA
 //ADD CORS
@@ -182,14 +179,13 @@ builder.Services.AddSingleton<IConfiguration>(builder.Configuration);
 builder.Services.AddHttpContextAccessor();
 
 var app = builder.Build();
+app.UseRouting();
 
 // SCOPE FOR MIGRATION
 // explain: The CreateScope method creates a new scope. The scope is a way to manage the lifetime of objects in the container.var scope = app.Services.CreateScope();
 var scope = app.Services.CreateScope();
 var userManager = scope.ServiceProvider.GetRequiredService<UserManager<User>>();
 var logger = scope.ServiceProvider.GetRequiredService<ILogger<Program>>();
-
-
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
@@ -220,6 +216,7 @@ catch (Exception e)
 {
     logger.LogError(e, "An problem occurred seed data!");
 }
+
 // USE CORS
 //app.UseCors();
 // Use CORS policy
@@ -227,20 +224,16 @@ catch (Exception e)
 app.UseCors("CorsPolicyDevelopement");
 
 // USE AUTHENTICATION, AUTHORIZATION
-app.UseAuthorization();
 app.UseAuthentication();
+
+app.UseAuthorization();
 
 //OTHERS
 app.UseHttpsRedirection();
 
-app.UseRouting();
-
 app.MapControllers();
 
 app.UseStaticFiles();
-
-
-
 
 // USE MIDDLEWARE
 app.UseMiddleware<GlobalExceptionMiddleware>();
