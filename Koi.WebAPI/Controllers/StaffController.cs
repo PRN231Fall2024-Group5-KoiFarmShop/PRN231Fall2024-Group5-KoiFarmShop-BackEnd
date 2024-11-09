@@ -101,17 +101,17 @@ namespace Koi.WebAPI.Controllers
         /// <summary>
         /// Update the status of a consignment to a new status.
         /// </summary>
-        /// <param name="consignmentId">The ID of the consignment to update.</param>
+        /// <param name="id">The ID of the consignment to update.</param>
         /// <param name="newStatus">The new status to set for the consignment.</param>
         /// <returns>The updated consignment details.</returns>
         /// <response code="200">Consignment status updated successfully.</response>
         /// <response code="404">If the consignment is not found.</response>
-        [HttpPut("nurture-consignments/{consignmentId}/status")]
-        public async Task<IActionResult> UpdateConsignmentStatus(int consignmentId, [FromQuery] ConsignmentStatusEnums newStatus)
+        [HttpPut("nurture-consignments/{id}/status")]
+        public async Task<IActionResult> UpdateConsignmentStatus(int id, [FromQuery] ConsignmentStatusEnums newStatus)
         {
             try
             {
-                var result = await _staffService.UpdateConsignmentStatusOnlyAsync(consignmentId, newStatus);
+                var result = await _staffService.UpdateConsignmentStatusOnlyAsync(id, newStatus);
                 return Ok(ApiResult<ConsignmentForNurtureDTO>.Succeed(result, "Consignment status updated successfully."));
             }
             catch (Exception ex)
@@ -123,7 +123,7 @@ namespace Koi.WebAPI.Controllers
         }
 
         /// <summary>
-        /// Change the status of an order detail to Completed.
+        /// Change order details from shipping to completed and automatically activate owner fish
         /// </summary>
         /// <param name="id">The ID of the order detail.</param>
         /// <returns>The updated order with the new status.</returns>
@@ -192,7 +192,7 @@ namespace Koi.WebAPI.Controllers
         }
 
         /// <summary>
-        /// Change the status of an order detail to Shipping.
+        /// Change the status of an order detail to getting fish for staff.
         /// </summary>
         /// <param name="id">The ID of the order detail.</param>
         /// <returns>The updated order with the new status.</returns>
@@ -205,6 +205,29 @@ namespace Koi.WebAPI.Controllers
             {
                 var result = await _staffService.ChangeToGettingFish(id);
                 return Ok(ApiResult<OrderDetailDTO>.Succeed(result, "Order detail status changed to Shipping."));
+            }
+            catch (Exception ex)
+            {
+                if (ex.Message.Contains("404"))
+                    return NotFound(ApiResult<object>.Fail(ex));
+                return BadRequest(ApiResult<object>.Fail(ex));
+            }
+        }
+
+        /// <summary>
+        /// Change the status of an order detail to be cancel or rejected
+        /// </summary>
+        /// <param name="id">The ID of the order detail.</param>
+        /// <returns>The updated order with the new status.</returns>
+        /// <response code="200">Order detail status updated to Shipping.</response>
+        /// <response code="404">If the order detail or order is not found.</response>
+        [HttpPut("order-details/{id}/cancel")]
+        public async Task<IActionResult> ChangeToCancel(int id)
+        {
+            try
+            {
+                var result = await _staffService.CancelOrderDetail(id);
+                return Ok(ApiResult<OrderDetailDTO>.Succeed(result, "Order detail status changed to cancel."));
             }
             catch (Exception ex)
             {

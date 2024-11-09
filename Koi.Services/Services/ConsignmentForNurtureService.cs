@@ -48,7 +48,7 @@ namespace Koi.Services.Services
                     throw new Exception($"400 - Invalid Diet Id: {consignmentRequestDTO.DietId}");
                 }
 
-                var totalDays = ResourceHelper.DateTimeValidate(consignmentRequestDTO.StartDate, consignmentRequestDTO.EndDate);
+                var totalDays = ResourceHelper.DateTimeValidate(_currentTime.GetCurrentTime(), consignmentRequestDTO.EndDate);
                 var projectedCost = totalDays * diet.DietCost;
                 var consignment = new ConsignmentForNurture
                 {

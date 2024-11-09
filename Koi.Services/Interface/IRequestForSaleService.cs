@@ -19,7 +19,7 @@ namespace Koi.Services.Interface
     Task<List<RequestForSaleResponseDTO>> GetRequestForSales(RequestForSaleParams requestForSaleParams);
     Task<RequestForSaleResponseDTO> GetRequestForSaleById(int id);
     Task<RequestForSaleResponseDTO> ApproveRequest(int id);
-    Task<RequestForSaleResponseDTO> RejectRequest(int id);
+    Task<RequestForSaleResponseDTO> RejectRequest(int id, string reason);
     Task<RequestForSaleResponseDTO> CancelRequest(int id);
     Task<bool> DeleteRequestForSale(int id);
 

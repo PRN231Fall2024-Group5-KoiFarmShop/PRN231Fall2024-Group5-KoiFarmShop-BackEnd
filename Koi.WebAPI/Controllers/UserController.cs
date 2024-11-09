@@ -5,6 +5,7 @@ using Koi.Repositories.Commons;
 
 using Koi.Repositories.Models.UserModels;
 using Koi.Services.Interface;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Koi.WebAPI.Controllers
@@ -101,6 +102,7 @@ namespace Koi.WebAPI.Controllers
         /// </remarks>
         /// <response code="200">Returns a success message with user data if registration is successful.</response>
         /// <response code="400">Returns an error message if registration fails (e.g., email already exists, invalid data).</response>
+
         [HttpPost()]
         public async Task<IActionResult> CreateUserAsync([FromBody] UserSignupModel userSignup, RoleEnums role)
         {
@@ -146,6 +148,7 @@ namespace Koi.WebAPI.Controllers
         /// <response code="200">Returns a success message if the update is successful.</response>
         /// <response code="404">If the user with the specified ID is not found.</response>
         /// <response code="400">Returns an error message if the update fails (e.g., invalid data).</response>
+        [Authorize]
         [HttpPut("customers/{id}")]
         public async Task<IActionResult> UpdateAccount([FromRoute] int id, [FromBody] CustomerProfileDTO userUpdatemodel)
         {
@@ -184,6 +187,7 @@ namespace Koi.WebAPI.Controllers
         /// <response code="200">Returns a success message if the update is successful.</response>
         /// <response code="404">If the user with the specified ID is not found.</response>
         /// <response code="400">Returns an error message if the update fails (e.g., invalid data).</response>
+        [Authorize]
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdateAccount([FromRoute] int id, [FromBody] UserUpdateModel userUpdatemodel)
         {
@@ -212,6 +216,7 @@ namespace Koi.WebAPI.Controllers
         /// <response code="200">Returns a success message with the list of deleted user IDs.</response>
         /// <response code="404">If none of the specified users are found.</response>
         /// <response code="400">Returns an error message if the deletion fails.</response>
+        [Authorize]
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteUsersAsync(int id)
         {
@@ -269,6 +274,7 @@ namespace Koi.WebAPI.Controllers
         /// <returns>The currently logged-in user's data.</returns>
         /// <response code="200">Returns the currently logged-in user's data.</response>
         /// <response code="404">If the user is not found or not authenticated.</response>
+        [Authorize]
         [HttpGet("me")]
         public async Task<IActionResult> GetCurrentUserAsync()
         {
@@ -305,8 +311,9 @@ namespace Koi.WebAPI.Controllers
         /// Get users by their specific id
         /// </summary>
         /// <response code="200">Returns an existing user</response>
+        [Authorize]
         [HttpGet("{id}")]
-        public async Task<IActionResult> GetEventByIdAsync(int id)
+        public async Task<IActionResult> GetUserByIdAsync(int id)
         {
             try
             {

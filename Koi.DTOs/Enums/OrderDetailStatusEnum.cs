@@ -3,6 +3,7 @@
     public enum OrderDetailStatusEnum
     {
         PENDING,
+        ASSIGNED,
         GETTINGFISH,
         ISSHIPPING,
         ISNUTURING,
