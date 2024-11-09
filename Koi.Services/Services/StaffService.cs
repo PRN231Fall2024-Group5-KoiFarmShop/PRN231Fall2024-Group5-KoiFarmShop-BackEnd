@@ -287,8 +287,8 @@ namespace Koi.Services.Services
                 ))
             {
                 detail.Status = OrderDetailStatusEnum.CANCELED.ToString();
-                if (order.OrderStatus != OrderStatusEnums.PROCESSING.ToString())
-                    order.OrderStatus = OrderStatusEnums.PROCESSING.ToString();
+                if (order.OrderDetails.All(x => x.Status == OrderDetailStatusEnum.CANCELED.ToString()))
+                    order.OrderStatus = OrderDetailStatusEnum.CANCELED.ToString();
                 if (await _unitOfWork.SaveChangeAsync() <= 0) throw new Exception("400 - Fail saving");
                 return _mapper.Map<OrderDetailDTO>(detail);
             }
