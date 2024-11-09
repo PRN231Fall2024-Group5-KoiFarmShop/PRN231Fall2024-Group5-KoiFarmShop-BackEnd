@@ -83,14 +83,14 @@ namespace Koi.Services.Services
                         // existingConsignment.EndDate = _currentTime.GetCurrentTime().AddDays(existingConsignment.TotalDays.Value);
                         existingConsignment.InspectionRequired = true;
                         existingConsignment.InspectionDate = _currentTime.GetCurrentTime();
-                        detail.Status = OrderDetailStatusEnum.ISNUTURING.ToString();
+                        detail.Status = OrderDetailStatusEnum.ASSIGNED.ToString();
                         existingConsignment.ConsignmentStatus = ConsignmentStatusEnums.NURTURING.ToString();
 
                         await _unitOfWork.ConsignmentForNurtureRepository.Update(existingConsignment);
                     }
                     else
                     {
-                        detail.Status = OrderDetailStatusEnum.ISSHIPPING.ToString();
+                        detail.Status = OrderDetailStatusEnum.ASSIGNED.ToString();
                     }
                     if (order.OrderStatus != OrderStatusEnums.PROCESSING.ToString())
                         order.OrderStatus = OrderStatusEnums.PROCESSING.ToString();
@@ -206,6 +206,7 @@ namespace Koi.Services.Services
                     {
                         throw new Exception("400 - this consignment of order detail is not finished");
                     }
+                    detail.ConsignmentForNurture.ConsignmentStatus = ConsignmentStatusEnums.NURTURING.ToString();
                 }
 
                 if (order.OrderStatus == OrderStatusEnums.PENDING.ToString())
@@ -268,7 +269,32 @@ namespace Koi.Services.Services
             }
             else
             {
-                throw new Exception("400 - Order status or detail status is invalid");
+                throw new Exception("400 - Order status:" + order.OrderStatus + "or detail status:" + detail.Status + "is invalid");
+            }
+        }
+
+        public async Task<OrderDetailDTO> CancelOrderDetail(int id)
+        {
+            var detail = await _unitOfWork.OrderDetailRepository.GetByIdAsync(id);
+            if (detail == null) throw new Exception("404 - Not Found Order Detail!");
+            var order = await _unitOfWork.OrderRepository.GetByIdAsync(detail.OrderId);
+            if (order == null) throw new Exception("404 - Not Found Order");
+
+            await CheckValidAssignedStaff(detail); // check staff assigned có hợp lệ không
+
+            if ((order.OrderStatus != OrderStatusEnums.COMPLETED.ToString()
+                          && detail.Status != OrderDetailStatusEnum.COMPLETED.ToString()
+                ))
+            {
+                detail.Status = OrderDetailStatusEnum.CANCELED.ToString();
+                if (order.OrderStatus != OrderStatusEnums.PROCESSING.ToString())
+                    order.OrderStatus = OrderStatusEnums.PROCESSING.ToString();
+                if (await _unitOfWork.SaveChangeAsync() <= 0) throw new Exception("400 - Fail saving");
+                return _mapper.Map<OrderDetailDTO>(detail);
+            }
+            else
+            {
+                throw new Exception("400 - Order status:" + order.OrderStatus + "or detail status:" + detail.Status + "is invalid");
             }
         }
 

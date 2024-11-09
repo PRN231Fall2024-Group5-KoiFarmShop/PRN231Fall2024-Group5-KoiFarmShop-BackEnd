@@ -14,7 +14,7 @@ namespace Koi.Services.Interface
     public interface IStaffService
     {
         Task<ApiResult<OrderDetailDTO>> AssignStaffOrderDetail(int id, int staffId);
-
+        Task<OrderDetailDTO> CancelOrderDetail(int id);
         Task<OrderDetailDTO> ChangeToCompleted(int id);
 
         Task<OrderDetailDTO> ChangeToConsigned(int id);
