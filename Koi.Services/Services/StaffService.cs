@@ -1,17 +1,11 @@
 ﻿using AutoMapper;
+using Koi.BusinessObjects;
 using Koi.DTOs.ConsignmentDTOs;
 using Koi.DTOs.Enums;
 using Koi.DTOs.PaymentDTOs;
 using Koi.Repositories.Commons;
 using Koi.Repositories.Interfaces;
 using Koi.Services.Interface;
-
-using Microsoft.AspNetCore.Mvc.Rendering;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Koi.Services.Services
 {
