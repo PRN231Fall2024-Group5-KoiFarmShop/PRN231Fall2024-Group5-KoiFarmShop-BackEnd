@@ -275,7 +275,7 @@ namespace Koi.Services.Services
 
         public async Task<OrderDetailDTO> CancelOrderDetail(int id)
         {
-            var detail = await _unitOfWork.OrderDetailRepository.GetByIdAsync(id);
+            var detail = await _unitOfWork.OrderDetailRepository.GetByIdAsync(id, x => x.ConsignmentForNurture);
             if (detail == null) throw new Exception("404 - Not Found Order Detail!");
             var order = await _unitOfWork.OrderRepository.GetByIdAsync(detail.OrderId);
             if (order == null) throw new Exception("404 - Not Found Order");
@@ -287,6 +287,11 @@ namespace Koi.Services.Services
                 ))
             {
                 detail.Status = OrderDetailStatusEnum.CANCELED.ToString();
+
+                if (detail.ConsignmentForNurture != null)
+                {
+                    detail.ConsignmentForNurture.ConsignmentStatus = ConsignmentStatusEnums.REJECTED.ToString();
+                }
                 if (order.OrderDetails.All(x => x.Status == OrderDetailStatusEnum.CANCELED.ToString()))
                     order.OrderStatus = OrderDetailStatusEnum.CANCELED.ToString();
                 if (await _unitOfWork.SaveChangeAsync() <= 0) throw new Exception("400 - Fail saving");
