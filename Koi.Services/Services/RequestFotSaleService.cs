@@ -156,7 +156,7 @@ namespace Koi.Services.Services
           throw new Exception("400 - Update failed");
         }
 
-        if (existingRequestForSale.RequestStatus != "PENDING")
+        if (existingRequestForSale.RequestStatus == "COMPLETED")
         {
           throw new Exception("400 - Update failed. Only pending request for sale can be updated!");
         }
