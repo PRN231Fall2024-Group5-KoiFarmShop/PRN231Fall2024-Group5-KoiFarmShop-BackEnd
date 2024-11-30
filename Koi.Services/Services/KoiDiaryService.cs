@@ -47,7 +47,7 @@ namespace Koi.Services.Services
             }
             catch (Exception ex)
             {
-                throw new Exception("500");
+                throw ex;
             }
         }
 
@@ -65,7 +65,7 @@ namespace Koi.Services.Services
             }
             catch (Exception ex)
             {
-                throw new Exception("500");
+                throw ex; ;
             }
         }
         public async Task<KoiFishDiaryCreateDTO> DeleteDiary(int id)
@@ -80,7 +80,7 @@ namespace Koi.Services.Services
             }
             catch (Exception ex)
             {
-                throw new Exception("500");
+                throw ex;
             }
         }
     }
